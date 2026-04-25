@@ -61,12 +61,48 @@ const BASE_URL =
 
 const ADSENSE_CLIENT = process.env.ADSENSE_CLIENT || "";
 const ADSENSE_SLOT = process.env.ADSENSE_SLOT || "";
-
 /*
 ==================================================
 HELPERS
 ==================================================
 */
+
+function safeArray(value) {
+  return Array.isArray(value) ? value : [];
+}
+
+function safeString(value, fallback = "") {
+  if (typeof value === "string" && value.trim()) return value;
+  return fallback;
+}
+
+function normalizeCategory(category) {
+  const value = String(category || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+
+  const map = {
+    financas: "financas",
+    "finanças": "financas",
+    financeiro: "financas",
+    investimentos: "investimentos",
+    investimento: "investimentos",
+    "renda-extra": "renda-extra",
+    rendaextra: "renda-extra",
+    renda: "renda-extra",
+    trabalho: "trabalho",
+    emprego: "trabalho",
+    empregos: "trabalho",
+    economia: "economia",
+    noticias: "noticias",
+    noticia: "noticias",
+    notícias: "noticias"
+  };
+
+  return map[value] || value || "financas";
+}
 
 function normalizeIndicators(indicators, economicData) {
   if (indicators && Array.isArray(indicators.resumo)) {
@@ -116,11 +152,6 @@ function normalizeIndicators(indicators, economicData) {
     iaFinanceira: indicators?.iaFinanceira || null
   };
 }
-
-function safeArray(value) {
-  return Array.isArray(value) ? value : [];
-}
-
 /*
 ==================================================
 MIDDLEWARES
@@ -158,6 +189,8 @@ LOCALS GLOBAIS
 
 app.use((req, res, next) => {
   try {
+    const affiliates = safeArray(getActiveAffiliates());
+
     res.locals.appName = APP_NAME;
     res.locals.baseUrl = BASE_URL;
 
@@ -168,8 +201,9 @@ app.use((req, res, next) => {
     res.locals.adsenseClient = ADSENSE_CLIENT;
     res.locals.adsenseSlot = ADSENSE_SLOT;
 
-    res.locals.affiliates = safeArray(getActiveAffiliates());
-    res.locals.affiliate = getActiveAffiliate ? getActiveAffiliate() : null;
+    res.locals.affiliates = affiliates;
+    res.locals.affiliate =
+      typeof getActiveAffiliate === "function" ? getActiveAffiliate() : affiliates[0] || null;
 
     next();
   } catch (err) {
@@ -188,7 +222,6 @@ app.use((req, res, next) => {
     next();
   }
 });
-
 /*
 ==================================================
 HOME
@@ -198,6 +231,7 @@ HOME
 app.get("/", async (req, res) => {
   try {
     const posts = safeArray(getLatestPosts(6));
+
     const economicData = await getEconomicData();
     const rawIndicators = await getIndicators();
     const indicators = normalizeIndicators(rawIndicators, economicData);
@@ -223,7 +257,6 @@ app.get("/", async (req, res) => {
     return res.status(500).send("Erro do Servidor Interno");
   }
 });
-
 /*
 ==================================================
 INDICADORES
@@ -234,6 +267,7 @@ app.get("/indicadores", async (req, res) => {
   try {
     const economicData = await getEconomicData();
     const ai = analyzeFinancialScenario(economicData);
+
     const rawIndicators = await getIndicators();
     const indicators = normalizeIndicators(rawIndicators, economicData);
 
@@ -258,7 +292,6 @@ app.get("/indicadores", async (req, res) => {
     return res.status(500).send("Erro do Servidor Interno");
   }
 });
-
 /*
 ==================================================
 INDICADOR INDIVIDUAL
@@ -303,16 +336,23 @@ app.get("/indicador/:slug", async (req, res) => {
     return res.status(500).send("Erro do Servidor Interno");
   }
 });
-
 /*
 ==================================================
-POSTS
+POSTS (LISTAGEM)
 ==================================================
 */
 
 app.get("/posts", (req, res) => {
   try {
-    const posts = safeArray(getAllPosts());
+    // 🔥 CORREÇÃO CRÍTICA AQUI
+    const result = getAllPosts();
+
+    // Garante que sempre será array
+    const posts = Array.isArray(result)
+      ? result
+      : Array.isArray(result?.data)
+      ? result.data
+      : [];
 
     const affiliates = safeArray(
       getAffiliatesForContext(
@@ -333,6 +373,11 @@ app.get("/posts", (req, res) => {
     return res.status(500).send("Erro do Servidor Interno");
   }
 });
+/*
+==================================================
+POST INDIVIDUAL
+==================================================
+*/
 
 app.get("/post/:slug", (req, res) => {
   try {
@@ -368,7 +413,6 @@ app.get("/post/:slug", (req, res) => {
     return res.status(500).send("Erro do Servidor Interno");
   }
 });
-
 /*
 ==================================================
 CATEGORIAS
@@ -378,6 +422,7 @@ CATEGORIAS
 app.get("/categoria/:categoria", (req, res) => {
   try {
     const categoria = req.params.categoria;
+
     const posts = safeArray(getPostsByCategory(categoria));
 
     const affiliates = safeArray(
@@ -399,10 +444,9 @@ app.get("/categoria/:categoria", (req, res) => {
     return res.status(500).send("Erro do Servidor Interno");
   }
 });
-
 /*
 ==================================================
-AFILIADOS - TRACKING REAL
+AFILIADOS - TRACKING
 ==================================================
 */
 
@@ -425,12 +469,27 @@ app.get("/out/:id", (req, res) => {
     return res.redirect("/");
   }
 });
-
 /*
 ==================================================
 APIS
 ==================================================
 */
+
+app.get("/api/posts", (req, res) => {
+  try {
+    const posts = safeArray(getAllPosts());
+
+    return res.json({
+      ok: true,
+      data: posts
+    });
+  } catch (err) {
+    return res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
 
 app.get("/api/indicadores", async (req, res) => {
   try {
@@ -441,38 +500,6 @@ app.get("/api/indicadores", async (req, res) => {
       ok: true,
       data,
       ai
-    });
-  } catch (err) {
-    return res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-app.get("/api/indicadores-completos", async (req, res) => {
-  try {
-    const economicData = await getEconomicData();
-    const rawIndicators = await getIndicators();
-    const indicators = normalizeIndicators(rawIndicators, economicData);
-
-    return res.json({
-      ok: true,
-      data: indicators
-    });
-  } catch (err) {
-    return res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-app.get("/api/posts", (req, res) => {
-  try {
-    return res.json({
-      ok: true,
-      data: safeArray(getAllPosts())
     });
   } catch (err) {
     return res.status(500).json({
@@ -504,36 +531,6 @@ app.get("/api/affiliate-stats", (req, res) => {
     });
   }
 });
-
-app.get("/api/auto-engine/status", (req, res) => {
-  try {
-    const secret = req.query.secret || req.headers["x-admin-secret"];
-
-    if (secret !== process.env.PANEL_SECRET) {
-      return res.status(401).json({
-        ok: false,
-        error: "Não autorizado"
-      });
-    }
-
-    return res.json({
-      ok: true,
-      autoPosts: process.env.AUTO_POSTS === "true",
-      intervalMs: Number(process.env.AUTO_POST_INTERVAL_MS || 1800000),
-      openai: Boolean(process.env.OPENAI_API_KEY),
-      newsapi: Boolean(process.env.NEWS_API_KEY),
-      contentEngineLoaded: Boolean(startContentEngine),
-      adsenseClient: Boolean(ADSENSE_CLIENT),
-      adsenseSlot: Boolean(ADSENSE_SLOT)
-    });
-  } catch (err) {
-    return res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
 /*
 ==================================================
 SEO
@@ -544,55 +541,21 @@ app.get("/sitemap.xml", (req, res) => {
   try {
     const posts = safeArray(getAllPosts());
 
-    const staticUrls = [
-      "/",
-      "/indicadores",
-      "/posts",
-      "/categoria/financas",
-      "/categoria/investimentos",
-      "/categoria/renda-extra",
-      "/categoria/trabalho",
-      "/categoria/noticias",
-      "/categoria/economia",
-      "/indicador/dolar",
-      "/indicador/selic",
-      "/indicador/inflacao",
-      "/indicador/bolso-popular",
-      "/indicador/salario-minimo",
-      "/indicador/tributos"
-    ];
-
-    const staticXml = staticUrls
-      .map((url) => {
-        return `
-          <url>
-            <loc>${BASE_URL}${url}</loc>
-            <changefreq>daily</changefreq>
-            <priority>0.8</priority>
-          </url>
-        `;
-      })
-      .join("");
-
-    const postsXml = posts
-      .filter((post) => post && post.slug)
-      .map((post) => {
-        return `
-          <url>
-            <loc>${BASE_URL}/post/${post.slug}</loc>
-            <changefreq>weekly</changefreq>
-            <priority>0.9</priority>
-          </url>
-        `;
-      })
-      .join("");
+    const urls = posts.map((post) => {
+      return `
+        <url>
+          <loc>${BASE_URL}/post/${post.slug}</loc>
+          <changefreq>weekly</changefreq>
+          <priority>0.9</priority>
+        </url>
+      `;
+    });
 
     res.header("Content-Type", "application/xml");
 
     return res.send(`<?xml version="1.0" encoding="UTF-8"?>
       <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-        ${staticXml}
-        ${postsXml}
+        ${urls.join("")}
       </urlset>
     `);
   } catch (err) {
@@ -638,11 +601,9 @@ AUTO ENGINE
 */
 
 function bootAutoContentEngine() {
-  if (global.__RENDA_EXTRA_ENGINE_STARTED__) {
-    return;
-  }
+  if (global.__ENGINE_STARTED__) return;
 
-  global.__RENDA_EXTRA_ENGINE_STARTED__ = true;
+  global.__ENGINE_STARTED__ = true;
 
   if (process.env.AUTO_POSTS !== "true") {
     console.log("🤖 Auto posts desligado");
@@ -650,7 +611,7 @@ function bootAutoContentEngine() {
   }
 
   if (typeof startContentEngine !== "function") {
-    console.log("⚠️ Auto posts ativado, mas contentEngine não está disponível");
+    console.log("⚠️ contentEngine não disponível");
     return;
   }
 
@@ -672,11 +633,7 @@ bootAutoContentEngine();
 */
 
 app.use((req, res) => {
-  return res.status(404).send(`
-    <h1>404 - Página não encontrada</h1>
-    <p>Essa rota não existe.</p>
-    <a href="/">Voltar</a>
-  `);
+  return res.status(404).send("Página não encontrada");
 });
 
 /*

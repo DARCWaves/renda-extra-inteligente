@@ -1,115 +1,108 @@
-<%- include('layout') %>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<div class="container">
+  <title>Conteúdos | Renda Extra Inteligente</title>
 
-  <!-- HEADER -->
-  <div class="card destaque">
-    <h1>📚 Conteúdos sobre Finanças</h1>
-    <p>
-      Aprenda sobre organização financeira, renda extra, investimentos e decisões inteligentes
-      para melhorar sua vida financeira.
-    </p>
-  </div>
+  <link rel="stylesheet" href="/style.css" />
+</head>
 
-  <!-- LISTA DE POSTS -->
-  <% if (!posts || posts.length === 0) { %>
-    <div class="card">
-      <p>Nenhum conteúdo disponível ainda...</p>
-    </div>
-  <% } %>
+<body>
 
-  <% posts.forEach(post => { %>
-    <div class="card">
+  <header>
+    <h1>🚀 Renda Extra Inteligente</h1>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/indicadores">Indicadores</a>
+      <a href="/posts">Conteúdos</a>
+      <a href="/categoria/renda-extra">Renda Extra</a>
+      <a href="/categoria/investimentos">Investimentos</a>
+    </nav>
+  </header>
 
-      <h2><%= post.title %></h2>
+  <main>
 
-      <p><%= post.description %></p>
+    <section>
+      <h2>📚 Conteúdos sobre Finanças</h2>
+      <p>
+        Aprenda sobre organização financeira, renda extra, investimentos,
+        economia e decisões inteligentes para melhorar sua vida financeira.
+      </p>
+    </section>
 
-      <!-- TAG DE CATEGORIA (CORRIGIDA) -->
-      <div class="categoria-tag">
-        📊 <%= post.category %>
-      </div>
+    <!-- 🔥 LISTA DE POSTS -->
+    <section>
 
-      <!-- BOTÃO -->
-      <a href="/post/<%= post.slug %>" class="btn-primary">
-        Ler conteúdo completo
+      <% if (posts && Array.isArray(posts) && posts.length > 0) { %>
+
+        <% posts.forEach(post => { %>
+
+          <article style="margin-bottom: 20px; padding: 15px; border: 1px solid #333; border-radius: 10px;">
+
+            <h3>
+              <%= post.title || "Conteúdo sem título" %>
+            </h3>
+
+            <p>
+              <%= post.description || post.seoDescription || "Conteúdo educativo sobre finanças." %>
+            </p>
+
+            <p>
+              <strong>Categoria:</strong>
+              <%= post.category || "financas" %>
+            </p>
+
+            <p style="font-size: 12px; color: #888;">
+              Publicado em:
+              <%= post.createdAt ? new Date(post.createdAt).toLocaleDateString("pt-BR") : "Data não disponível" %>
+            </p>
+
+            <a href="/post/<%= post.slug %>" style="display: inline-block; margin-top: 10px;">
+              📖 Ler conteúdo completo
+            </a>
+
+          </article>
+
+        <% }) %>
+
+      <% } else { %>
+
+        <!-- ❌ FALLBACK -->
+        <article style="padding: 20px; border: 1px dashed #444; border-radius: 10px;">
+          <h3>⚠ Nenhum conteúdo encontrado</h3>
+          <p>
+            Ainda não há conteúdos disponíveis no momento.
+          </p>
+        </article>
+
+      <% } %>
+
+    </section>
+
+    <!-- 💰 BLOCO DE ANÚNCIO (ADSENSE FUTURO) -->
+    <section style="margin: 30px 0; padding: 20px; border: 2px dashed #555; border-radius: 10px; text-align: center;">
+      <p>🔹 Espaço reservado para anúncio (Google AdSense)</p>
+    </section>
+
+    <!-- 📊 CTA -->
+    <section>
+      <h3>📊 Continue explorando</h3>
+      <p>
+        Veja também os indicadores econômicos atualizados para entender melhor o cenário financeiro.
+      </p>
+
+      <a href="/indicadores">
+        Ver indicadores econômicos →
       </a>
+    </section>
 
-    </div>
-  <% }) %>
+  </main>
 
-  <!-- CTA FINAL -->
-  <div class="card destaque">
-    <h2>📊 Continue explorando</h2>
-    <p>
-      Além dos conteúdos, acompanhe os indicadores econômicos atualizados
-      e a análise financeira inteligente.
-    </p>
+  <footer style="margin-top: 40px; padding: 20px; text-align: center; font-size: 12px; color: #aaa;">
+    <p>© 2026 Renda Extra Inteligente</p>
+  </footer>
 
-    <a href="/indicadores" class="btn-primary">
-      Ver indicadores econômicos
-    </a>
-  </div>
-
-</div>
-
-<!-- ESTILO EXTRA -->
-<style>
-
-.container {
-  max-width: 900px;
-  margin: auto;
-  padding: 20px;
-}
-
-.card {
-  background: rgba(0, 20, 40, 0.8);
-  border-radius: 20px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 0 20px rgba(0,255,150,0.1);
-}
-
-.destaque {
-  text-align: center;
-}
-
-h1, h2 {
-  color: #00ffcc;
-}
-
-p {
-  color: #cfd8dc;
-}
-
-/* BOTÃO */
-.btn-primary {
-  display: inline-block;
-  margin-top: 15px;
-  padding: 12px 20px;
-  border-radius: 12px;
-  text-decoration: none;
-  font-weight: bold;
-
-  background: linear-gradient(135deg, #00ff88, #00c3ff);
-  color: #001a1a;
-
-  box-shadow: 0 0 15px rgba(0,255,150,0.4);
-}
-
-/* TAG CATEGORIA */
-.categoria-tag {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 6px 14px;
-  font-size: 13px;
-  font-weight: bold;
-  border-radius: 999px;
-
-  background: linear-gradient(135deg, #00ff88, #00c3ff);
-  color: #001a1a;
-
-  box-shadow: 0 0 10px rgba(0, 255, 150, 0.4);
-}
-
-</style>
+</body>
+</html>
