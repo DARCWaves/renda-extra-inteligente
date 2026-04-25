@@ -1,0 +1,54 @@
+<h2>📂 Categoria: <%= categoria %></h2>
+
+<p>
+Conteúdos relacionados à categoria "<strong><%= categoria %></strong>".
+</p>
+
+<% if (!posts || posts.length === 0) { %>
+
+  <section>
+    <h3>Nenhum conteúdo encontrado</h3>
+    <p>Não há conteúdos disponíveis para esta categoria no momento.</p>
+  </section>
+
+<% } else { %>
+
+  <% posts.forEach(post => { %>
+    <section>
+      <h3><%= post.title %></h3>
+
+      <p>
+        <%= post.description %>
+      </p>
+
+      <a href="/post/<%= post.slug %>">
+        Ler conteúdo completo
+      </a>
+    </section>
+  <% }) %>
+
+<% } %>
+
+<section>
+  <h3>📊 Continue explorando</h3>
+
+  <p>
+    Veja também os indicadores econômicos atualizados para entender o cenário financeiro.
+  </p>
+
+  <a href="/indicadores">
+    Ver indicadores econômicos
+  </a>
+</section>
+
+<section>
+  <h3>📚 Todos os conteúdos</h3>
+
+  <p>
+    Explore todos os conteúdos disponíveis sobre finanças, renda extra e investimentos.
+  </p>
+
+  <a href="/posts">
+    Ver todos os conteúdos
+  </a>
+</section>

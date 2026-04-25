@@ -1,0 +1,115 @@
+<%- include('layout') %>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="card destaque">
+    <h1>📚 Conteúdos sobre Finanças</h1>
+    <p>
+      Aprenda sobre organização financeira, renda extra, investimentos e decisões inteligentes
+      para melhorar sua vida financeira.
+    </p>
+  </div>
+
+  <!-- LISTA DE POSTS -->
+  <% if (!posts || posts.length === 0) { %>
+    <div class="card">
+      <p>Nenhum conteúdo disponível ainda...</p>
+    </div>
+  <% } %>
+
+  <% posts.forEach(post => { %>
+    <div class="card">
+
+      <h2><%= post.title %></h2>
+
+      <p><%= post.description %></p>
+
+      <!-- TAG DE CATEGORIA (CORRIGIDA) -->
+      <div class="categoria-tag">
+        📊 <%= post.category %>
+      </div>
+
+      <!-- BOTÃO -->
+      <a href="/post/<%= post.slug %>" class="btn-primary">
+        Ler conteúdo completo
+      </a>
+
+    </div>
+  <% }) %>
+
+  <!-- CTA FINAL -->
+  <div class="card destaque">
+    <h2>📊 Continue explorando</h2>
+    <p>
+      Além dos conteúdos, acompanhe os indicadores econômicos atualizados
+      e a análise financeira inteligente.
+    </p>
+
+    <a href="/indicadores" class="btn-primary">
+      Ver indicadores econômicos
+    </a>
+  </div>
+
+</div>
+
+<!-- ESTILO EXTRA -->
+<style>
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+.card {
+  background: rgba(0, 20, 40, 0.8);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 20px rgba(0,255,150,0.1);
+}
+
+.destaque {
+  text-align: center;
+}
+
+h1, h2 {
+  color: #00ffcc;
+}
+
+p {
+  color: #cfd8dc;
+}
+
+/* BOTÃO */
+.btn-primary {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: bold;
+
+  background: linear-gradient(135deg, #00ff88, #00c3ff);
+  color: #001a1a;
+
+  box-shadow: 0 0 15px rgba(0,255,150,0.4);
+}
+
+/* TAG CATEGORIA */
+.categoria-tag {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 999px;
+
+  background: linear-gradient(135deg, #00ff88, #00c3ff);
+  color: #001a1a;
+
+  box-shadow: 0 0 10px rgba(0, 255, 150, 0.4);
+}
+
+</style>

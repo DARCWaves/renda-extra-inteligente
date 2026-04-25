@@ -1,0 +1,82 @@
+<h2>📊 Indicadores Econômicos do Brasil</h2>
+
+<p>
+Acompanhe os principais dados econômicos atualizados em tempo real e entenda como isso impacta o seu dinheiro.
+</p>
+
+<!-- MERCADO FINANCEIRO -->
+<section>
+  <h3>💰 Mercado Financeiro</h3>
+  <ul>
+    <li>💵 Dólar: <strong><%= data.dolar %></strong></li>
+    <li>📉 Selic: <strong><%= data.selic %></strong></li>
+    <li>📊 Inflação: <strong><%= data.inflacao %></strong></li>
+  </ul>
+</section>
+
+<!-- ECONOMIA NACIONAL -->
+<section>
+  <h3>🏛️ Economia Nacional</h3>
+  <ul>
+    <li>💼 Salário mínimo: <strong><%= data.salarioMinimo %></strong></li>
+    <li>📈 Arrecadação de tributos: <strong><%= data.arrecadacao %></strong></li>
+  </ul>
+</section>
+
+<!-- BOLSO POPULAR -->
+<section>
+  <h3>🧠 Indicador do Bolso Popular</h3>
+  <p>
+    Este indicador representa o impacto real da economia no dia a dia da população.
+  </p>
+  <ul>
+    <li>📉 Índice atual: <strong><%= data.bolsoPopular %></strong></li>
+  </ul>
+</section>
+
+<!-- IA FINANCEIRA -->
+<section>
+  <h3>⚡ IA Financeira</h3>
+
+  <p>
+    <strong>Diagnóstico:</strong> <%= ai.verdict %>
+  </p>
+
+  <p>
+    <%= ai.summary %>
+  </p>
+
+  <!-- ALERTAS -->
+  <h4>🚨 Alertas</h4>
+  <ul>
+    <% ai.alerts.forEach(alert => { %>
+      <li><%= alert %></li>
+    <% }) %>
+  </ul>
+
+  <!-- OPORTUNIDADES -->
+  <h4>💡 Oportunidades</h4>
+  <ul>
+    <% ai.opportunities.forEach(item => { %>
+      <li><%= item %></li>
+    <% }) %>
+  </ul>
+
+  <!-- PLANO DE AÇÃO -->
+  <h4>🎯 Plano de ação</h4>
+  <ul>
+    <% ai.actionPlan.forEach(step => { %>
+      <li><%= step %></li>
+    <% }) %>
+  </ul>
+</section>
+
+<!-- CTA -->
+<section>
+  <h3>🚀 Próximo passo</h3>
+  <p>
+    Use essas informações para tomar decisões mais inteligentes e aumentar sua renda.
+  </p>
+
+  <a href="/" class="btn">⬅ Voltar para Home</a>
+</section>

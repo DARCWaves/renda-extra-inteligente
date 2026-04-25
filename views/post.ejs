@@ -1,0 +1,53 @@
+<h2><%= post.title %></h2>
+
+<p>
+  <em>Publicado em <%= post.createdAt %></em>
+</p>
+
+<section>
+  <p>
+    <%= post.content %>
+  </p>
+</section>
+
+<section>
+  <h3>📂 Categoria</h3>
+
+  <p>
+    <a href="/categoria/<%= post.category %>">
+      <%= post.category %>
+    </a>
+  </p>
+</section>
+
+<section>
+  <h3>📊 Continue aprendendo</h3>
+
+  <p>
+    Entender o cenário econômico ajuda você a tomar decisões melhores com seu dinheiro.
+  </p>
+
+  <a href="/indicadores">
+    Ver indicadores econômicos
+  </a>
+</section>
+
+<section>
+  <h3>📚 Mais conteúdos</h3>
+
+  <p>
+    Explore outros conteúdos sobre finanças, renda extra e investimentos.
+  </p>
+
+  <a href="/posts">
+    Ver todos os conteúdos
+  </a>
+</section>
+
+<section>
+  <h3>⚠️ Aviso importante</h3>
+
+  <p>
+    Este conteúdo tem caráter informativo e educacional. Sempre avalie sua realidade financeira antes de tomar decisões.
+  </p>
+</section>

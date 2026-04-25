@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title || appName %></title>
+  <meta name="description" content="<%= description || 'Finanças, renda extra e economia real.' %>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <% if (adsenseClient) { %>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<%= adsenseClient %>" crossorigin="anonymous"></script>
+  <% } %>
+
+  <link rel="stylesheet" href="/style.css">
+
+  <style>
+    #affiliate-widget {
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      width: 190px;
+      background: #ffffff;
+      color: #07131f;
+      border-radius: 14px;
+      padding: 10px;
+      box-shadow: 0 12px 28px rgba(0,0,0,.35);
+      z-index: 9999;
+      border: 1px solid rgba(0,0,0,.08);
+    }
+
+    .affiliate-image {
+      display: none;
+    }
+
+    .affiliate-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 5px;
+    }
+
+    .affiliate-badge {
+      background: linear-gradient(135deg, #00e676, #00bcd4);
+      color: #001a1a;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 4px 6px;
+      border-radius: 999px;
+      max-width: 110px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .affiliate-count {
+      font-size: 10px;
+      color: #334155;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .affiliate-title {
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .affiliate-description {
+      display: none;
+    }
+
+    .affiliate-price {
+      font-size: 13px;
+      font-weight: 900;
+      color: #008f5a;
+      margin-bottom: 7px;
+    }
+
+    .affiliate-button {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 7px 8px;
+      border-radius: 10px;
+      background: #07131f;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 12px;
+    }
+
+    .affiliate-button:hover {
+      background: #00e676;
+      color: #001a1a;
+    }
+
+    @media (max-width: 700px) {
+      #affiliate-widget {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        width: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>🚀 <%= appName %></h1>
+
+  <nav>
+    <a href="/">Home</a>
+    <a href="/indicadores">Indicadores</a>
+    <a href="/posts">Conteúdos</a>
+    <a href="/categoria/renda-extra">Renda Extra</a>
+    <a href="/categoria/investimentos">Investimentos</a>
+  </nav>
+</header>
+
+<main>
+  <%- body %>
+</main>
+
+<footer>
+  <p>© <%= new Date().getFullYear() %> - <%= appName %></p>
+</footer>
+
+<% if (affiliates && affiliates.length) { %>
+  <div id="affiliate-widget">
+    <div class="affiliate-top">
+      <span id="affiliate-badge" class="affiliate-badge">
+        <%= affiliates[0].badge || '💡 Recomendado' %>
+      </span>
+
+      <span class="affiliate-count">
+        <span id="affiliate-timer">10</span>s
+      </span>
+    </div>
+
+    <div id="affiliate-title" class="affiliate-title">
+      <%= affiliates[0].title %>
+    </div>
+
+    <div id="affiliate-description" class="affiliate-description">
+      <%= affiliates[0].description %>
+    </div>
+
+    <div id="affiliate-price" class="affiliate-price">
+      <%= affiliates[0].price || '' %>
+    </div>
+
+    <a id="affiliate-link" class="affiliate-button" href="/out/<%= affiliates[0].id %>" target="_blank">
+      Ver oferta →
+    </a>
+  </div>
+
+  <script>
+    const products = <%- JSON.stringify(affiliates) %>;
+
+    let affiliateIndex = 0;
+    let affiliateCountdown = 10;
+
+    const badge = document.getElementById("affiliate-badge");
+    const title = document.getElementById("affiliate-title");
+    const description = document.getElementById("affiliate-description");
+    const price = document.getElementById("affiliate-price");
+    const link = document.getElementById("affiliate-link");
+    const timer = document.getElementById("affiliate-timer");
+
+    function renderAffiliate(product) {
+      badge.textContent = product.badge || "💡 Recomendado";
+      title.textContent = product.title || "Produto recomendado";
+      description.textContent = product.description || "Veja essa recomendação.";
+      price.textContent = product.price || "";
+      link.href = "/out/" + product.id;
+    }
+
+    setInterval(() => {
+      affiliateCountdown -= 1;
+      timer.textContent = affiliateCountdown;
+
+      if (affiliateCountdown <= 0) {
+        affiliateIndex = (affiliateIndex + 1) % products.length;
+        renderAffiliate(products[affiliateIndex]);
+        affiliateCountdown = 10;
+        timer.textContent = affiliateCountdown;
+      }
+    }, 1000);
+  </script>
+<% } %>
+
+</body>
+</html>

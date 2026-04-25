@@ -1,0 +1,50 @@
+[
+  {
+    "id": "planilha-financeira-pro",
+    "title": "Planilha completa para controle financeiro",
+    "description": "Organize seus gastos, acompanhe sua renda e tenha controle total do seu dinheiro.",
+    "url": "https://www.mercadolivre.com.br/",
+    "category": "financas",
+    "tags": [
+      "financas",
+      "controle",
+      "planilha",
+      "dinheiro"
+    ],
+    "active": true,
+    "clicks": 1,
+    "createdAt": "2026-04-25T07:38:41.443Z"
+  },
+  {
+    "id": "livro-educacao-financeira",
+    "title": "Livro de educação financeira",
+    "description": "Aprenda como organizar sua vida financeira e parar de viver no aperto.",
+    "url": "https://www.amazon.com.br/",
+    "category": "investimentos",
+    "tags": [
+      "educacao",
+      "livro",
+      "financas",
+      "investimentos"
+    ],
+    "active": true,
+    "clicks": 0,
+    "createdAt": "2026-04-25T07:38:41.443Z"
+  },
+  {
+    "id": "kit-meias-revenda",
+    "title": "Kit de meias para revenda",
+    "description": "Produto barato com alta margem para quem quer começar renda extra.",
+    "url": "https://shopee.com.br/",
+    "category": "renda-extra",
+    "tags": [
+      "revenda",
+      "meia",
+      "renda",
+      "produto"
+    ],
+    "active": true,
+    "clicks": 0,
+    "createdAt": "2026-04-25T07:38:41.443Z"
+  }
+]

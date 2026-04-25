@@ -1,0 +1,174 @@
+<section class="hero-home">
+  <h2>💰 Renda Extra Inteligente</h2>
+
+  <p>
+    Entenda seu dinheiro, acompanhe indicadores econômicos e encontre caminhos reais para melhorar sua renda sem cair em promessa fácil.
+  </p>
+
+  <div class="home-actions">
+    <a href="/indicadores" class="btn-primary">Ver indicadores</a>
+    <a href="/posts" class="btn-primary">Ler conteúdos</a>
+  </div>
+</section>
+
+<section>
+  <h3>📊 Indicadores que mexem com o seu bolso</h3>
+
+  <p>
+    Cada número abaixo afeta preço, salário, crédito, consumo, dívidas, investimentos e renda extra.
+  </p>
+
+  <div class="indicator-grid">
+    <% if (indicators && indicators.resumo) { %>
+      <% indicators.resumo.forEach(item => { %>
+        <a href="/indicador/<%= item.slug %>" class="indicator-card">
+          <span><%= item.nome %></span>
+          <strong><%= item.valor %></strong>
+          <small>Ver análise completa →</small>
+        </a>
+      <% }) %>
+    <% } %>
+  </div>
+</section>
+
+<% if (indicators && indicators.iaFinanceira) { %>
+  <section>
+    <h3>🧠 Leitura da IA Financeira</h3>
+
+    <p>
+      <strong>Diagnóstico:</strong> <%= indicators.iaFinanceira.diagnostico %>
+    </p>
+
+    <p>
+      <%= indicators.iaFinanceira.mensagem %>
+    </p>
+
+    <a href="/indicadores" class="btn-primary">Entender o cenário completo</a>
+  </section>
+<% } %>
+
+<section>
+  <h3>🧭 Escolha seu caminho</h3>
+
+  <div class="shortcut-grid">
+    <a href="/categoria/financas" class="shortcut-card">
+      💳 Finanças pessoais
+      <small>Controle, dívidas, orçamento e reserva.</small>
+    </a>
+
+    <a href="/categoria/renda-extra" class="shortcut-card">
+      🚀 Renda extra
+      <small>Ideias reais sem promessa milagrosa.</small>
+    </a>
+
+    <a href="/categoria/investimentos" class="shortcut-card">
+      📈 Investimentos
+      <small>Educação financeira e decisões melhores.</small>
+    </a>
+
+    <a href="/categoria/economia" class="shortcut-card">
+      🌎 Economia
+      <small>O que muda no país e no seu bolso.</small>
+    </a>
+  </div>
+</section>
+
+<section>
+  <h3>🔥 Conteúdos recentes</h3>
+
+  <% if (!posts || posts.length === 0) { %>
+    <p>Nenhum conteúdo publicado ainda.</p>
+  <% } else { %>
+    <% posts.forEach(post => { %>
+      <article class="post-preview">
+        <h4><%= post.title %></h4>
+        <p><%= post.description %></p>
+
+        <div class="categoria-tag">
+          📊 <%= post.category %>
+        </div>
+
+        <br>
+
+        <a href="/post/<%= post.slug %>" class="btn-primary">
+          Ler conteúdo completo
+        </a>
+      </article>
+    <% }) %>
+  <% } %>
+</section>
+
+<section>
+  <h3>⚡ Próximo passo</h3>
+
+  <p>
+    Não basta ganhar dinheiro. Você precisa entender para onde ele está indo, o que está destruindo seu poder de compra e quais decisões podem mudar sua realidade.
+  </p>
+
+  <a href="/posts" class="btn-primary">Começar pelos conteúdos</a>
+</section>
+
+<style>
+.hero-home {
+  text-align: center;
+}
+
+.home-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.indicator-grid,
+.shortcut-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.indicator-card,
+.shortcut-card {
+  display: block;
+  padding: 18px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(220,255,246,.95));
+  color: #001a1a;
+  text-decoration: none;
+  box-shadow: 0 0 20px rgba(0,255,150,.25);
+}
+
+.indicator-card span,
+.shortcut-card small {
+  display: block;
+}
+
+.indicator-card strong {
+  display: block;
+  margin: 10px 0;
+  font-size: 26px;
+}
+
+.indicator-card small,
+.shortcut-card small {
+  margin-top: 8px;
+  font-size: 13px;
+  opacity: .75;
+}
+
+.post-preview {
+  background: rgba(0,20,40,.85);
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 0 20px rgba(0,255,150,.08);
+}
+
+.post-preview h4 {
+  color: #00ffcc;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+</style>
