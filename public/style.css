@@ -768,3 +768,103 @@ footer {
     width: 100%;
   }
 }
+/* ==================================================
+   FIX DE CONTRASTE — TEXTOS QUE ESTAVAM SUMINDO
+   Cole este bloco no FINAL do public/style.css
+================================================== */
+
+/* Cards claros dos indicadores */
+.indicator-card {
+  color: #07131f !important;
+}
+
+.indicator-card span,
+.indicator-card small {
+  color: #334155 !important;
+}
+
+.indicator-card strong {
+  color: #00c985 !important;
+  text-shadow: none !important;
+}
+
+/* Texto “Ver análise completa” nos cards claros */
+.indicator-card a,
+.indicator-card .card-link,
+.indicator-card small:last-child {
+  color: #0f172a !important;
+  opacity: 1 !important;
+  font-weight: 900 !important;
+}
+
+/* Botões verdes com texto apagado */
+.btn-primary,
+button,
+input[type="submit"],
+.home-actions a,
+.post-preview a,
+article a,
+.card a {
+  color: #031014 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+/* Links dentro de cards escuros continuam verdes e visíveis */
+.post-preview a,
+article a,
+.card a {
+  color: #00ffa3 !important;
+}
+
+/* Botões grandes verdes dentro dos cards */
+a.btn-primary,
+.btn-primary,
+.home-actions a {
+  color: #031014 !important;
+  font-weight: 900 !important;
+}
+
+/* Categorias / tags */
+.categoria-tag {
+  color: #001a1a !important;
+  background: #00ffa3 !important;
+}
+
+/* Widget afiliado claro */
+#affiliate-widget,
+#affiliate-widget * {
+  color: #07131f !important;
+}
+
+#affiliate-widget .affiliate-button {
+  color: #ffffff !important;
+}
+
+#affiliate-widget .affiliate-badge {
+  color: #001a1a !important;
+}
+
+/* Textos muito claros em fundos claros */
+.card[style*="background"],
+article[style*="background"],
+.indicator-card p {
+  color: #334155 !important;
+}
+
+/* Mantém títulos principais em destaque */
+.hero-home h2,
+section h2,
+section h3,
+.post-preview h4,
+article h3,
+.card h3 {
+  opacity: 1 !important;
+}
+
+/* Ajuste específico para cards claros com gradiente */
+.indicator-card p,
+.indicator-card div,
+.indicator-card label {
+  color: #334155 !important;
+}
