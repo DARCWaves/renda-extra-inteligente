@@ -1,60 +1,41 @@
 const fs = require("fs");
 const path = require("path");
 
-const FILE = path.join(__dirname, "..", "data", "affiliate-links.json");
+const AFFILIATES_FILE = path.join(__dirname, "..", "data", "affiliate-links.json");
+const CLICKS_FILE = path.join(__dirname, "..", "data", "affiliate-clicks.json");
 
-function readAffiliates() {
-  try {
-    if (!fs.existsSync(FILE)) return [];
-
-    const raw = fs.readFileSync(FILE, "utf8");
-    if (!raw.trim()) return [];
-
-    return JSON.parse(raw);
-  } catch (err) {
-    console.error("Erro ao ler afiliados:", err.message);
-    return [];
+function ensureFile(file, fallback) {
+  if (!fs.existsSync(file)) {
+    fs.writeFileSync(file, JSON.stringify(fallback, null, 2), "utf8");
   }
 }
 
-function writeAffiliates(data) {
+function readJson(file, fallback) {
   try {
-    fs.writeFileSync(FILE, JSON.stringify(data, null, 2), "utf8");
-    return true;
+    ensureFile(file, fallback);
+    const raw = fs.readFileSync(file, "utf8");
+    return raw.trim() ? JSON.parse(raw) : fallback;
   } catch (err) {
-    console.error("Erro ao salvar afiliados:", err.message);
-    return false;
+    console.error("Erro ao ler JSON:", err.message);
+    return fallback;
   }
 }
 
-function normalizeAffiliate(item = {}, index = 0) {
-  return {
-    id: String(item.id || `affiliate-${index + 1}`),
-    title: String(item.title || "Produto recomendado"),
-    description: String(item.description || "Veja esta recomendação selecionada."),
-    url: String(item.url || "").trim(),
-    category: String(item.category || "geral"),
-    tags: Array.isArray(item.tags) ? item.tags : [],
-    active: item.active !== false,
-    clicks: Number(item.clicks || 0),
-    createdAt: item.createdAt || new Date().toISOString()
-  };
+function writeJson(file, data) {
+  fs.writeFileSync(file, JSON.stringify(data, null, 2), "utf8");
 }
 
 function getAllAffiliates() {
-  return readAffiliates().map(normalizeAffiliate);
+  return readJson(AFFILIATES_FILE, []);
 }
 
 function getActiveAffiliates() {
-  return getAllAffiliates().filter((item) => {
-    return item.active && /^https?:\/\//i.test(item.url);
-  });
+  return getAllAffiliates().filter((item) => item.active !== false && item.url);
 }
 
 function getActiveAffiliate() {
   const list = getActiveAffiliates();
   if (!list.length) return null;
-
   return list[Math.floor(Math.random() * list.length)];
 }
 
@@ -62,54 +43,8 @@ function getAffiliateById(id) {
   return getAllAffiliates().find((item) => item.id === id) || null;
 }
 
-function registerAffiliateClick(id) {
-  const list = getAllAffiliates();
-  const index = list.findIndex((item) => item.id === id);
-
-  if (index === -1) return null;
-
-  list[index].clicks = Number(list[index].clicks || 0) + 1;
-
-  writeAffiliates(list);
-
-  return list[index];
-}
-
-function addAffiliate(data = {}) {
-  const list = getAllAffiliates();
-
-  const id =
-    data.id ||
-    String(data.title || "produto")
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "") +
-      "-" +
-      Date.now();
-
-  const affiliate = normalizeAffiliate({
-    id,
-    title: data.title,
-    description: data.description,
-    url: data.url,
-    category: data.category,
-    tags: data.tags,
-    active: data.active !== false,
-    clicks: 0,
-    createdAt: new Date().toISOString()
-  });
-
-  list.unshift(affiliate);
-  writeAffiliates(list);
-
-  return affiliate;
-}
-
 function scoreAffiliateByContext(affiliate, context = "") {
   const text = String(context || "").toLowerCase();
-
   let score = 0;
 
   if (!text) return 1;
@@ -118,23 +53,23 @@ function scoreAffiliateByContext(affiliate, context = "") {
     score += 5;
   }
 
-  affiliate.tags.forEach((tag) => {
-    if (text.includes(String(tag).toLowerCase())) {
-      score += 3;
-    }
-  });
+  if (Array.isArray(affiliate.tags)) {
+    affiliate.tags.forEach((tag) => {
+      if (text.includes(String(tag).toLowerCase())) {
+        score += 3;
+      }
+    });
+  }
 
-  if (text.includes(String(affiliate.title).toLowerCase())) {
+  if (affiliate.title && text.includes(String(affiliate.title).toLowerCase())) {
     score += 2;
   }
 
   return score;
 }
 
-function getAffiliatesForContext(context = "", limit = 6) {
-  const list = getActiveAffiliates();
-
-  return list
+function getAffiliatesForContext(context = "", limit = 8) {
+  return getActiveAffiliates()
     .map((item) => ({
       ...item,
       score: scoreAffiliateByContext(item, context)
@@ -143,12 +78,63 @@ function getAffiliatesForContext(context = "", limit = 6) {
     .slice(0, limit);
 }
 
+function registerAffiliateClick(id, meta = {}) {
+  const affiliates = getAllAffiliates();
+  const index = affiliates.findIndex((item) => item.id === id);
+
+  if (index === -1) return null;
+
+  affiliates[index].clicks = Number(affiliates[index].clicks || 0) + 1;
+  affiliates[index].lastClickAt = new Date().toISOString();
+
+  writeJson(AFFILIATES_FILE, affiliates);
+
+  const clicks = readJson(CLICKS_FILE, []);
+
+  clicks.unshift({
+    id: `${id}-${Date.now()}`,
+    affiliateId: id,
+    title: affiliates[index].title,
+    category: affiliates[index].category || "geral",
+    url: affiliates[index].url,
+    clickedAt: new Date().toISOString(),
+    source: meta.source || "site",
+    page: meta.page || "",
+    userAgent: meta.userAgent || "",
+    ip: meta.ip || ""
+  });
+
+  writeJson(CLICKS_FILE, clicks.slice(0, 5000));
+
+  return affiliates[index];
+}
+
+function getAffiliateStats() {
+  const affiliates = getAllAffiliates();
+  const clicks = readJson(CLICKS_FILE, []);
+
+  return affiliates.map((item) => {
+    const productClicks = clicks.filter((click) => click.affiliateId === item.id);
+
+    return {
+      id: item.id,
+      title: item.title,
+      category: item.category,
+      url: item.url,
+      active: item.active !== false,
+      clicks: Number(item.clicks || 0),
+      trackedClicks: productClicks.length,
+      lastClickAt: item.lastClickAt || null
+    };
+  });
+}
+
 module.exports = {
   getAllAffiliates,
   getActiveAffiliates,
   getActiveAffiliate,
   getAffiliateById,
+  getAffiliatesForContext,
   registerAffiliateClick,
-  addAffiliate,
-  getAffiliatesForContext
+  getAffiliateStats
 };

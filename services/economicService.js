@@ -23,7 +23,7 @@ function formatBillions(value) {
 
 /*
 ==================================================
-DATAS PARA API BCB
+DATAS
 ==================================================
 */
 
@@ -35,7 +35,7 @@ function formatDateBR(date) {
   return `${d}/${m}/${y}`;
 }
 
-function getRecentDateRange(daysBack = 60) {
+function getRecentDateRange(daysBack = 90) {
   const end = new Date();
   const start = new Date();
 
@@ -49,7 +49,7 @@ function getRecentDateRange(daysBack = 60) {
 
 /*
 ==================================================
-BUSCA BCB SEGURA
+BANCO CENTRAL
 ==================================================
 */
 
@@ -57,20 +57,21 @@ async function fetchBCB(code, fallback, daysBack = 90) {
   try {
     const range = getRecentDateRange(daysBack);
 
-    const url = `https://api.bcb.gov.br/dados/serie/bcdata.sgs.${code}/dados`;
-
-    const response = await axios.get(url, {
-      params: {
-        formato: "json",
-        dataInicial: range.dataInicial,
-        dataFinal: range.dataFinal
-      },
-      headers: {
-        Accept: "application/json",
-        "User-Agent": "RendaExtraInteligente/1.0"
-      },
-      timeout: 8000
-    });
+    const response = await axios.get(
+      `https://api.bcb.gov.br/dados/serie/bcdata.sgs.${code}/dados`,
+      {
+        params: {
+          formato: "json",
+          dataInicial: range.dataInicial,
+          dataFinal: range.dataFinal
+        },
+        headers: {
+          Accept: "application/json",
+          "User-Agent": "RendaExtraInteligente/1.0"
+        },
+        timeout: 8000
+      }
+    );
 
     if (!Array.isArray(response.data) || response.data.length === 0) {
       console.log(`Erro BCB: ${code} Sem dados`);
@@ -80,15 +81,48 @@ async function fetchBCB(code, fallback, daysBack = 90) {
     const lastItem = response.data[response.data.length - 1];
     const value = Number(String(lastItem.valor).replace(",", "."));
 
-    if (!Number.isFinite(value)) {
-      return fallback;
-    }
-
-    return value;
+    return Number.isFinite(value) ? value : fallback;
   } catch (err) {
     console.log(`Erro BCB: ${code} ${err.message}`);
     return fallback;
   }
+}
+
+/*
+==================================================
+DÓLAR EM TEMPO REAL + OFICIAL
+==================================================
+*/
+
+async function fetchDolar() {
+  let dolarAtual = 5.01;
+  let dolarOficial = 5.01;
+
+  try {
+    const realtime = await axios.get(
+      "https://economia.awesomeapi.com.br/json/last/USD-BRL",
+      { timeout: 8000 }
+    );
+
+    const value = Number(realtime.data?.USDBRL?.bid);
+
+    if (Number.isFinite(value)) {
+      dolarAtual = value;
+    }
+  } catch (err) {
+    console.log("Erro dólar tempo real:", err.message);
+  }
+
+  try {
+    dolarOficial = await fetchBCB(1, dolarAtual, 30);
+  } catch (err) {
+    dolarOficial = dolarAtual;
+  }
+
+  return {
+    atual: dolarAtual,
+    oficial: dolarOficial
+  };
 }
 
 /*
@@ -98,17 +132,19 @@ DADOS ECONÔMICOS
 */
 
 async function getEconomicData() {
-  const selic = await fetchBCB(432, 14.75, 365);
-  const inflacao = await fetchBCB(433, 0.88, 365);
-  const dolar = await fetchBCB(1, 5.01, 30);
+  const [selic, inflacao, dolarData] = await Promise.all([
+    fetchBCB(432, 14.75, 365),
+    fetchBCB(433, 0.88, 365),
+    fetchDolar()
+  ]);
 
   const salarioMinimo = 1621;
   const arrecadacao = 222.1;
-
   const bolsoPopular = Number((inflacao * 2.85).toFixed(2));
 
   return {
-    dolar: formatCurrency(dolar),
+    dolar: formatCurrency(dolarData.atual),
+    dolarOficial: formatCurrency(dolarData.oficial),
     selic: formatPercent(selic),
     inflacao: formatPercent(inflacao),
     bolsoPopular: formatPercent(bolsoPopular),
@@ -116,7 +152,8 @@ async function getEconomicData() {
     arrecadacao: formatBillions(arrecadacao),
 
     periodos: {
-      dolar: "cotação atual",
+      dolar: "cotação em tempo real",
+      dolarOficial: "cotação oficial BCB",
       selic: "ao ano",
       inflacao: "último mês",
       bolsoPopular: "estimativa mensal",
@@ -125,7 +162,8 @@ async function getEconomicData() {
     },
 
     raw: {
-      dolar,
+      dolar: dolarData.atual,
+      dolarOficial: dolarData.oficial,
       selic,
       inflacao,
       bolsoPopular,

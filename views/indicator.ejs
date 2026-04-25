@@ -1,7 +1,29 @@
 <section class="indicator-hero">
   <p class="indicator-label">Indicador econômico</p>
+
   <h2><%= indicador.titulo %></h2>
-  <p><%= indicador.seoDescription || indicador.explicacao %></p>
+
+  <% if (indicador.valor) { %>
+    <div class="indicator-value">
+      <%= indicador.valor %>
+    </div>
+  <% } %>
+
+  <% if (indicador.periodo) { %>
+    <p class="indicator-period">
+      <%= indicador.periodo %>
+    </p>
+  <% } %>
+
+  <% if (indicador.valorOficial) { %>
+    <p class="indicator-period">
+      Oficial Banco Central: <%= indicador.valorOficial %>
+    </p>
+  <% } %>
+
+  <p>
+    <%= indicador.resumoCurto || indicador.seoDescription || indicador.explicacao %>
+  </p>
 </section>
 
 <section>
@@ -9,28 +31,71 @@
   <p><%= indicador.explicacao %></p>
 </section>
 
-<section>
-  <h3>⚠️ Impacto no seu bolso</h3>
-  <p><%= indicador.impacto %></p>
-</section>
+<% if (indicador.comoCalcula) { %>
+  <section>
+    <h3>🧮 Como é calculado?</h3>
+    <p><%= indicador.comoCalcula %></p>
+  </section>
+<% } %>
 
-<section>
-  <h3>📊 Leitura visual</h3>
+<% if (indicador.impactoBolso) { %>
+  <section>
+    <h3>⚠️ Impacto no seu bolso</h3>
+    <p><%= indicador.impactoBolso %></p>
+  </section>
+<% } %>
 
-  <div class="chart-box">
-    <canvas id="indicatorChart"></canvas>
-  </div>
+<% if (indicador.impactoPais) { %>
+  <section>
+    <h3>🏛️ Impacto na economia do país</h3>
+    <p><%= indicador.impactoPais %></p>
+  </section>
+<% } %>
 
-  <p class="chart-note">
-    O gráfico abaixo é uma leitura educativa para facilitar a comparação do impacto desse indicador no dia a dia.
-  </p>
-</section>
+<% if (indicador.tabela && indicador.tabela.length) { %>
+  <section>
+    <h3>📊 Tabela explicativa</h3>
 
-<section>
-  <h3>🧠 IA Financeira</h3>
+    <div class="table-wrap">
+      <table>
+        <% indicador.tabela.forEach((row, index) => { %>
+          <tr>
+            <% row.forEach(cell => { %>
+              <% if (index === 0) { %>
+                <th><%= cell %></th>
+              <% } else { %>
+                <td><%= cell %></td>
+              <% } %>
+            <% }) %>
+          </tr>
+        <% }) %>
+      </table>
+    </div>
+  </section>
+<% } %>
 
-  <% if (iaFinanceira) { %>
-    <p><strong>Diagnóstico:</strong> <%= iaFinanceira.diagnostico || "Cenário em análise" %></p>
+<% if (indicador.chart) { %>
+  <section>
+    <h3>📈 Leitura visual</h3>
+
+    <div class="chart-box">
+      <canvas id="indicatorChart"></canvas>
+    </div>
+
+    <p class="chart-note">
+      Este gráfico é uma leitura educativa para facilitar a comparação do impacto desse indicador.
+    </p>
+  </section>
+<% } %>
+
+<% if (iaFinanceira) { %>
+  <section>
+    <h3>🧠 IA Financeira</h3>
+
+    <p>
+      <strong>Diagnóstico:</strong>
+      <%= iaFinanceira.diagnostico || "Cenário em análise" %>
+    </p>
 
     <p>
       <%= iaFinanceira.analise || iaFinanceira.mensagem || iaFinanceira.explicacao || "A análise financeira ainda está sendo processada." %>
@@ -44,66 +109,35 @@
         <% }) %>
       </ul>
     <% } %>
+  </section>
+<% } %>
 
-    <% if (iaFinanceira.plano && iaFinanceira.plano.length) { %>
-      <h4>Plano de ação</h4>
-      <ul>
-        <% iaFinanceira.plano.forEach(item => { %>
-          <li><%= item %></li>
-        <% }) %>
-      </ul>
-    <% } %>
-  <% } else { %>
-    <p>A IA financeira ainda não encontrou dados suficientes para este indicador.</p>
-  <% } %>
-</section>
+<% if (indicador.glossario && indicador.glossario.length) { %>
+  <section>
+    <h3>📘 Dicionário financeiro simples</h3>
 
-<section>
-  <h3>📘 Dicionário simples</h3>
-
-  <div class="glossary-grid">
-    <div class="glossary-item">
-      <strong>Selic</strong>
-      <p>Taxa básica de juros do Brasil. Ela influencia crédito, financiamento e investimentos.</p>
+    <div class="glossary-grid">
+      <% indicador.glossario.forEach(item => { %>
+        <div class="glossary-item">
+          <strong><%= item.term %></strong>
+          <p><%= item.meaning %></p>
+        </div>
+      <% }) %>
     </div>
+  </section>
+<% } %>
 
-    <div class="glossary-item">
-      <strong>IPCA</strong>
-      <p>Índice oficial da inflação no Brasil. Mostra quanto os preços subiram em média.</p>
+<% if (indicador.relacionados && indicador.relacionados.length) { %>
+  <section>
+    <h3>🔗 Continue explorando</h3>
+
+    <div class="related-grid">
+      <% indicador.relacionados.forEach(item => { %>
+        <a href="<%= item.url %>"><%= item.titulo %></a>
+      <% }) %>
     </div>
-
-    <div class="glossary-item">
-      <strong>PIS</strong>
-      <p>Contribuição paga por empresas para financiar benefícios sociais, como abono salarial.</p>
-    </div>
-
-    <div class="glossary-item">
-      <strong>Cofins</strong>
-      <p>Contribuição sobre o faturamento das empresas. Pode aparecer embutida no preço final.</p>
-    </div>
-
-    <div class="glossary-item">
-      <strong>INSS</strong>
-      <p>Contribuição para Previdência Social, ligada a aposentadorias e benefícios.</p>
-    </div>
-
-    <div class="glossary-item">
-      <strong>Poder de compra</strong>
-      <p>Mostra o quanto seu dinheiro consegue comprar. Quando os preços sobem, ele cai.</p>
-    </div>
-  </div>
-</section>
-
-<section>
-  <h3>🔗 Continue explorando</h3>
-
-  <div class="related-grid">
-    <a href="/indicadores">Ver todos os indicadores</a>
-    <a href="/posts">Ler conteúdos financeiros</a>
-    <a href="/categoria/renda-extra">Renda extra</a>
-    <a href="/categoria/investimentos">Investimentos</a>
-  </div>
-</section>
+  </section>
+<% } %>
 
 <style>
 .indicator-hero {
@@ -118,6 +152,40 @@
   color: #00ffcc;
   font-size: 13px;
   font-weight: bold;
+}
+
+.indicator-value {
+  margin: 18px auto 6px;
+  font-size: 42px;
+  font-weight: 900;
+  color: #00ffcc;
+  text-shadow: 0 0 18px rgba(0,255,204,.35);
+}
+
+.indicator-period {
+  font-size: 14px;
+  color: #cfd8dc;
+  opacity: .85;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  text-align: left;
+}
+
+th {
+  color: #00ffcc;
 }
 
 .chart-box {
@@ -162,47 +230,17 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<% if (indicador.chart) { %>
 <script>
-  const indicadorSlug = "<%= indicador.slug %>";
-
-  const chartConfigs = {
-    "dolar": {
-      labels: ["Produtos nacionais", "Importados", "Combustíveis", "Eletrônicos"],
-      values: [30, 35, 20, 15]
-    },
-    "selic": {
-      labels: ["Crédito caro", "Renda fixa", "Consumo", "Empresas"],
-      values: [35, 30, 20, 15]
-    },
-    "inflacao": {
-      labels: ["Alimentação", "Transporte", "Habitação", "Outros"],
-      values: [35, 25, 25, 15]
-    },
-    "bolso-popular": {
-      labels: ["Comida", "Aluguel", "Transporte", "Energia/Gás", "Outros"],
-      values: [32, 28, 18, 12, 10]
-    },
-    "salario-minimo": {
-      labels: ["Gastos essenciais", "Transporte", "Impostos indiretos", "Livre"],
-      values: [50, 15, 20, 15]
-    },
-    "tributos": {
-      labels: ["Consumo", "Renda", "Empresas", "Importação"],
-      values: [40, 25, 25, 10]
-    }
-  };
-
-  const selected = chartConfigs[indicadorSlug] || {
-    labels: ["Impacto direto", "Impacto indireto", "Outros"],
-    values: [50, 30, 20]
-  };
+  const chartData = <%- JSON.stringify(indicador.chart) %>;
 
   new Chart(document.getElementById("indicatorChart"), {
-    type: "doughnut",
+    type: chartData.type || "bar",
     data: {
-      labels: selected.labels,
+      labels: chartData.labels,
       datasets: [{
-        data: selected.values
+        label: "Valor",
+        data: chartData.values
       }]
     },
     options: {
@@ -211,7 +249,8 @@
           callbacks: {
             label: function(context) {
               const value = context.raw;
-              return context.label + ": " + value + "%";
+              const suffix = chartData.suffix || "";
+              return context.label + ": " + value + " " + suffix;
             }
           }
         },
@@ -224,3 +263,4 @@
     }
   });
 </script>
+<% } %>
