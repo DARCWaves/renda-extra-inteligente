@@ -3,6 +3,8 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const expressLayouts = require("express-ejs-layouts");
+const cron = require("node-cron");
+const { runAutoPost } = require("./autoContent");
 
 /*
 ==================================================

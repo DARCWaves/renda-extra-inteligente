@@ -2,6 +2,14 @@ require("dotenv").config();
 
 const app = require("./app");
 
+const cron = require("node-cron");
+const { runAutoPost } = require("./autoContent");
+
+cron.schedule("*/15 * * * *", () => {
+  console.log("🤖 Gerando conteúdo automático...");
+  runAutoPost();
+});
+
 const PORT = process.env.PORT || 3000;
 
 /*
