@@ -573,8 +573,22 @@ app.get("/robots.txt", (req, res) => {
 User-agent: *
 Allow: /
 
+User-agent: Googlebot
+Allow: /
+
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: AdsBot-Google
+Allow: /
+
 Sitemap: ${BASE_URL}/sitemap.xml
   `.trim());
+});
+
+app.get("/ads.txt", (req, res) => {
+  res.type("text/plain");
+  return res.send("google.com, pub-2679191515040105, DIRECT, f08c47fec0942fa0\n");
 });
 
 /*
