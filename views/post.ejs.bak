@@ -1,75 +1,137 @@
-<section class="hero-home">
-  <p class="categoria-tag">📌 <%= post.category || "financas" %></p>
+<section class="hero-home compact-hero">
+  <span class="eyebrow">
+    <span class="ui-icon icon-layers"></span>
+    <%= post.category || "financas" %>
+  </span>
 
   <h2><%= post.title %></h2>
 
   <p>
-    <%= post.description || post.seoDescription || "Conteúdo simples e prático para melhorar sua vida financeira." %>
+    <%= post.description || post.seoDescription || "Conteúdo simples, direto e prático para melhorar sua vida financeira." %>
   </p>
 
   <p class="text-muted">
     Publicado em <%= post.createdAt ? new Date(post.createdAt).toLocaleDateString("pt-BR") : "data não disponível" %>
   </p>
+
+  <div class="home-actions">
+    <a href="/posts" class="btn-secondary">Ver outros conteúdos</a>
+    <a href="/categoria/<%= post.category || 'financas' %>" class="btn-primary">Mais sobre este tema →</a>
+  </div>
 </section>
 
 <section>
+  <h3><span class="ui-icon icon-chart"></span> Resumo direto</h3>
+
+  <div class="card">
+    <p>
+      Este conteúdo foi feito para quem quer entender o assunto sem enrolação e aplicar algo prático ainda hoje.
+    </p>
+
+    <p>
+      A ideia é simples: entender a dor, enxergar o caminho e tomar uma decisão pequena que aproxime você de uma vida financeira mais organizada.
+    </p>
+  </div>
+</section>
+
+<section>
+  <h3><span class="ui-icon icon-route"></span> Conteúdo completo</h3>
+
   <div class="post-content">
     <%= post.content %>
   </div>
 </section>
 
 <section>
-  <h3>🚀 Quer aplicar isso na prática?</h3>
+  <h3><span class="ui-icon icon-rocket"></span> Próximo passo prático</h3>
 
-  <p>
-    Conhecimento sem ação não paga conta. Escolha um próximo passo e coloque em prática ainda hoje.
-  </p>
+  <div class="shortcut-grid">
+    <a href="/categoria/renda-extra" class="shortcut-card">
+      <span class="ui-icon icon-rocket"></span>
+      Criar renda extra
+      <small>Veja ideias simples para começar com pouco.</small>
+    </a>
 
-  <div class="home-actions">
-    <a href="/categoria/renda-extra" class="btn-primary">Ver ideias de renda extra →</a>
-    <a href="/categoria/financas" class="btn-secondary">Organizar meu dinheiro</a>
+    <a href="/categoria/financas" class="shortcut-card">
+      <span class="ui-icon icon-wallet"></span>
+      Organizar dinheiro
+      <small>Controle gastos, dívidas e orçamento.</small>
+    </a>
+
+    <a href="/categoria/programacao" class="shortcut-card">
+      <span class="ui-icon icon-code"></span>
+      Aprender programação
+      <small>Use lógica e sites para criar oportunidades.</small>
+    </a>
+
+    <a href="/indicadores" class="shortcut-card">
+      <span class="ui-icon icon-pulse"></span>
+      Entender economia
+      <small>Veja como os números afetam seu bolso.</small>
+    </a>
   </div>
 </section>
 
 <section>
-  <h3>📂 Categoria</h3>
+  <h3><span class="ui-icon icon-wallet"></span> Aviso importante</h3>
 
   <p>
-    <a href="/categoria/<%= post.category %>" class="btn-primary">
-      Ver mais sobre <%= post.category %> →
-    </a>
+    Este conteúdo é educativo. Não é recomendação individual de investimento, compra ou decisão financeira. Avalie sua realidade antes de agir.
   </p>
-</section>
-
 <section>
-  <h3>📊 Continue aprendendo</h3>
+
+  <h3>🚀 Quer acelerar seus resultados?</h3>
+
+
 
   <p>
-    Entender economia ajuda você a tomar decisões melhores com salário, dívidas, compras e investimentos.
+
+    Se você quer sair do zero mais rápido, vale a pena usar ferramentas e materiais que já funcionam.
+
   </p>
 
-  <a href="/indicadores" class="btn-primary">
-    Ver indicadores econômicos →
-  </a>
+
+
+  <% if (affiliates && affiliates.length) { %>
+
+
+
+    <div class="post-preview">
+
+
+
+      <% const product = affiliates[0]; %>
+
+
+
+      <% if (product.image) { %>
+
+        <img src="<%= product.image %>" style="width:100%; border-radius:12px; margin-bottom:10px;">
+
+      <% } %>
+
+
+
+      <h4><%= product.title %></h4>
+
+      <p><%= product.description ||  %></p>
+
+
+
+      <a href="/out/<%= product.id %>" class="btn-primary" target="_blank">
+
+        Ver oferta →
+
+      </a>
+
+
+
+    </div>
+
+
+
+  <% } %>
+
 </section>
 
-<section>
-  <h3>⚠️ Aviso importante</h3>
-
-  <p>
-    Este conteúdo é educativo e informativo. Não é recomendação individual de investimento. Avalie sua realidade antes de tomar decisões financeiras.
-  </p>
 </section>
-
-<style>
-.post-content {
-  white-space: pre-wrap;
-  color: #dbeafe;
-  font-size: 17px;
-  line-height: 1.8;
-}
-
-.post-content strong {
-  color: #ffffff;
-}
-</style>

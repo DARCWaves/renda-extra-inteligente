@@ -1,114 +1,86 @@
-<section class="hero-home">
-  <span class="eyebrow">
-    <span class="ui-icon icon-chart"></span>
-    Educação financeira simples para a vida real
-  </span>
+<section class="lux-hero">
+  <span class="lux-kicker">Conteúdo prático para mudar sua vida financeira</span>
 
-  <h2>Pare de perder dinheiro sem perceber</h2>
+  <h1>Aprenda a ganhar mais, organizar melhor e crescer com inteligência.</h1>
 
   <p>
-    Aprenda a organizar seu dinheiro, sair do aperto, criar renda extra e começar a investir com passos simples, sem promessa falsa e sem linguagem difícil.
+    Conteúdos simples sobre renda extra, finanças, trabalho, programação e investimentos — sem promessa falsa, sem linguagem difícil e com foco em ação real.
   </p>
 
-  <div class="home-actions">
-    <a href="/posts" class="btn-primary">Começar pelos conteúdos →</a>
-    <a href="/categoria/renda-extra" class="btn-secondary">Ver ideias de renda extra</a>
+  <div class="lux-actions">
+    <a href="/posts" class="btn-gold">Começar pelos conteúdos</a>
+    <a href="/categoria/renda-extra" class="btn-dark">Ver renda extra</a>
   </div>
 </section>
 
-<section>
-  <h3><span class="ui-icon icon-fire"></span> Conteúdos para resolver sua vida financeira</h3>
-  <p>Guias práticos para quem quer melhorar de vida sem enrolação.</p>
+<section class="lux-section">
+  <div class="section-heading">
+    <span>01</span>
+    <div>
+      <h2>Conteúdos em destaque</h2>
+      <p>O site agora começa pelo que gera tráfego: conteúdo útil, pesquisável e com promessa clara.</p>
+    </div>
+  </div>
 
   <% if (!posts || posts.length === 0) { %>
-    <article class="card">
+    <article class="lux-card">
       <h3>Nenhum conteúdo publicado ainda</h3>
-      <p>Em breve novos conteúdos serão publicados automaticamente.</p>
+      <p>Os conteúdos automáticos continuarão sendo gerados em ciclos.</p>
     </article>
   <% } else { %>
-    <% posts.forEach(post => { %>
-      <article class="post-preview">
-        <div class="categoria-tag"><span class="ui-icon icon-pin"></span> <%= post.category || "financas" %></div>
-        <h4><%= post.title || "Conteúdo sobre finanças" %></h4>
-        <p><%= post.description || "Aprenda uma estratégia prática para melhorar sua vida financeira." %></p>
-        <a href="/post/<%= post.slug %>" class="btn-primary">Ler agora →</a>
-      </article>
-    <% }) %>
+    <div class="content-grid">
+      <% posts.forEach(post => { %>
+        <article class="lux-card post-card">
+          <span class="lux-tag"><%= post.category || "financas" %></span>
+
+          <h3><%= post.title || "Conteúdo sobre dinheiro" %></h3>
+
+          <p>
+            <%= post.description || "Aprenda uma estratégia prática para melhorar sua vida financeira." %>
+          </p>
+
+          <a href="/post/<%= post.slug %>" class="text-link">Ler conteúdo completo →</a>
+        </article>
+      <% }) %>
+    </div>
   <% } %>
 </section>
 
-<section>
-  <h3><span class="ui-icon icon-route"></span> Escolha seu caminho</h3>
-  <p>Cada pessoa começa de um ponto diferente. Escolha o assunto que mais parece com sua realidade hoje.</p>
+<section class="lux-section">
+  <div class="section-heading">
+    <span>02</span>
+    <div>
+      <h2>Escolha seu caminho</h2>
+      <p>Cada pessoa começa de um ponto diferente. O importante é começar pelo assunto certo.</p>
+    </div>
+  </div>
 
-  <div class="shortcut-grid">
-    <a href="/categoria/financas" class="shortcut-card">
-      <span class="ui-icon icon-wallet"></span>
-      Sair do aperto
-      <small>Dívidas, orçamento, gastos invisíveis e controle financeiro.</small>
+  <div class="path-grid">
+    <a href="/categoria/financas" class="path-card">
+      <strong>Finanças pessoais</strong>
+      <p>Controle, dívidas, gastos invisíveis e organização.</p>
     </a>
 
-    <a href="/categoria/renda-extra" class="shortcut-card">
-      <span class="ui-icon icon-rocket"></span>
-      Ganhar mais dinheiro
-      <small>Ideias reais de renda extra para começar com pouco.</small>
+    <a href="/categoria/renda-extra" class="path-card">
+      <strong>Renda extra</strong>
+      <p>Ideias reais para ganhar mais dinheiro começando pequeno.</p>
     </a>
 
-    <a href="/categoria/investimentos" class="shortcut-card">
-      <span class="ui-icon icon-growth"></span>
-      Investir começando pequeno
-      <small>Aprenda o básico sem cair em conversa bonita.</small>
+    <a href="/categoria/programacao" class="path-card">
+      <strong>Programação simples</strong>
+      <p>Lógica, sites e tecnologia explicados de forma fácil.</p>
     </a>
 
-    <a href="/categoria/trabalho" class="shortcut-card">
-      <span class="ui-icon icon-work"></span>
-      Melhorar sua renda no trabalho
-      <small>Use o que você já sabe para gerar mais valor.</small>
-    </a>
-
-    <a href="/categoria/programacao" class="shortcut-card">
-      <span class="ui-icon icon-code"></span>
-      Programação simples
-      <small>Aprenda lógica e criação de sites com linguagem fácil.</small>
-    </a>
-
-    <a href="/indicadores" class="shortcut-card">
-      <span class="ui-icon icon-pulse"></span>
-      Entender a economia
-      <small>Dólar, inflação e Selic explicados pelo impacto no seu bolso.</small>
+    <a href="/categoria/investimentos" class="path-card">
+      <strong>Investimentos</strong>
+      <p>Comece com pouco, sem cair em promessa milagrosa.</p>
     </a>
   </div>
 </section>
 
-<section>
-  <h3><span class="ui-icon icon-layers"></span> O método simples</h3>
-  <p>Finanças não precisam parecer um bicho de sete cabeças. O caminho é simples, mas adaptável.</p>
-
-  <div class="shortcut-grid">
-    <div class="card"><h3>1. Organizar</h3><p>Descubra para onde seu dinheiro está indo.</p></div>
-    <div class="card"><h3>2. Cortar desperdícios</h3><p>Remova gastos pequenos que viram buracos grandes.</p></div>
-    <div class="card"><h3>3. Criar renda extra</h3><p>Use tempo, habilidade e internet para aumentar sua renda.</p></div>
-    <div class="card"><h3>4. Investir</h3><p>Faça o dinheiro trabalhar aos poucos, sem inventar moda.</p></div>
-  </div>
-</section>
-
-<section>
-  <h3><span class="ui-icon icon-pulse"></span> Indicadores que mexem com seu bolso</h3>
-  <p>Os números importam quando você entende o que eles mudam na sua vida. Atualização automática a cada minuto.</p>
-  <p class="text-muted">Status: <span data-live-updated>Atualizando...</span></p>
-
-  <div class="indicator-grid">
-    <% if (indicators && indicators.resumo) { %>
-      <% indicators.resumo.slice(0, 4).forEach(item => { %>
-        <a href="/indicador/<%= item.slug %>" class="indicator-card">
-          <span><%= item.nome %></span>
-          <strong data-indicator-value="<%= item.slug %>"><%= item.valor %></strong>
-          <small data-indicator-period="<%= item.slug %>"><%= item.periodo || "Atualizado automaticamente" %></small>
-        </a>
-      <% }) %>
-    <% } %>
-  </div>
-
-  <br>
-  <a href="/indicadores" class="btn-primary">Ver todos os indicadores →</a>
+<section class="lux-cta">
+  <span class="lux-kicker">Próximo passo</span>
+  <h2>Conhecimento parado não paga boleto.</h2>
+  <p>Leia um conteúdo, aplique uma ação hoje e volte amanhã para continuar evoluindo.</p>
+  <a href="/posts" class="btn-gold">Ver todos os conteúdos</a>
 </section>

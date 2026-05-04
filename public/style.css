@@ -733,3 +733,55 @@ article:hover {
     margin-bottom: 210px;
   }
 }
+
+/* ==================================================
+   POST IMAGES — CAPAS SEO VISUAL PREMIUM
+================================================== */
+
+.post-cover {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+  border-radius: 18px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(214,179,90,.28);
+  box-shadow: 0 18px 48px rgba(0,0,0,.35);
+  background: #0b0b0d;
+}
+
+.post-image-section {
+  padding: 0 !important;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: rgba(12,12,15,.82);
+  border: 1px solid var(--border-gold);
+  box-shadow: var(--shadow);
+}
+
+.post-hero-image {
+  width: 100%;
+  display: block;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.post-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.post-card .text-link {
+  margin-top: auto;
+}
+
+@media (max-width: 700px) {
+  .post-cover {
+    border-radius: 16px;
+    margin-bottom: 14px;
+  }
+
+  .post-hero-image {
+    aspect-ratio: 16 / 10;
+  }
+}

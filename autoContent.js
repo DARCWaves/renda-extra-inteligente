@@ -3,6 +3,7 @@ const path = require("path");
 
 const postsFile = path.join(__dirname, "data", "posts.json");
 const stateFile = path.join(__dirname, "data", "auto-post-state.json");
+const { makePostImage } = require("./services/postImageService");
 
 const categoryCycle = [
   "renda-extra",
@@ -309,6 +310,10 @@ function generatePost() {
   const category = getNextCategory();
   const title = pickTitle(category, posts);
   const post = buildPost(category, title);
+
+  const imageData = makePostImage(post);
+  post.image = imageData.image;
+  post.imageAlt = imageData.imageAlt;
 
   posts.unshift(post);
   savePosts(posts.slice(0, 300));
