@@ -6,13 +6,8 @@ const FILE = path.join(__dirname, "..", "data", "affiliate-links.json");
 function ensureFile() {
   const dir = path.join(__dirname, "..", "data");
 
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-
-  if (!fs.existsSync(FILE)) {
-    fs.writeFileSync(FILE, JSON.stringify([], null, 2), "utf8");
-  }
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  if (!fs.existsSync(FILE)) fs.writeFileSync(FILE, JSON.stringify([], null, 2), "utf8");
 }
 
 function readAffiliates() {
@@ -31,6 +26,17 @@ function saveAffiliates(data) {
   fs.writeFileSync(FILE, JSON.stringify(data, null, 2), "utf8");
 }
 
+function isRealTelegramProduct(item) {
+  return Boolean(
+    item &&
+    item.active !== false &&
+    item.url &&
+    item.title &&
+    item.source === "telegram_link" &&
+    item.createdBy === "telegram_bot"
+  );
+}
+
 function normalizeProduct(item) {
   return {
     id: item.id,
@@ -44,16 +50,15 @@ function normalizeProduct(item) {
     tags: Array.isArray(item.tags) ? item.tags : [],
     clicks: Number(item.clicks || 0),
     active: item.active !== false,
-    source: item.source || "telegram",
+    source: item.source,
+    createdBy: item.createdBy,
     createdAt: item.createdAt || new Date().toISOString()
   };
 }
 
 function getTelegramProducts() {
   return readAffiliates()
-    .filter(item => item && item.active !== false)
-    .filter(item => item.url && item.title)
-    .filter(item => !item.source || item.source === "telegram")
+    .filter(isRealTelegramProduct)
     .map(normalizeProduct)
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 }
@@ -74,11 +79,8 @@ function registerAffiliateClick(id, meta = {}) {
   const affiliates = readAffiliates();
   const item = affiliates.find(product => product.id === id);
 
-  if (!item || item.active === false || !item.url) {
-    return null;
-  }
+  if (!isRealTelegramProduct(item)) return null;
 
-  item.source = item.source || "telegram";
   item.clicks = Number(item.clicks || 0) + 1;
   item.lastClickAt = new Date().toISOString();
   item.lastClickMeta = {
@@ -89,7 +91,6 @@ function registerAffiliateClick(id, meta = {}) {
   };
 
   saveAffiliates(affiliates);
-
   return item;
 }
 
