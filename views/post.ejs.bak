@@ -1,21 +1,42 @@
-<h2><%= post.title %></h2>
+<section class="hero-home">
+  <p class="categoria-tag">📌 <%= post.category || "financas" %></p>
 
-<p>
-  <em>Publicado em <%= post.createdAt %></em>
-</p>
+  <h2><%= post.title %></h2>
+
+  <p>
+    <%= post.description || post.seoDescription || "Conteúdo simples e prático para melhorar sua vida financeira." %>
+  </p>
+
+  <p class="text-muted">
+    Publicado em <%= post.createdAt ? new Date(post.createdAt).toLocaleDateString("pt-BR") : "data não disponível" %>
+  </p>
+</section>
 
 <section>
-  <p>
+  <div class="post-content">
     <%= post.content %>
+  </div>
+</section>
+
+<section>
+  <h3>🚀 Quer aplicar isso na prática?</h3>
+
+  <p>
+    Conhecimento sem ação não paga conta. Escolha um próximo passo e coloque em prática ainda hoje.
   </p>
+
+  <div class="home-actions">
+    <a href="/categoria/renda-extra" class="btn-primary">Ver ideias de renda extra →</a>
+    <a href="/categoria/financas" class="btn-secondary">Organizar meu dinheiro</a>
+  </div>
 </section>
 
 <section>
   <h3>📂 Categoria</h3>
 
   <p>
-    <a href="/categoria/<%= post.category %>">
-      <%= post.category %>
+    <a href="/categoria/<%= post.category %>" class="btn-primary">
+      Ver mais sobre <%= post.category %> →
     </a>
   </p>
 </section>
@@ -24,23 +45,11 @@
   <h3>📊 Continue aprendendo</h3>
 
   <p>
-    Entender o cenário econômico ajuda você a tomar decisões melhores com seu dinheiro.
+    Entender economia ajuda você a tomar decisões melhores com salário, dívidas, compras e investimentos.
   </p>
 
-  <a href="/indicadores">
-    Ver indicadores econômicos
-  </a>
-</section>
-
-<section>
-  <h3>📚 Mais conteúdos</h3>
-
-  <p>
-    Explore outros conteúdos sobre finanças, renda extra e investimentos.
-  </p>
-
-  <a href="/posts">
-    Ver todos os conteúdos
+  <a href="/indicadores" class="btn-primary">
+    Ver indicadores econômicos →
   </a>
 </section>
 
@@ -48,6 +57,19 @@
   <h3>⚠️ Aviso importante</h3>
 
   <p>
-    Este conteúdo tem caráter informativo e educacional. Sempre avalie sua realidade financeira antes de tomar decisões.
+    Este conteúdo é educativo e informativo. Não é recomendação individual de investimento. Avalie sua realidade antes de tomar decisões financeiras.
   </p>
 </section>
+
+<style>
+.post-content {
+  white-space: pre-wrap;
+  color: #dbeafe;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.post-content strong {
+  color: #ffffff;
+}
+</style>

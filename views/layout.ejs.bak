@@ -5,8 +5,14 @@
 
   <title><%= title || appName %></title>
 
-  <meta name="description" content="<%= description || 'Finanças, renda extra, investimentos e economia real.' %>">
+  <meta name="description" content="<%= description || 'Educação financeira simples, renda extra, investimentos e economia explicada para a vida real.' %>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta property="og:title" content="<%= title || appName %>">
+  <meta property="og:description" content="<%= description || 'Aprenda a organizar seu dinheiro, criar renda extra e investir com simplicidade.' %>">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="<%= baseUrl || '' %>">
+  <meta name="theme-color" content="#00ffa3">
 
   <% if (adsenseClient) { %>
     <script async 
@@ -15,129 +21,54 @@
     </script>
   <% } %>
 
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="shortcut icon" href="/favicon.svg">
-
-<meta name="theme-color" content="#00ffa3">
-
-<link rel="apple-touch-icon" href="/logo.png">
-
-<link rel="stylesheet" href="/style.css">
-
-  <style>
-    #affiliate-widget {
-      position: fixed;
-      right: 14px;
-      bottom: 14px;
-      width: 190px;
-      background: #ffffff;
-      color: #07131f;
-      border-radius: 14px;
-      padding: 10px;
-      box-shadow: 0 12px 28px rgba(0,0,0,.35);
-      z-index: 9999;
-      border: 1px solid rgba(0,0,0,.08);
-    }
-
-    .affiliate-image {
-      display: none;
-    }
-
-    .affiliate-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 5px;
-    }
-
-    .affiliate-badge {
-      background: linear-gradient(135deg, #00e676, #00bcd4);
-      color: #001a1a;
-      font-size: 10px;
-      font-weight: 800;
-      padding: 4px 6px;
-      border-radius: 999px;
-      max-width: 110px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .affiliate-count {
-      font-size: 10px;
-      color: #334155;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .affiliate-title {
-      font-size: 12px;
-      font-weight: 900;
-      line-height: 1.2;
-      margin-bottom: 4px;
-    }
-
-    .affiliate-description {
-      display: none;
-    }
-
-    .affiliate-price {
-      font-size: 13px;
-      font-weight: 900;
-      color: #008f5a;
-      margin-bottom: 7px;
-    }
-
-    .affiliate-button {
-      display: block;
-      width: 100%;
-      text-align: center;
-      padding: 7px 8px;
-      border-radius: 10px;
-      background: #07131f;
-      color: #ffffff;
-      text-decoration: none;
-      font-weight: 900;
-      font-size: 12px;
-    }
-
-    .affiliate-button:hover {
-      background: #00e676;
-      color: #001a1a;
-    }
-
-    @media (max-width: 700px) {
-      #affiliate-widget {
-        left: 10px;
-        right: 10px;
-        bottom: 10px;
-        width: auto;
-      }
-    }
-  </style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="shortcut icon" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/logo.png">
+  <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
 
-<header>
-  <h1>🚀 <%= appName %></h1>
+<div class="app-bg">
+  <div class="orb orb-one"></div>
+  <div class="orb orb-two"></div>
+  <div class="orb orb-three"></div>
+</div>
 
-  <nav>
+<header class="site-header">
+  <a href="/" class="brand">
+    <span class="brand-icon">⚡</span>
+    <span>
+      <strong><%= appName %></strong>
+      <small>Finanças simples para vida real</small>
+    </span>
+  </a>
+
+  <nav class="nav-menu">
     <a href="/">Home</a>
-    <a href="/indicadores">Indicadores</a>
     <a href="/posts">Conteúdos</a>
     <a href="/categoria/renda-extra">Renda Extra</a>
-    <a href="/categoria/investimentos">Investimentos</a>
+    <a href="/categoria/financas">Finanças</a>
+    <a href="/categoria/programacao">Programação</a>
+    <a href="/indicadores">Indicadores</a>
   </nav>
 </header>
 
-<main>
+<main class="page-shell">
   <%- body %>
 </main>
 
-<footer>
-  <p>© <%= new Date().getFullYear() %> - <%= appName %></p>
+<footer class="site-footer">
+  <div>
+    <strong><%= appName %></strong>
+    <p>Educação financeira simples, prática e sem promessa milagrosa.</p>
+  </div>
+
+  <div class="footer-links">
+    <a href="/posts">Conteúdos</a>
+    <a href="/indicadores">Indicadores</a>
+    <a href="/categoria/renda-extra">Renda Extra</a>
+  </div>
 </footer>
 
 <% if (affiliates && affiliates.length) { %>
@@ -204,8 +135,5 @@
   </script>
 <% } %>
 
-<script src="/js/dolar.js"></script>
-<script src="/js/tributos.js"></script>
-<script src="/js/tributos.js"></script>
 </body>
 </html>

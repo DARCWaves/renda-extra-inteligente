@@ -2,23 +2,17 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-
   <title><%= title || appName %></title>
-
   <meta name="description" content="<%= description || 'Educação financeira simples, renda extra, investimentos e economia explicada para a vida real.' %>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <meta property="og:title" content="<%= title || appName %>">
   <meta property="og:description" content="<%= description || 'Aprenda a organizar seu dinheiro, criar renda extra e investir com simplicidade.' %>">
   <meta property="og:type" content="website">
   <meta property="og:url" content="<%= baseUrl || '' %>">
-  <meta name="theme-color" content="#00ffa3">
+  <meta name="theme-color" content="#7c3aed">
 
   <% if (adsenseClient) { %>
-    <script async 
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<%= adsenseClient %>"
-      crossorigin="anonymous">
-    </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<%= adsenseClient %>" crossorigin="anonymous"></script>
   <% } %>
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -28,7 +22,6 @@
 </head>
 
 <body>
-
 <div class="app-bg">
   <div class="orb orb-one"></div>
   <div class="orb orb-two"></div>
@@ -37,7 +30,9 @@
 
 <header class="site-header">
   <a href="/" class="brand">
-    <span class="brand-icon">⚡</span>
+    <span class="brand-icon">
+      <span></span><span></span><span></span>
+    </span>
     <span>
       <strong><%= appName %></strong>
       <small>Finanças simples para vida real</small>
@@ -74,35 +69,19 @@
 <% if (affiliates && affiliates.length) { %>
   <div id="affiliate-widget">
     <div class="affiliate-top">
-      <span id="affiliate-badge" class="affiliate-badge">
-        <%= affiliates[0].badge || '💡 Recomendado' %>
-      </span>
-
-      <span class="affiliate-count">
-        <span id="affiliate-timer">10</span>s
-      </span>
+      <span id="affiliate-badge" class="affiliate-badge"><%= affiliates[0].badge || 'Recomendado' %></span>
+      <span class="affiliate-count"><span id="affiliate-timer">10</span>s</span>
     </div>
 
-    <div id="affiliate-title" class="affiliate-title">
-      <%= affiliates[0].title %>
-    </div>
+    <div id="affiliate-title" class="affiliate-title"><%= affiliates[0].title %></div>
+    <div id="affiliate-description" class="affiliate-description"><%= affiliates[0].description %></div>
+    <div id="affiliate-price" class="affiliate-price"><%= affiliates[0].price || '' %></div>
 
-    <div id="affiliate-description" class="affiliate-description">
-      <%= affiliates[0].description %>
-    </div>
-
-    <div id="affiliate-price" class="affiliate-price">
-      <%= affiliates[0].price || '' %>
-    </div>
-
-    <a id="affiliate-link" class="affiliate-button" href="/out/<%= affiliates[0].id %>" target="_blank">
-      Ver oferta →
-    </a>
+    <a id="affiliate-link" class="affiliate-button" href="/out/<%= affiliates[0].id %>" target="_blank">Ver oferta →</a>
   </div>
 
   <script>
     const products = <%- JSON.stringify(affiliates) %>;
-
     let affiliateIndex = 0;
     let affiliateCountdown = 10;
 
@@ -114,7 +93,7 @@
     const timer = document.getElementById("affiliate-timer");
 
     function renderAffiliate(product) {
-      badge.textContent = product.badge || "💡 Recomendado";
+      badge.textContent = product.badge || "Recomendado";
       title.textContent = product.title || "Produto recomendado";
       description.textContent = product.description || "Veja essa recomendação.";
       price.textContent = product.price || "";
@@ -135,5 +114,6 @@
   </script>
 <% } %>
 
+<script src="/app.js"></script>
 </body>
 </html>

@@ -1,10 +1,13 @@
 <section class="hero-home">
-  <p class="categoria-tag">Educação financeira simples, direta e sem promessa falsa</p>
+  <span class="eyebrow">
+    <span class="ui-icon icon-chart"></span>
+    Educação financeira simples para a vida real
+  </span>
 
-  <h2>💰 Pare de perder dinheiro sem perceber</h2>
+  <h2>Pare de perder dinheiro sem perceber</h2>
 
   <p>
-    Aprenda a organizar seu dinheiro, sair do aperto, criar renda extra e começar a investir mesmo ganhando pouco.
+    Aprenda a organizar seu dinheiro, sair do aperto, criar renda extra e começar a investir com passos simples, sem promessa falsa e sem linguagem difícil.
   </p>
 
   <div class="home-actions">
@@ -14,10 +17,8 @@
 </section>
 
 <section>
-  <h3>🔥 Conteúdos para resolver sua vida financeira</h3>
-  <p>
-    Guias simples, práticos e diretos para quem quer melhorar de vida sem enrolação.
-  </p>
+  <h3><span class="ui-icon icon-fire"></span> Conteúdos para resolver sua vida financeira</h3>
+  <p>Guias práticos para quem quer melhorar de vida sem enrolação.</p>
 
   <% if (!posts || posts.length === 0) { %>
     <article class="card">
@@ -27,103 +28,82 @@
   <% } else { %>
     <% posts.forEach(post => { %>
       <article class="post-preview">
-        <div class="categoria-tag">📌 <%= post.category || "financas" %></div>
-
+        <div class="categoria-tag"><span class="ui-icon icon-pin"></span> <%= post.category || "financas" %></div>
         <h4><%= post.title || "Conteúdo sobre finanças" %></h4>
-
-        <p>
-          <%= post.description || "Aprenda uma estratégia prática para melhorar sua vida financeira." %>
-        </p>
-
-        <a href="/post/<%= post.slug %>" class="btn-primary">
-          Ler agora →
-        </a>
+        <p><%= post.description || "Aprenda uma estratégia prática para melhorar sua vida financeira." %></p>
+        <a href="/post/<%= post.slug %>" class="btn-primary">Ler agora →</a>
       </article>
     <% }) %>
   <% } %>
 </section>
 
 <section>
-  <h3>🧭 Escolha seu caminho</h3>
-  <p>
-    Cada pessoa começa de um ponto diferente. Escolha o assunto que mais parece com sua realidade hoje.
-  </p>
+  <h3><span class="ui-icon icon-route"></span> Escolha seu caminho</h3>
+  <p>Cada pessoa começa de um ponto diferente. Escolha o assunto que mais parece com sua realidade hoje.</p>
 
   <div class="shortcut-grid">
     <a href="/categoria/financas" class="shortcut-card">
-      💳 Sair do aperto
+      <span class="ui-icon icon-wallet"></span>
+      Sair do aperto
       <small>Dívidas, orçamento, gastos invisíveis e controle financeiro.</small>
     </a>
 
     <a href="/categoria/renda-extra" class="shortcut-card">
-      🚀 Ganhar mais dinheiro
+      <span class="ui-icon icon-rocket"></span>
+      Ganhar mais dinheiro
       <small>Ideias reais de renda extra para começar com pouco.</small>
     </a>
 
     <a href="/categoria/investimentos" class="shortcut-card">
-      📈 Investir começando pequeno
+      <span class="ui-icon icon-growth"></span>
+      Investir começando pequeno
       <small>Aprenda o básico sem cair em conversa bonita.</small>
     </a>
 
     <a href="/categoria/trabalho" class="shortcut-card">
-      🛠️ Melhorar sua renda no trabalho
+      <span class="ui-icon icon-work"></span>
+      Melhorar sua renda no trabalho
       <small>Use o que você já sabe para gerar mais valor.</small>
     </a>
 
     <a href="/categoria/programacao" class="shortcut-card">
-      💻 Programação simples
+      <span class="ui-icon icon-code"></span>
+      Programação simples
       <small>Aprenda lógica e criação de sites com linguagem fácil.</small>
     </a>
 
     <a href="/indicadores" class="shortcut-card">
-      📊 Entender a economia
+      <span class="ui-icon icon-pulse"></span>
+      Entender a economia
       <small>Dólar, inflação e Selic explicados pelo impacto no seu bolso.</small>
     </a>
   </div>
 </section>
 
 <section>
-  <h3>🧩 O método simples</h3>
-  <p>
-    Finanças não precisam parecer um bicho de sete cabeças. O caminho é como uma receita: simples, mas adaptável.
-  </p>
+  <h3><span class="ui-icon icon-layers"></span> O método simples</h3>
+  <p>Finanças não precisam parecer um bicho de sete cabeças. O caminho é simples, mas adaptável.</p>
 
   <div class="shortcut-grid">
-    <div class="card">
-      <h3>1. Organizar</h3>
-      <p>Descubra para onde seu dinheiro está indo.</p>
-    </div>
-
-    <div class="card">
-      <h3>2. Cortar desperdícios</h3>
-      <p>Remova gastos pequenos que viram buracos grandes.</p>
-    </div>
-
-    <div class="card">
-      <h3>3. Criar renda extra</h3>
-      <p>Use tempo, habilidade e internet para aumentar sua renda.</p>
-    </div>
-
-    <div class="card">
-      <h3>4. Investir</h3>
-      <p>Faça o dinheiro trabalhar aos poucos, sem inventar moda.</p>
-    </div>
+    <div class="card"><h3>1. Organizar</h3><p>Descubra para onde seu dinheiro está indo.</p></div>
+    <div class="card"><h3>2. Cortar desperdícios</h3><p>Remova gastos pequenos que viram buracos grandes.</p></div>
+    <div class="card"><h3>3. Criar renda extra</h3><p>Use tempo, habilidade e internet para aumentar sua renda.</p></div>
+    <div class="card"><h3>4. Investir</h3><p>Faça o dinheiro trabalhar aos poucos, sem inventar moda.</p></div>
   </div>
 </section>
 
 <section>
-  <h3>📊 Indicadores que mexem com seu bolso</h3>
-  <p>
-    Os números importam, mas só quando você entende o que eles mudam na sua vida.
-  </p>
+  <h3><span class="ui-icon icon-pulse"></span> Indicadores que mexem com seu bolso</h3>
+  <p>Os números importam quando você entende o que eles mudam na sua vida. Atualização automática a cada minuto.</p>
+  <p class="text-muted">Status: <span data-live-updated>Atualizando...</span></p>
 
   <div class="indicator-grid">
     <% if (indicators && indicators.resumo) { %>
       <% indicators.resumo.slice(0, 4).forEach(item => { %>
         <a href="/indicador/<%= item.slug %>" class="indicator-card">
           <span><%= item.nome %></span>
-          <strong><%= item.valor %></strong>
-          <small>Entender impacto no bolso →</small>
+          <strong data-indicator-value="<%= item.slug %>"><%= item.valor %></strong>
+          <small data-indicator-period="<%= item.slug %>"><%= item.periodo || "Atualizado automaticamente" %></small>
         </a>
       <% }) %>
     <% } %>
@@ -131,13 +111,4 @@
 
   <br>
   <a href="/indicadores" class="btn-primary">Ver todos os indicadores →</a>
-</section>
-
-<section>
-  <h3>⚡ Próximo passo</h3>
-  <p>
-    Conhecimento parado não muda boleto. Comece por um conteúdo simples e aplique uma coisa hoje.
-  </p>
-
-  <a href="/posts" class="btn-primary">Ver todos os conteúdos →</a>
 </section>

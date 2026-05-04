@@ -495,28 +495,6 @@ app.get("/api/posts", (req, res) => {
   }
 });
 
-
-app.get("/api/indicadores-live", async (req, res) => {
-  try {
-    const economicData = await getEconomicData();
-    const rawIndicators = await getIndicators();
-    const indicators = normalizeIndicators(rawIndicators, economicData);
-
-    return res.json({
-      ok: true,
-      data: economicData,
-      indicators,
-      updatedAt: new Date().toISOString(),
-      updatedAtLabel: "Atualizado automaticamente"
-    });
-  } catch (err) {
-    return res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
 app.get("/api/indicadores", async (req, res) => {
   try {
     const data = await getEconomicData();
