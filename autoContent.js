@@ -3,7 +3,7 @@ const path = require("path");
 
 const postsFile = path.join(__dirname, "data", "posts.json");
 const stateFile = path.join(__dirname, "data", "auto-post-state.json");
-const { makePostImage } = require("./services/postImageService");
+const { generatePostImage } = require("./services/postImageService");
 
 const categoryCycle = [
   "renda-extra",
@@ -305,15 +305,20 @@ function buildPost(category, title) {
   };
 }
 
-function generatePost() {
+async function generatePost() {
   const posts = readPosts();
   const category = getNextCategory();
   const title = pickTitle(category, posts);
   const post = buildPost(category, title);
 
-  const imageData = makePostImage(post);
-  post.image = imageData.image;
-  post.imageAlt = imageData.imageAlt;
+  try {
+    const imageData = await generatePostImage(post);
+    post.image = imageData.image;
+    post.imageAlt = imageData.imageAlt;
+    post.imagePrompt = imageData.imagePrompt;
+  } catch (err) {
+    console.log("⚠️ Imagem do post não gerada:", err.message);
+  }
 
   posts.unshift(post);
   savePosts(posts.slice(0, 300));
@@ -321,8 +326,8 @@ function generatePost() {
   return post;
 }
 
-function runAutoPost() {
-  const post = generatePost();
+async function runAutoPost() {
+  const post = await generatePost();
   console.log("✅ Post automático criado:", post.title);
   return post;
 }

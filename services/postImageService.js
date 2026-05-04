@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const axios = require("axios");
 
 const outputDir = path.join(__dirname, "..", "public", "images", "posts");
 
@@ -19,134 +20,127 @@ function slugify(text) {
     .slice(0, 90);
 }
 
-function escapeXml(text) {
-  return String(text || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+function categoryScene(post) {
+  const title = String(post.title || "").toLowerCase();
+  const category = post.category || "financas";
+
+  if (category === "renda-extra") {
+    return "uma pessoa jovem adulta sentada no quarto em uma mesa simples, usando notebook, celular ao lado, caderno aberto, café na mesa, pesquisando formas reais de ganhar dinheiro pela internet; ambiente brasileiro, quarto pequeno, organizado, luz quente, sensação de foco e esperança";
+  }
+
+  if (category === "programacao") {
+    return "uma pessoa iniciante estudando programação em um notebook, tela com código simples desfocado, caderno com passos de lógica, café ao lado, mesa no quarto, iluminação noturna elegante, sensação de descoberta e concentração";
+  }
+
+  if (category === "financas") {
+    return "uma pessoa sentada à mesa de casa olhando contas, caderno financeiro, celular com planilha, expressão pensativa mas determinada, ambiente simples e realista, luz dramática, sensação de decisão financeira importante";
+  }
+
+  if (category === "trabalho") {
+    return "um trabalhador comum chegando em casa depois do trabalho, sentado à mesa planejando uma nova habilidade para aumentar renda, notebook aberto, uniforme ou roupa simples, expressão cansada mas determinada, cenário realista brasileiro";
+  }
+
+  if (category === "investimentos") {
+    return "uma pessoa olhando gráficos simples no notebook e anotando metas de investimento em um caderno, moedas e cartão sobre a mesa, ambiente elegante e minimalista, sensação de começo responsável e segurança";
+  }
+
+  if (category === "economia") {
+    return "uma pessoa no mercado olhando preços altos em prateleiras, segurando celular com lista de compras, expressão preocupada, luz cinematográfica, mostrando o impacto da inflação no dia a dia";
+  }
+
+  if (title.includes("dólar") || title.includes("dolar")) {
+    return "uma pessoa comparando preços de eletrônicos e alimentos no notebook, com símbolo discreto de dólar em uma tela desfocada, expressão preocupada, ambiente doméstico realista";
+  }
+
+  return "uma pessoa comum estudando formas de melhorar a vida financeira em uma mesa simples, notebook, celular, caderno, café, ambiente organizado e realista, luz cinematográfica";
 }
 
-function splitTitle(title) {
-  const words = String(title || "").split(" ");
-  const lines = [];
-  let current = "";
+function buildImagePrompt(post) {
+  const scene = categoryScene(post);
 
-  words.forEach(word => {
-    if ((current + " " + word).trim().length > 34 && lines.length < 3) {
-      lines.push(current.trim());
-      current = word;
-    } else {
-      current = `${current} ${word}`.trim();
-    }
-  });
+  return `
+Crie uma imagem fotorealista horizontal 16:9, estilo editorial premium, sem texto escrito na imagem.
 
-  if (current && lines.length < 4) lines.push(current.trim());
+Tema do conteúdo:
+"${post.title || "Educação financeira prática"}"
 
-  return lines.slice(0, 4);
+Cena:
+${scene}
+
+Estilo visual:
+- fotografia realista
+- estética premium, parecida com campanha de marca grande
+- iluminação cinematográfica
+- cores preto, dourado, branco e tons quentes
+- visual limpo, moderno e persuasivo
+- foco na dor real da pessoa e na solução prática
+- sem logos, sem marcas famosas, sem texto legível
+- sem aparência infantil
+- sem desenho, sem cartoon
+- qualidade alta para capa de artigo e SEO visual
+`.trim();
 }
 
-function categoryLabel(category) {
-  const map = {
-    "renda-extra": "RENDA EXTRA",
-    "programacao": "PROGRAMAÇÃO",
-    "financas": "FINANÇAS",
-    "trabalho": "TRABALHO",
-    "investimentos": "INVESTIMENTOS",
-    "economia": "ECONOMIA"
-  };
-
-  return map[category] || "CONTEÚDO";
-}
-
-function categoryPain(category) {
-  const map = {
-    "renda-extra": "PARE DE DEPENDER DE UMA ÚNICA RENDA",
-    "programacao": "ENTENDA A LÓGICA ANTES DO CÓDIGO",
-    "financas": "DESCUBRA PARA ONDE SEU DINHEIRO ESTÁ INDO",
-    "trabalho": "TRANSFORME ESFORÇO EM VALOR",
-    "investimentos": "COMECE PEQUENO, MAS COM CLAREZA",
-    "economia": "ENTENDA O QUE ENCARECE SUA VIDA"
-  };
-
-  return map[category] || "APRENDA E APLIQUE HOJE";
-}
-
-function makePostImage(post) {
+async function generatePostImage(post) {
   ensureDir();
 
-  const title = post.title || "Conteúdo prático";
-  const category = post.category || "financas";
-  const fileName = `${slugify(post.slug || title)}.svg`;
+  const apiKey = process.env.OPENAI_API_KEY;
+
+  if (!apiKey) {
+    return {
+      image: "",
+      imageAlt: `${post.title || "Conteúdo"} - imagem ainda não gerada`,
+      imagePrompt: buildImagePrompt(post)
+    };
+  }
+
+  const fileName = `${slugify(post.slug || post.title)}.png`;
   const filePath = path.join(outputDir, fileName);
   const publicPath = `/images/posts/${fileName}`;
 
-  const lines = splitTitle(title);
-  const label = categoryLabel(category);
-  const pain = categoryPain(category);
+  if (fs.existsSync(filePath)) {
+    return {
+      image: publicPath,
+      imageAlt: `${post.title || "Conteúdo"} - imagem visual do conteúdo`,
+      imagePrompt: buildImagePrompt(post)
+    };
+  }
 
-  const lineSvg = lines.map((line, index) => {
-    return `<text x="70" y="${250 + index * 58}" class="title">${escapeXml(line)}</text>`;
-  }).join("\n");
+  const prompt = buildImagePrompt(post);
 
-  const svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg width="1200" height="675" viewBox="0 0 1200 675" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="675">
-      <stop offset="0%" stop-color="#050505"/>
-      <stop offset="45%" stop-color="#0d0d10"/>
-      <stop offset="100%" stop-color="#15110a"/>
-    </linearGradient>
+  const response = await axios.post(
+    "https://api.openai.com/v1/images/generations",
+    {
+      model: process.env.OPENAI_IMAGE_MODEL || "gpt-image-1",
+      prompt,
+      size: "1536x1024"
+    },
+    {
+      timeout: 120000,
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
 
-    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#f2d27a"/>
-      <stop offset="100%" stop-color="#d6b35a"/>
-    </linearGradient>
+  const item = response.data?.data?.[0];
+  const b64 = item?.b64_json;
 
-    <filter id="blur">
-      <feGaussianBlur stdDeviation="40"/>
-    </filter>
+  if (!b64) {
+    throw new Error("A API de imagem não retornou b64_json.");
+  }
 
-    <style>
-      .label { font: 800 28px Arial, sans-serif; letter-spacing: 7px; fill: #f2d27a; }
-      .title { font: 900 52px Arial, sans-serif; fill: #ffffff; letter-spacing: -2px; }
-      .pain { font: 800 22px Arial, sans-serif; letter-spacing: 3px; fill: #d8d8d8; }
-      .brand { font: 800 24px Arial, sans-serif; letter-spacing: 4px; fill: #d6b35a; }
-      .small { font: 600 20px Arial, sans-serif; fill: #9d9d9d; }
-    </style>
-  </defs>
-
-  <rect width="1200" height="675" fill="url(#bg)"/>
-
-  <circle cx="150" cy="80" r="190" fill="#d6b35a" opacity="0.18" filter="url(#blur)"/>
-  <circle cx="1040" cy="590" r="230" fill="#f2d27a" opacity="0.10" filter="url(#blur)"/>
-
-  <rect x="44" y="42" width="1112" height="591" rx="38" fill="rgba(255,255,255,0.035)" stroke="rgba(214,179,90,0.35)" stroke-width="2"/>
-
-  <text x="70" y="118" class="label">${escapeXml(label)}</text>
-
-  <text x="70" y="176" class="pain">${escapeXml(pain)}</text>
-
-  ${lineSvg}
-
-  <rect x="70" y="548" width="390" height="54" rx="27" fill="url(#gold)"/>
-  <text x="100" y="584" style="font:900 22px Arial,sans-serif; fill:#080808;">Leia e aplique hoje →</text>
-
-  <text x="790" y="580" class="brand">RENDA EXTRA</text>
-  <text x="790" y="610" class="small">INTELIGENTE</text>
-
-  <path d="M940 160 C1010 230 1055 300 1070 390" stroke="#d6b35a" stroke-width="6" opacity="0.55" stroke-linecap="round"/>
-  <path d="M985 158 L940 160 L942 205" stroke="#d6b35a" stroke-width="6" opacity="0.55" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>`;
-
-  fs.writeFileSync(filePath, svg, "utf8");
+  fs.writeFileSync(filePath, Buffer.from(b64, "base64"));
 
   return {
     image: publicPath,
-    imageAlt: `${title} - ${label.toLowerCase()} com solução prática`
+    imageAlt: `${post.title || "Conteúdo"} - imagem realista sobre a dor do conteúdo`,
+    imagePrompt: prompt
   };
 }
 
 module.exports = {
-  makePostImage
+  generatePostImage,
+  buildImagePrompt
 };

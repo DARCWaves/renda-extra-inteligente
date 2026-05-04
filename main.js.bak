@@ -8,9 +8,7 @@ const { runAutoPost } = require("./autoContent");
 
 cron.schedule("*/15 * * * *", () => {
   console.log("🤖 Gerando conteúdo automático...");
-  Promise.resolve(runAutoPost()).catch((err) => {
-    console.error("Erro ao gerar post automático:", err.message);
-  });
+  runAutoPost();
 });
 
 const PORT = process.env.PORT || 3000;
