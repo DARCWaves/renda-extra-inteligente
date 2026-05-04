@@ -19,6 +19,15 @@
   <% if (posts && Array.isArray(posts) && posts.length > 0) { %>
     <% posts.forEach(post => { %>
       <article class="card">
+        <% if (post.image) { %>
+          <img 
+            src="<%= post.image %>" 
+            alt="<%= post.imageAlt || post.title %>" 
+            class="post-cover" 
+            loading="lazy"
+            onerror="this.style.display='none';"
+          >
+        <% } %>
         <div class="categoria-tag">📌 <%= post.category || "financas" %></div>
 
         <h3><%= post.title || "Conteúdo sem título" %></h3>
@@ -39,6 +48,15 @@
     <% }) %>
   <% } else { %>
     <article class="card">
+        <% if (post.image) { %>
+          <img 
+            src="<%= post.image %>" 
+            alt="<%= post.imageAlt || post.title %>" 
+            class="post-cover" 
+            loading="lazy"
+            onerror="this.style.display='none';"
+          >
+        <% } %>
       <h3>⚠ Nenhum conteúdo encontrado</h3>
       <p>Ainda não há conteúdos disponíveis no momento.</p>
     </article>

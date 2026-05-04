@@ -68,6 +68,15 @@
   <% if (posts && Array.isArray(posts) && posts.length > 0) { %>
     <% posts.forEach(post => { %>
       <article class="card">
+        <% if (post.image) { %>
+          <img 
+            src="<%= post.image %>" 
+            alt="<%= post.imageAlt || post.title %>" 
+            class="post-cover" 
+            loading="lazy"
+            onerror="this.style.display='none';"
+          >
+        <% } %>
         <div class="categoria-tag">
           <span class="ui-icon <%= info.icon %>"></span>
           <%= post.category || categoria %>
@@ -86,6 +95,15 @@
     <% }) %>
   <% } else { %>
     <article class="card">
+        <% if (post.image) { %>
+          <img 
+            src="<%= post.image %>" 
+            alt="<%= post.imageAlt || post.title %>" 
+            class="post-cover" 
+            loading="lazy"
+            onerror="this.style.display='none';"
+          >
+        <% } %>
       <h3>Nenhum conteúdo encontrado</h3>
       <p>Essa categoria ainda não recebeu conteúdos automáticos. A produção vai continuar rodando em ciclos.</p>
       <a href="/posts" class="btn-primary">Ver todos os conteúdos →</a>

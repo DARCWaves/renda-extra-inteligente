@@ -1,54 +1,124 @@
-<h2>📂 Categoria: <%= categoria %></h2>
+<%
+  const categoryInfo = {
+    "financas": {
+      label: "Finanças pessoais",
+      title: "Organize seu dinheiro sem complicação",
+      desc: "Conteúdos para controlar gastos, sair do aperto, montar reserva e tomar decisões melhores.",
+      icon: "icon-wallet"
+    },
+    "renda-extra": {
+      label: "Renda extra",
+      title: "Ideias reais para ganhar mais dinheiro",
+      desc: "Estratégias simples para criar novas fontes de renda sem promessa milagrosa.",
+      icon: "icon-rocket"
+    },
+    "investimentos": {
+      label: "Investimentos",
+      title: "Comece a investir com pouco dinheiro",
+      desc: "Aprenda o básico para investir com segurança, paciência e clareza.",
+      icon: "icon-growth"
+    },
+    "programacao": {
+      label: "Programação simples",
+      title: "Aprenda lógica e criação de sites do zero",
+      desc: "Programação explicada em linguagem simples, como se fosse uma receita de bolo.",
+      icon: "icon-code"
+    },
+    "trabalho": {
+      label: "Trabalho e renda",
+      title: "Use seu trabalho para aumentar sua renda",
+      desc: "Conteúdos para transformar esforço em valor, oportunidade e crescimento.",
+      icon: "icon-work"
+    },
+    "economia": {
+      label: "Economia real",
+      title: "Entenda o que mexe no seu bolso",
+      desc: "Inflação, dólar, juros e decisões econômicas explicadas sem linguagem difícil.",
+      icon: "icon-pulse"
+    }
+  };
 
-<p>
-Conteúdos relacionados à categoria "<strong><%= categoria %></strong>".
-</p>
+  const info = categoryInfo[categoria] || {
+    label: categoria,
+    title: `Conteúdos sobre ${categoria}`,
+    desc: "Conteúdos simples e práticos para melhorar sua vida financeira.",
+    icon: "icon-layers"
+  };
+%>
 
-<% if (!posts || posts.length === 0) { %>
+<section class="hero-home compact-hero">
+  <span class="eyebrow">
+    <span class="ui-icon <%= info.icon %>"></span>
+    <%= info.label %>
+  </span>
 
-  <section>
-    <h3>Nenhum conteúdo encontrado</h3>
-    <p>Não há conteúdos disponíveis para esta categoria no momento.</p>
-  </section>
+  <h2><%= info.title %></h2>
 
-<% } else { %>
+  <p><%= info.desc %></p>
 
-  <% posts.forEach(post => { %>
-    <section>
-      <h3><%= post.title %></h3>
-
-      <p>
-        <%= post.description %>
-      </p>
-
-      <a href="/post/<%= post.slug %>">
-        Ler conteúdo completo
-      </a>
-    </section>
-  <% }) %>
-
-<% } %>
-
-<section>
-  <h3>📊 Continue explorando</h3>
-
-  <p>
-    Veja também os indicadores econômicos atualizados para entender o cenário financeiro.
-  </p>
-
-  <a href="/indicadores">
-    Ver indicadores econômicos
-  </a>
+  <div class="home-actions">
+    <a href="/posts" class="btn-primary">Ver todos os conteúdos →</a>
+    <a href="/indicadores" class="btn-secondary">Entender indicadores</a>
+  </div>
 </section>
 
 <section>
-  <h3>📚 Todos os conteúdos</h3>
+  <h3><span class="ui-icon <%= info.icon %>"></span> Conteúdos desta categoria</h3>
 
-  <p>
-    Explore todos os conteúdos disponíveis sobre finanças, renda extra e investimentos.
-  </p>
+  <% if (posts && Array.isArray(posts) && posts.length > 0) { %>
+    <% posts.forEach(post => { %>
+      <article class="card">
+        <div class="categoria-tag">
+          <span class="ui-icon <%= info.icon %>"></span>
+          <%= post.category || categoria %>
+        </div>
 
-  <a href="/posts">
-    Ver todos os conteúdos
-  </a>
+        <h3><%= post.title || "Conteúdo sem título" %></h3>
+
+        <p>
+          <%= post.description || post.seoDescription || "Conteúdo educativo, simples e prático." %>
+        </p>
+
+        <a href="/post/<%= post.slug %>" class="btn-primary">
+          Ler conteúdo completo →
+        </a>
+      </article>
+    <% }) %>
+  <% } else { %>
+    <article class="card">
+      <h3>Nenhum conteúdo encontrado</h3>
+      <p>Essa categoria ainda não recebeu conteúdos automáticos. A produção vai continuar rodando em ciclos.</p>
+      <a href="/posts" class="btn-primary">Ver todos os conteúdos →</a>
+    </article>
+  <% } %>
+</section>
+
+<section>
+  <h3><span class="ui-icon icon-route"></span> Continue explorando</h3>
+
+  <div class="shortcut-grid">
+    <a href="/categoria/financas" class="shortcut-card">
+      <span class="ui-icon icon-wallet"></span>
+      Finanças
+      <small>Controle financeiro, dívidas, gastos e reserva.</small>
+    </a>
+
+    <a href="/categoria/renda-extra" class="shortcut-card">
+      <span class="ui-icon icon-rocket"></span>
+      Renda extra
+      <small>Ideias para ganhar mais dinheiro com pouco.</small>
+    </a>
+
+    <a href="/categoria/programacao" class="shortcut-card">
+      <span class="ui-icon icon-code"></span>
+      Programação
+      <small>Aprenda lógica, sites e projetos simples.</small>
+    </a>
+
+    <a href="/indicadores" class="shortcut-card">
+      <span class="ui-icon icon-pulse"></span>
+      Indicadores
+      <small>Veja o impacto da economia no seu bolso.</small>
+    </a>
+  </div>
 </section>
