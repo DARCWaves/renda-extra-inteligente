@@ -1,22 +1,25 @@
-<section class="hero-home compact-hero">
-  <span class="eyebrow">
-    <span class="ui-icon icon-pulse"></span>
-    Indicadores econômicos em linguagem simples
-  </span>
+<section class="lux-hero compact">
+  <span class="lux-kicker">Indicadores econômicos</span>
 
-  <h2>Entenda o que está mexendo no seu bolso</h2>
+  <h1>Entenda o que está mexendo no seu bolso.</h1>
 
   <p>
     Dólar, inflação, Selic, salário mínimo e tributos explicados pelo impacto real na vida de quem trabalha, compra, vende e tenta melhorar de vida.
   </p>
 
-  <p class="text-muted">
+  <p class="muted">
     Status: <span data-live-updated>Atualizando...</span>
   </p>
 </section>
 
-<section>
-  <h3><span class="ui-icon icon-chart"></span> Painel ao vivo</h3>
+<section class="lux-section">
+  <div class="section-heading">
+    <span>01</span>
+    <div>
+      <h2>Painel econômico</h2>
+      <p>Os números abaixo atualizam automaticamente e servem como leitura prática do cenário.</p>
+    </div>
+  </div>
 
   <div class="indicator-grid">
     <% if (indicators && indicators.resumo) { %>
@@ -32,39 +35,19 @@
 </section>
 
 <% if (ai) { %>
-  <section>
-    <h3><span class="ui-icon icon-layers"></span> Leitura simples do cenário</h3>
-
-    <div class="card">
-      <h3>Diagnóstico</h3>
-      <p><%= ai.diagnostico || "Cenário em atualização." %></p>
-      <p><%= ai.mensagem || "Acompanhe os dados para tomar decisões melhores." %></p>
-    </div>
-  </section>
-<% } %>
-
-<section>
-  <h3><span class="ui-icon icon-wallet"></span> Como usar esses números</h3>
-
-  <div class="shortcut-grid">
-    <div class="card">
-      <h3>Dólar</h3>
-      <p>Ajuda a entender preços de produtos importados, tecnologia, combustível e parte dos alimentos.</p>
-    </div>
-
-    <div class="card">
-      <h3>Inflação</h3>
-      <p>Mostra se seu salário está comprando menos, mesmo quando o valor na conta parece o mesmo.</p>
-    </div>
-
-    <div class="card">
-      <h3>Selic</h3>
-      <p>Afeta juros, cartão, empréstimos, financiamentos e investimentos de renda fixa.</p>
-    </div>
-
-    <div class="card">
-      <h3>Tributos</h3>
-      <p>Mostra quanto dinheiro está sendo arrecadado e ajuda a entender o peso do Estado no bolso.</p>
+<section class="lux-section">
+  <div class="section-heading">
+    <span>02</span>
+    <div>
+      <h2>Leitura simples do cenário</h2>
+      <p>Uma interpretação direta para transformar números em decisão.</p>
     </div>
   </div>
+
+  <article class="lux-card">
+    <h3>Diagnóstico</h3>
+    <p><%= ai.diagnostico || "Cenário em atualização." %></p>
+    <p><%= ai.mensagem || "Acompanhe os dados para tomar decisões melhores." %></p>
+  </article>
 </section>
+<% } %>

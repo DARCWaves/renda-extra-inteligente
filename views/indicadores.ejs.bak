@@ -1,84 +1,70 @@
-<div style="padding:12px;margin:12px 0;border:1px solid #ddd;border-radius:10px;"><strong>Tributos arrecadados no ano:</strong> <span id="tributos-valor">Carregando...</span></div>
-<span id="dolar-valor">Carregando...</span>
-<h2>📊 Indicadores Econômicos do Brasil</h2>
+<section class="hero-home compact-hero">
+  <span class="eyebrow">
+    <span class="ui-icon icon-pulse"></span>
+    Indicadores econômicos em linguagem simples
+  </span>
 
-<p>
-Acompanhe os principais dados econômicos atualizados em tempo real e entenda como isso impacta o seu dinheiro.
-</p>
-
-<!-- MERCADO FINANCEIRO -->
-<section>
-  <h3>💰 Mercado Financeiro</h3>
-  <ul>
-    <li>💵 Dólar: <strong><%= data.dolar %></strong></li>
-    <li>📉 Selic: <strong><%= data.selic %></strong></li>
-    <li>📊 Inflação: <strong><%= data.inflacao %></strong></li>
-  </ul>
-</section>
-
-<!-- ECONOMIA NACIONAL -->
-<section>
-  <h3>🏛️ Economia Nacional</h3>
-  <ul>
-    <li>💼 Salário mínimo: <strong><%= data.salarioMinimo %></strong></li>
-    <li>📈 Arrecadação de tributos: <strong><%= data.arrecadacao %></strong></li>
-  </ul>
-</section>
-
-<!-- BOLSO POPULAR -->
-<section>
-  <h3>🧠 Indicador do Bolso Popular</h3>
-  <p>
-    Este indicador representa o impacto real da economia no dia a dia da população.
-  </p>
-  <ul>
-    <li>📉 Índice atual: <strong><%= data.bolsoPopular %></strong></li>
-  </ul>
-</section>
-
-<!-- IA FINANCEIRA -->
-<section>
-  <h3>⚡ IA Financeira</h3>
+  <h2>Entenda o que está mexendo no seu bolso</h2>
 
   <p>
-    <strong>Diagnóstico:</strong> <%= ai.verdict %>
+    Dólar, inflação, Selic, salário mínimo e tributos explicados pelo impacto real na vida de quem trabalha, compra, vende e tenta melhorar de vida.
   </p>
 
-  <p>
-    <%= ai.summary %>
+  <p class="text-muted">
+    Status: <span data-live-updated>Atualizando...</span>
   </p>
-
-  <!-- ALERTAS -->
-  <h4>🚨 Alertas</h4>
-  <ul>
-    <% ai.alerts.forEach(alert => { %>
-      <li><%= alert %></li>
-    <% }) %>
-  </ul>
-
-  <!-- OPORTUNIDADES -->
-  <h4>💡 Oportunidades</h4>
-  <ul>
-    <% ai.opportunities.forEach(item => { %>
-      <li><%= item %></li>
-    <% }) %>
-  </ul>
-
-  <!-- PLANO DE AÇÃO -->
-  <h4>🎯 Plano de ação</h4>
-  <ul>
-    <% ai.actionPlan.forEach(step => { %>
-      <li><%= step %></li>
-    <% }) %>
-  </ul>
 </section>
 
-<!-- CTA -->
 <section>
-  <h3>🚀 Próximo passo</h3>
-  <p>
-    Use essas informações para tomar decisões mais inteligentes e aumentar sua renda.
-  </p>
+  <h3><span class="ui-icon icon-chart"></span> Painel ao vivo</h3>
 
-  <a href="/" class="btn">⬅ Voltar para Home</a>
+  <div class="indicator-grid">
+    <% if (indicators && indicators.resumo) { %>
+      <% indicators.resumo.forEach(item => { %>
+        <a href="/indicador/<%= item.slug %>" class="indicator-card">
+          <span><%= item.nome %></span>
+          <strong data-indicator-value="<%= item.slug %>"><%= item.valor %></strong>
+          <small data-indicator-period="<%= item.slug %>"><%= item.periodo || "Atualizado automaticamente" %></small>
+        </a>
+      <% }) %>
+    <% } %>
+  </div>
+</section>
+
+<% if (ai) { %>
+  <section>
+    <h3><span class="ui-icon icon-layers"></span> Leitura simples do cenário</h3>
+
+    <div class="card">
+      <h3>Diagnóstico</h3>
+      <p><%= ai.diagnostico || "Cenário em atualização." %></p>
+      <p><%= ai.mensagem || "Acompanhe os dados para tomar decisões melhores." %></p>
+    </div>
+  </section>
+<% } %>
+
+<section>
+  <h3><span class="ui-icon icon-wallet"></span> Como usar esses números</h3>
+
+  <div class="shortcut-grid">
+    <div class="card">
+      <h3>Dólar</h3>
+      <p>Ajuda a entender preços de produtos importados, tecnologia, combustível e parte dos alimentos.</p>
+    </div>
+
+    <div class="card">
+      <h3>Inflação</h3>
+      <p>Mostra se seu salário está comprando menos, mesmo quando o valor na conta parece o mesmo.</p>
+    </div>
+
+    <div class="card">
+      <h3>Selic</h3>
+      <p>Afeta juros, cartão, empréstimos, financiamentos e investimentos de renda fixa.</p>
+    </div>
+
+    <div class="card">
+      <h3>Tributos</h3>
+      <p>Mostra quanto dinheiro está sendo arrecadado e ajuda a entender o peso do Estado no bolso.</p>
+    </div>
+  </div>
 </section>
