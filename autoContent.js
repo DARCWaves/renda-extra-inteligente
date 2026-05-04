@@ -271,6 +271,18 @@ Escolha apenas uma ação deste conteúdo e coloque em prática ainda hoje. Pequ
 
 Conclusão
 
+
+Veja também:
+
+- <a href="/categoria/renda-extra">Renda extra</a>
+
+- <a href="/categoria/financas">Finanças pessoais</a>
+
+- <a href="/categoria/programacao">Programação simples</a>
+
+- <a href="/indicadores">Indicadores econômicos</a>
+
+
 Melhorar de vida não acontece por sorte. Acontece quando você entende sua realidade, toma decisões melhores e repete o processo com paciência.
 
 Como diz Provérbios 21:5: os planos bem elaborados levam à fartura, mas a pressa excessiva leva à pobreza.`;

@@ -1,0 +1,41 @@
+<section class="hero-home">
+  <h2>🔥 Ofertas que realmente valem a pena</h2>
+
+  <p>
+    Produtos selecionados para ajudar você a ganhar mais, organizar seu dinheiro e evoluir.
+  </p>
+</section>
+
+<section>
+  <div class="indicator-grid">
+
+    <% if (!affiliates || affiliates.length === 0) { %>
+
+      <p>Nenhuma oferta disponível no momento.</p>
+
+    <% } else { %>
+
+      <% affiliates.forEach(product => { %>
+
+        <div class="indicator-card">
+
+          <% if (product.image) { %>
+            <img src="<%= product.image %>" style="width:100%; border-radius:12px; margin-bottom:10px;">
+          <% } %>
+
+          <span><%= product.title %></span>
+
+          <strong><%= product.price || '' %></strong>
+
+          <a href="/out/<%= product.id %>" class="btn-primary" target="_blank">
+            Ver oferta →
+          </a>
+
+        </div>
+
+      <% }) %>
+
+    <% } %>
+
+  </div>
+</section>

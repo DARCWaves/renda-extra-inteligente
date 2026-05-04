@@ -78,4 +78,60 @@
   <p>
     Este conteúdo é educativo. Não é recomendação individual de investimento, compra ou decisão financeira. Avalie sua realidade antes de agir.
   </p>
+<section>
+
+  <h3>🚀 Quer acelerar seus resultados?</h3>
+
+
+
+  <p>
+
+    Se você quer sair do zero mais rápido, vale a pena usar ferramentas e materiais que já funcionam.
+
+  </p>
+
+
+
+  <% if (affiliates && affiliates.length) { %>
+
+
+
+    <div class="post-preview">
+
+
+
+      <% const product = affiliates[0]; %>
+
+
+
+      <% if (product.image) { %>
+
+        <img src="<%= product.image %>" style="width:100%; border-radius:12px; margin-bottom:10px;">
+
+      <% } %>
+
+
+
+      <h4><%= product.title %></h4>
+
+      <p><%= product.description ||  %></p>
+
+
+
+      <a href="/out/<%= product.id %>" class="btn-primary" target="_blank">
+
+        Ver oferta →
+
+      </a>
+
+
+
+    </div>
+
+
+
+  <% } %>
+
+</section>
+
 </section>
