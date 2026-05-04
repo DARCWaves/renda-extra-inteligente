@@ -1,97 +1,42 @@
 <section class="hero-home">
-  <h2>💰 Renda Extra Inteligente</h2>
+  <p class="categoria-tag">Educação financeira simples, direta e sem promessa falsa</p>
+
+  <h2>💰 Pare de perder dinheiro sem perceber</h2>
 
   <p>
-    Entenda seu dinheiro, acompanhe indicadores econômicos e encontre caminhos reais para melhorar sua renda sem cair em promessa fácil.
+    Aprenda a organizar seu dinheiro, sair do aperto, criar renda extra e começar a investir mesmo ganhando pouco.
   </p>
 
   <div class="home-actions">
-    <a href="/indicadores" class="btn-primary">Ver indicadores</a>
-    <a href="/posts" class="btn-primary">Ler conteúdos</a>
+    <a href="/posts" class="btn-primary">Começar pelos conteúdos →</a>
+    <a href="/categoria/renda-extra" class="btn-secondary">Ver ideias de renda extra</a>
   </div>
 </section>
 
 <section>
-  <h3>📊 Indicadores que mexem com o seu bolso</h3>
-
+  <h3>🔥 Conteúdos para resolver sua vida financeira</h3>
   <p>
-    Cada número abaixo afeta preço, salário, crédito, consumo, dívidas, investimentos e renda extra.
+    Guias simples, práticos e diretos para quem quer melhorar de vida sem enrolação.
   </p>
 
-  <div class="indicator-grid">
-    <% if (indicators && indicators.resumo) { %>
-      <% indicators.resumo.forEach(item => { %>
-        <a href="/indicador/<%= item.slug %>" class="indicator-card">
-          <span><%= item.nome %></span>
-          <strong><%= item.valor %></strong>
-          <small>Ver análise completa →</small>
-        </a>
-      <% }) %>
-    <% } %>
-  </div>
-</section>
-
-<% if (indicators && indicators.iaFinanceira) { %>
-  <section>
-    <h3>🧠 Leitura da IA Financeira</h3>
-
-    <p>
-      <strong>Diagnóstico:</strong> <%= indicators.iaFinanceira.diagnostico %>
-    </p>
-
-    <p>
-      <%= indicators.iaFinanceira.mensagem %>
-    </p>
-
-    <a href="/indicadores" class="btn-primary">Entender o cenário completo</a>
-  </section>
-<% } %>
-
-<section>
-  <h3>🧭 Escolha seu caminho</h3>
-
-  <div class="shortcut-grid">
-    <a href="/categoria/financas" class="shortcut-card">
-      💳 Finanças pessoais
-      <small>Controle, dívidas, orçamento e reserva.</small>
-    </a>
-
-    <a href="/categoria/renda-extra" class="shortcut-card">
-      🚀 Renda extra
-      <small>Ideias reais sem promessa milagrosa.</small>
-    </a>
-
-    <a href="/categoria/investimentos" class="shortcut-card">
-      📈 Investimentos
-      <small>Educação financeira e decisões melhores.</small>
-    </a>
-
-    <a href="/categoria/economia" class="shortcut-card">
-      🌎 Economia
-      <small>O que muda no país e no seu bolso.</small>
-    </a>
-  </div>
-</section>
-
-<section>
-  <h3>🔥 Conteúdos recentes</h3>
-
   <% if (!posts || posts.length === 0) { %>
-    <p>Nenhum conteúdo publicado ainda.</p>
+    <article class="card">
+      <h3>Nenhum conteúdo publicado ainda</h3>
+      <p>Em breve novos conteúdos serão publicados automaticamente.</p>
+    </article>
   <% } else { %>
     <% posts.forEach(post => { %>
       <article class="post-preview">
-        <h4><%= post.title %></h4>
-        <p><%= post.description %></p>
+        <div class="categoria-tag">📌 <%= post.category || "financas" %></div>
 
-        <div class="categoria-tag">
-          📊 <%= post.category %>
-        </div>
+        <h4><%= post.title || "Conteúdo sobre finanças" %></h4>
 
-        <br>
+        <p>
+          <%= post.description || "Aprenda uma estratégia prática para melhorar sua vida financeira." %>
+        </p>
 
         <a href="/post/<%= post.slug %>" class="btn-primary">
-          Ler conteúdo completo
+          Ler agora →
         </a>
       </article>
     <% }) %>
@@ -99,76 +44,100 @@
 </section>
 
 <section>
-  <h3>⚡ Próximo passo</h3>
-
+  <h3>🧭 Escolha seu caminho</h3>
   <p>
-    Não basta ganhar dinheiro. Você precisa entender para onde ele está indo, o que está destruindo seu poder de compra e quais decisões podem mudar sua realidade.
+    Cada pessoa começa de um ponto diferente. Escolha o assunto que mais parece com sua realidade hoje.
   </p>
 
-  <a href="/posts" class="btn-primary">Começar pelos conteúdos</a>
+  <div class="shortcut-grid">
+    <a href="/categoria/financas" class="shortcut-card">
+      💳 Sair do aperto
+      <small>Dívidas, orçamento, gastos invisíveis e controle financeiro.</small>
+    </a>
+
+    <a href="/categoria/renda-extra" class="shortcut-card">
+      🚀 Ganhar mais dinheiro
+      <small>Ideias reais de renda extra para começar com pouco.</small>
+    </a>
+
+    <a href="/categoria/investimentos" class="shortcut-card">
+      📈 Investir começando pequeno
+      <small>Aprenda o básico sem cair em conversa bonita.</small>
+    </a>
+
+    <a href="/categoria/trabalho" class="shortcut-card">
+      🛠️ Melhorar sua renda no trabalho
+      <small>Use o que você já sabe para gerar mais valor.</small>
+    </a>
+
+    <a href="/categoria/programacao" class="shortcut-card">
+      💻 Programação simples
+      <small>Aprenda lógica e criação de sites com linguagem fácil.</small>
+    </a>
+
+    <a href="/indicadores" class="shortcut-card">
+      📊 Entender a economia
+      <small>Dólar, inflação e Selic explicados pelo impacto no seu bolso.</small>
+    </a>
+  </div>
 </section>
 
-<style>
-.hero-home {
-  text-align: center;
-}
+<section>
+  <h3>🧩 O método simples</h3>
+  <p>
+    Finanças não precisam parecer um bicho de sete cabeças. O caminho é como uma receita: simples, mas adaptável.
+  </p>
 
-.home-actions {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 18px;
-}
+  <div class="shortcut-grid">
+    <div class="card">
+      <h3>1. Organizar</h3>
+      <p>Descubra para onde seu dinheiro está indo.</p>
+    </div>
 
-.indicator-grid,
-.shortcut-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 16px;
-  margin-top: 18px;
-}
+    <div class="card">
+      <h3>2. Cortar desperdícios</h3>
+      <p>Remova gastos pequenos que viram buracos grandes.</p>
+    </div>
 
-.indicator-card,
-.shortcut-card {
-  display: block;
-  padding: 18px;
-  border-radius: 18px;
-  background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(220,255,246,.95));
-  color: #001a1a;
-  text-decoration: none;
-  box-shadow: 0 0 20px rgba(0,255,150,.25);
-}
+    <div class="card">
+      <h3>3. Criar renda extra</h3>
+      <p>Use tempo, habilidade e internet para aumentar sua renda.</p>
+    </div>
 
-.indicator-card span,
-.shortcut-card small {
-  display: block;
-}
+    <div class="card">
+      <h3>4. Investir</h3>
+      <p>Faça o dinheiro trabalhar aos poucos, sem inventar moda.</p>
+    </div>
+  </div>
+</section>
 
-.indicator-card strong {
-  display: block;
-  margin: 10px 0;
-  font-size: 26px;
-}
+<section>
+  <h3>📊 Indicadores que mexem com seu bolso</h3>
+  <p>
+    Os números importam, mas só quando você entende o que eles mudam na sua vida.
+  </p>
 
-.indicator-card small,
-.shortcut-card small {
-  margin-top: 8px;
-  font-size: 13px;
-  opacity: .75;
-}
+  <div class="indicator-grid">
+    <% if (indicators && indicators.resumo) { %>
+      <% indicators.resumo.slice(0, 4).forEach(item => { %>
+        <a href="/indicador/<%= item.slug %>" class="indicator-card">
+          <span><%= item.nome %></span>
+          <strong><%= item.valor %></strong>
+          <small>Entender impacto no bolso →</small>
+        </a>
+      <% }) %>
+    <% } %>
+  </div>
 
-.post-preview {
-  background: rgba(0,20,40,.85);
-  border-radius: 18px;
-  padding: 20px;
-  margin-bottom: 16px;
-  box-shadow: 0 0 20px rgba(0,255,150,.08);
-}
+  <br>
+  <a href="/indicadores" class="btn-primary">Ver todos os indicadores →</a>
+</section>
 
-.post-preview h4 {
-  color: #00ffcc;
-  font-size: 22px;
-  margin-bottom: 10px;
-}
-</style>
+<section>
+  <h3>⚡ Próximo passo</h3>
+  <p>
+    Conhecimento parado não muda boleto. Comece por um conteúdo simples e aplique uma coisa hoje.
+  </p>
+
+  <a href="/posts" class="btn-primary">Ver todos os conteúdos →</a>
+</section>

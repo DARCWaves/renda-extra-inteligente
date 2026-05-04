@@ -31,14 +31,12 @@ function formatDateBR(date) {
   const d = String(date.getDate()).padStart(2, "0");
   const m = String(date.getMonth() + 1).padStart(2, "0");
   const y = date.getFullYear();
-
   return `${d}/${m}/${y}`;
 }
 
 function getRecentDateRange(daysBack = 90) {
   const end = new Date();
   const start = new Date();
-
   start.setDate(start.getDate() - daysBack);
 
   return {
@@ -74,7 +72,7 @@ async function fetchBCB(code, fallback, daysBack = 90) {
     );
 
     if (!Array.isArray(response.data) || response.data.length === 0) {
-      console.log(`Erro BCB: ${code} Sem dados`);
+      console.log(`Erro BCB: ${code} sem dados`);
       return fallback;
     }
 
@@ -127,19 +125,40 @@ async function fetchDolar() {
 
 /*
 ==================================================
+ARRECADAÇÃO OFICIAL VIA BCB
+==================================================
+*/
+
+async function fetchArrecadacao() {
+  const fallbackBilhoes = 222.1;
+
+  const codigo = Number(process.env.BCB_ARRECADACAO_CODE || 0);
+
+  if (!codigo) {
+    console.log("BCB_ARRECADACAO_CODE não configurado. Usando fallback.");
+    return fallbackBilhoes;
+  }
+
+  const valor = await fetchBCB(codigo, fallbackBilhoes, 730);
+
+  return Number.isFinite(valor) ? valor : fallbackBilhoes;
+}
+
+/*
+==================================================
 DADOS ECONÔMICOS
 ==================================================
 */
 
 async function getEconomicData() {
-  const [selic, inflacao, dolarData] = await Promise.all([
+  const [selic, inflacao, dolarData, arrecadacao] = await Promise.all([
     fetchBCB(432, 14.75, 365),
     fetchBCB(433, 0.88, 365),
-    fetchDolar()
+    fetchDolar(),
+    fetchArrecadacao()
   ]);
 
   const salarioMinimo = 1621;
-  const arrecadacao = 222.1;
   const bolsoPopular = Number((inflacao * 2.85).toFixed(2));
 
   return {
@@ -158,7 +177,9 @@ async function getEconomicData() {
       inflacao: "último mês",
       bolsoPopular: "estimativa mensal",
       salarioMinimo: "valor mensal oficial",
-      arrecadacao: "valor mensal informado"
+      arrecadacao: process.env.BCB_ARRECADACAO_CODE
+        ? "último dado oficial disponível no BCB"
+        : "valor padrão até configurar código SGS"
     },
 
     raw: {

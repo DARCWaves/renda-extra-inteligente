@@ -52,6 +52,7 @@ CONFIG
 ==================================================
 */
 
+const apiRoutes = require("./routes/api");
 const app = express();
 
 const APP_NAME = "Renda Extra Inteligente";
@@ -163,6 +164,7 @@ MIDDLEWARES
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/api", apiRoutes);
 
 app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
