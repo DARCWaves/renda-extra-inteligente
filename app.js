@@ -15,6 +15,7 @@ SERVICES
 const { getEconomicData } = require("./services/economicService");
 const { analyzeFinancialScenario } = require("./services/financialAI");
 const { getIndicators } = require("./services/indicatorService");
+const { buildLiveIndicators } = require("./services/liveIndicatorService");
 
 const {
   getAllPosts,
@@ -510,6 +511,30 @@ app.get("/api/indicadores-live", async (req, res) => {
       updatedAtLabel: "Atualizado automaticamente"
     });
   } catch (err) {
+    return res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
+
+
+app.get("/api/indicadores-live-v2", async (req, res) => {
+  try {
+    const economicData = await getEconomicData();
+    const rawIndicators = await getIndicators();
+    const normalized = normalizeIndicators(rawIndicators, economicData);
+    const indicators = await buildLiveIndicators(normalized);
+
+    return res.json({
+      ok: true,
+      indicators,
+      updatedAt: indicators.updatedAt,
+      updatedAtLabel: indicators.updatedAtLabel
+    });
+  } catch (err) {
+    console.error("ERRO INDICADORES LIVE V2:", err.message);
+
     return res.status(500).json({
       ok: false,
       error: err.message
