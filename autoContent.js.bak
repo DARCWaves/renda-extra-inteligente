@@ -2,71 +2,72 @@ const fs = require("fs");
 const path = require("path");
 
 const postsFile = path.join(__dirname, "data", "posts.json");
+const stateFile = path.join(__dirname, "data", "auto-post-state.json");
 
-const categories = [
-  { name: "financas", weight: 5 },
-  { name: "renda-extra", weight: 5 },
-  { name: "investimentos", weight: 4 },
-  { name: "trabalho", weight: 3 },
-  { name: "programacao", weight: 3 },
-  { name: "economia", weight: 2 }
+const categoryCycle = [
+  "renda-extra",
+  "programacao",
+  "trabalho",
+  "financas",
+  "investimentos",
+  "economia"
 ];
 
 const titleBank = {
-  financas: [
-    "Como organizar seu dinheiro mesmo ganhando pouco",
-    "O erro que faz seu salário sumir todo mês",
-    "Como parar de gastar dinheiro com coisas inúteis",
-    "Como sair do aperto financeiro sem depender de milagre",
-    "Como montar um controle financeiro simples em poucos minutos"
-  ],
   "renda-extra": [
-    "5 formas reais de ganhar dinheiro em casa começando do zero",
-    "Como fazer renda extra usando apenas o celular",
-    "Ideias simples para ganhar dinheiro depois do trabalho",
-    "Como transformar uma habilidade simples em renda extra",
-    "Como começar uma renda extra sem gastar muito dinheiro"
+    "Como ganhar dinheiro em casa começando do zero: 7 ideias reais para testar hoje",
+    "5 formas de fazer renda extra pelo celular sem cair em promessa falsa",
+    "Como criar uma renda extra depois do trabalho mesmo tendo pouco tempo",
+    "Ideias de renda extra para quem ganha pouco e precisa de dinheiro rápido",
+    "Como transformar uma habilidade simples em renda extra ainda este mês"
   ],
-  investimentos: [
-    "Como começar a investir com pouco dinheiro",
-    "Onde investir R$100 por mês sem complicar",
-    "O que você precisa saber antes de investir pela primeira vez",
-    "Como investir sem cair em promessa de dinheiro fácil",
-    "Como criar o hábito de investir mesmo ganhando pouco"
+  programacao: [
+    "Como aprender programação do zero mesmo achando que é difícil",
+    "Lógica de programação explicada como uma receita simples para iniciantes",
+    "Como criar seu primeiro site sem entender tudo de uma vez",
+    "Programação para iniciantes: o jeito mais simples de entender código",
+    "Como aprender JavaScript pelo celular com passos pequenos e práticos"
   ],
   trabalho: [
     "Como aumentar sua renda usando o trabalho que você já tem",
-    "Como ser mais valorizado no trabalho sem puxar saco",
-    "Como transformar experiência prática em oportunidade",
-    "Como ganhar mais dinheiro melhorando uma habilidade",
-    "O que fazer quando você trabalha muito e mesmo assim sobra pouco"
+    "O que fazer quando você trabalha muito e mesmo assim sobra pouco dinheiro",
+    "Como ser mais valorizado no trabalho sem depender de sorte",
+    "Como transformar experiência prática em oportunidade de renda",
+    "Como ganhar mais dinheiro melhorando uma habilidade por vez"
   ],
-  programacao: [
-    "Como entender programação mesmo começando do zero",
-    "Programação explicada como se fosse uma receita simples",
-    "Como criar seu primeiro site sem entender tudo de uma vez",
-    "O jeito mais simples de entender lógica de programação",
-    "Como aprender programação pelo celular usando passos pequenos"
+  financas: [
+    "Como organizar seu dinheiro mesmo ganhando pouco: passo a passo simples",
+    "O erro que faz seu salário sumir todo mês sem você perceber",
+    "Como sair do aperto financeiro sem depender de milagre",
+    "Como parar de gastar dinheiro com coisas inúteis e recuperar o controle",
+    "Como montar um controle financeiro simples em menos de 30 minutos"
+  ],
+  investimentos: [
+    "Como começar a investir com pouco dinheiro sem fazer besteira",
+    "Onde investir R$100 por mês: guia simples para iniciantes",
+    "O que você precisa saber antes de investir pela primeira vez",
+    "Como investir ganhando pouco e criar consistência aos poucos",
+    "Investimentos para iniciantes: como começar sem cair em promessa fácil"
   ],
   economia: [
     "Como a inflação tira dinheiro do seu bolso sem você perceber",
-    "Por que o dólar alto deixa sua vida mais cara",
-    "Como a Selic afeta dívidas, compras e investimentos",
-    "O que os indicadores econômicos mudam na sua vida real",
-    "Como entender economia sem linguagem difícil"
+    "Por que o dólar alto deixa sua vida mais cara mesmo sem você viajar",
+    "Como a Selic afeta dívidas, compras e investimentos na prática",
+    "O que os indicadores econômicos mudam na vida de quem ganha pouco",
+    "Economia para iniciantes: entenda juros, inflação e salário sem complicação"
   ]
 };
 
 const descriptions = {
-  financas: "Aprenda um passo simples para organizar seu dinheiro, cortar desperdícios e tomar decisões melhores.",
-  "renda-extra": "Veja ideias práticas para criar renda extra sem cair em promessa falsa ou fórmula milagrosa.",
-  investimentos: "Entenda como começar a investir com segurança, simplicidade e pouco dinheiro.",
-  trabalho: "Aprenda formas práticas de aumentar seu valor, melhorar sua renda e usar melhor suas habilidades.",
-  programacao: "Aprenda programação com linguagem simples, exemplos do dia a dia e foco em lógica antes do código.",
-  economia: "Entenda como economia, inflação, dólar e juros afetam diretamente seu bolso."
+  "renda-extra": "Aprenda ideias práticas para criar renda extra com pouco dinheiro, pouco tempo e sem promessa milagrosa.",
+  programacao: "Entenda programação com linguagem simples, exemplos do dia a dia e foco em lógica antes do código.",
+  trabalho: "Veja como transformar esforço, habilidade e experiência prática em mais valor e mais renda.",
+  financas: "Aprenda a organizar seu dinheiro, cortar desperdícios e tomar decisões melhores mesmo ganhando pouco.",
+  investimentos: "Comece a investir com pouco dinheiro, mais segurança e menos confusão.",
+  economia: "Entenda como inflação, dólar, juros e tributos afetam diretamente seu bolso."
 };
 
-function ensureDataFile() {
+function ensureFiles() {
   const dir = path.dirname(postsFile);
 
   if (!fs.existsSync(dir)) {
@@ -76,22 +77,48 @@ function ensureDataFile() {
   if (!fs.existsSync(postsFile)) {
     fs.writeFileSync(postsFile, JSON.stringify([], null, 2), "utf8");
   }
-}
 
-function readPosts() {
-  ensureDataFile();
-
-  try {
-    const raw = fs.readFileSync(postsFile, "utf8");
-    return raw.trim() ? JSON.parse(raw) : [];
-  } catch {
-    return [];
+  if (!fs.existsSync(stateFile)) {
+    fs.writeFileSync(stateFile, JSON.stringify({ index: 0 }, null, 2), "utf8");
   }
 }
 
+function readJson(file, fallback) {
+  ensureFiles();
+
+  try {
+    const raw = fs.readFileSync(file, "utf8");
+    return raw.trim() ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function writeJson(file, data) {
+  ensureFiles();
+  fs.writeFileSync(file, JSON.stringify(data, null, 2), "utf8");
+}
+
+function readPosts() {
+  return readJson(postsFile, []);
+}
+
 function savePosts(posts) {
-  ensureDataFile();
-  fs.writeFileSync(postsFile, JSON.stringify(posts, null, 2), "utf8");
+  writeJson(postsFile, posts);
+}
+
+function getNextCategory() {
+  const state = readJson(stateFile, { index: 0 });
+  const index = Number.isFinite(Number(state.index)) ? Number(state.index) : 0;
+  const category = categoryCycle[index % categoryCycle.length];
+
+  writeJson(stateFile, {
+    index: index + 1,
+    lastCategory: category,
+    updatedAt: new Date().toISOString()
+  });
+
+  return category;
 }
 
 function slugify(text) {
@@ -103,151 +130,132 @@ function slugify(text) {
     .replace(/(^-|-$)/g, "");
 }
 
-function pickCategory() {
-  const pool = [];
-
-  categories.forEach((cat) => {
-    for (let i = 0; i < cat.weight; i++) {
-      pool.push(cat.name);
-    }
-  });
-
-  return pool[Math.floor(Math.random() * pool.length)];
-}
-
 function pickTitle(category, posts) {
-  const usedTitles = new Set(posts.map((post) => post.title));
+  const used = new Set(posts.map(post => post.title));
   const options = titleBank[category] || titleBank.financas;
+  const available = options.filter(title => !used.has(title));
 
-  const available = options.filter((title) => !usedTitles.has(title));
-
-  if (available.length) {
+  if (available.length > 0) {
     return available[Math.floor(Math.random() * available.length)];
   }
 
-  return `${options[Math.floor(Math.random() * options.length)]} - guia ${Date.now()}`;
+  const base = options[Math.floor(Math.random() * options.length)];
+  return `${base} - guia prático ${new Date().toLocaleDateString("pt-BR")}`;
 }
 
-function buildIntro(category, title) {
-  const intros = {
-    financas: `Muita gente acha que o problema é apenas ganhar pouco. Mas, em muitos casos, o dinheiro também escapa porque ninguém ensinou um método simples de organização.\n\nNeste conteúdo, você vai entender ${title.toLowerCase()} com uma linguagem direta, sem teoria inútil e sem enrolação.`,
-    "renda-extra": `Renda extra não precisa começar com investimento alto nem promessa milagrosa. O começo pode ser simples, pequeno e realista.\n\nAqui você vai ver ${title.toLowerCase()} de um jeito prático, pensando em quem tem pouco tempo e precisa de clareza.`,
-    investimentos: `Investir assusta muita gente porque o assunto costuma ser explicado de forma difícil. Mas o primeiro passo não precisa ser complicado.\n\nNeste guia, você vai entender ${title.toLowerCase()} com foco em segurança, simplicidade e consistência.`,
-    trabalho: `Trabalhar muito nem sempre significa ganhar bem. Às vezes, falta estratégia para transformar esforço em valor percebido.\n\nAqui você vai aprender ${title.toLowerCase()} com exemplos práticos para aplicar na vida real.`,
-    programacao: `Programação não começa no código. Começa na lógica. Antes de decorar comandos, você precisa entender como pensar em passos.\n\nNeste conteúdo, você vai aprender ${title.toLowerCase()} de um jeito simples, quase como explicar para uma criança, mas sem infantilizar.`,
-    economia: `Economia parece distante, mas ela aparece no mercado, no aluguel, no combustível, no cartão e no salário.\n\nAqui você vai entender ${title.toLowerCase()} com foco no impacto real no seu bolso.`
+function buildContent(category, title) {
+  const intro = {
+    "renda-extra": `Renda extra não começa com fórmula mágica. Começa com uma oferta simples, uma dor real e uma ação pequena.\n\nNeste guia, você vai entender ${title.toLowerCase()} com foco em algo aplicável para quem tem pouco tempo, pouco dinheiro e precisa começar sem inventar moda.`,
+    programacao: `Programação parece difícil quando alguém começa pelo código antes de explicar a lógica.\n\nAqui, você vai entender ${title.toLowerCase()} com linguagem simples, como se fosse uma receita: primeiro o passo, depois o comando.`,
+    trabalho: `Trabalhar muito não garante ganhar mais. O segredo é transformar esforço em valor percebido.\n\nNeste conteúdo, você vai entender ${title.toLowerCase()} com exemplos práticos para aplicar no seu dia a dia.`,
+    financas: `Muita gente acha que o problema é só ganhar pouco. Mas, muitas vezes, o dinheiro também escapa por falta de organização.\n\nAqui você vai aprender ${title.toLowerCase()} com um método simples, direto e sem linguagem difícil.`,
+    investimentos: `Investir não precisa começar com muito dinheiro. Precisa começar com clareza, paciência e segurança.\n\nNeste guia, você vai entender ${title.toLowerCase()} sem cair em promessa de dinheiro fácil.`,
+    economia: `Economia não é só assunto de jornal. Ela aparece no mercado, no cartão, no combustível, no aluguel e no salário.\n\nAqui você vai entender ${title.toLowerCase()} de um jeito simples e conectado com sua vida real.`
   };
 
-  return intros[category] || intros.financas;
-}
+  const pain = {
+    "renda-extra": "A dor principal é depender de uma única renda e perceber que o salário não acompanha o custo de vida.",
+    programacao: "A maior trava do iniciante é achar que precisa entender tudo antes de começar.",
+    trabalho: "A dor principal é trabalhar muito, se cansar muito e mesmo assim não ver crescimento financeiro.",
+    financas: "A maior dor é receber dinheiro e não saber para onde ele foi no fim do mês.",
+    investimentos: "A maior trava é o medo de perder dinheiro ou investir em algo que não entende.",
+    economia: "A dor principal é sentir que tudo ficou mais caro, mas não entender exatamente por quê."
+  };
 
-function buildSteps(category) {
   const steps = {
-    financas: [
-      "Anote tudo que entra e tudo que sai.",
-      "Separe gastos essenciais, importantes e desnecessários.",
-      "Corte primeiro os vazamentos pequenos que se repetem.",
-      "Defina um valor mínimo para guardar, mesmo que seja pouco.",
-      "Revise sua vida financeira uma vez por semana."
-    ],
     "renda-extra": [
-      "Escolha uma habilidade simples que você já tem.",
-      "Transforme essa habilidade em uma oferta pequena.",
-      "Divulgue para pessoas próximas e nas redes sociais.",
-      "Comece com preço acessível para validar a ideia.",
-      "Melhore a entrega e repita o processo."
-    ],
-    investimentos: [
-      "Organize sua vida financeira antes de investir.",
-      "Monte uma pequena reserva de emergência.",
-      "Entenda o risco antes de olhar rendimento.",
-      "Comece com valores pequenos e constantes.",
-      "Evite promessas de ganho rápido."
-    ],
-    trabalho: [
-      "Identifique o que você faz melhor que a média.",
-      "Procure problemas que você consegue resolver.",
-      "Mostre resultado, não apenas esforço.",
-      "Aprenda uma habilidade que aumente seu valor.",
-      "Documente seus projetos e conquistas."
+      "Escolha uma habilidade, produto ou serviço simples.",
+      "Valide com pessoas próximas antes de gastar dinheiro.",
+      "Crie uma oferta clara: o que você faz, para quem faz e quanto custa.",
+      "Divulgue em grupos, redes sociais e contatos diretos.",
+      "Melhore a entrega e repita o que funcionar."
     ],
     programacao: [
       "Entenda o problema antes de escrever código.",
       "Divida o problema em passos pequenos.",
-      "Transforme cada passo em uma instrução simples.",
+      "Transforme cada passo em uma instrução.",
       "Teste uma parte de cada vez.",
       "Erre, corrija e repita sem desespero."
     ],
+    trabalho: [
+      "Identifique o que você faz melhor que a média.",
+      "Observe problemas que você consegue resolver.",
+      "Mostre resultados, não apenas esforço.",
+      "Aprenda uma habilidade que aumente seu valor.",
+      "Registre suas entregas para usar como prova."
+    ],
+    financas: [
+      "Anote tudo que entra e tudo que sai.",
+      "Separe gastos essenciais, importantes e desnecessários.",
+      "Corte pequenos vazamentos que se repetem todo mês.",
+      "Defina uma meta simples para a semana.",
+      "Revise seus gastos uma vez por semana."
+    ],
+    investimentos: [
+      "Organize sua vida financeira antes de investir.",
+      "Monte uma reserva de emergência aos poucos.",
+      "Entenda risco antes de olhar rendimento.",
+      "Comece com pouco e mantenha constância.",
+      "Fuja de promessas de ganho rápido."
+    ],
     economia: [
-      "Observe o preço das coisas no dia a dia.",
-      "Compare inflação oficial com sua realidade.",
-      "Entenda como juros afetam dívidas e compras.",
-      "Veja como dólar muda produtos importados e alimentos.",
-      "Use informação econômica para tomar decisões melhores."
+      "Observe preços no mercado e no transporte.",
+      "Compare seu salário com seu custo real de vida.",
+      "Entenda como juros afetam dívidas.",
+      "Veja como dólar influencia produtos e alimentos.",
+      "Use os dados para decidir melhor."
     ]
   };
 
-  return steps[category] || steps.financas;
-}
-
-function buildExamples(category) {
   const examples = {
-    financas: "Exemplo: se você gasta R$12 por dia em algo que poderia reduzir, isso vira cerca de R$360 por mês. Às vezes, o dinheiro não falta de uma vez. Ele vaza em pequenas decisões repetidas.",
-    "renda-extra": "Exemplo: uma pessoa que sabe fazer arte simples no Canva pode começar oferecendo cardápios, posts e banners para pequenos negócios do bairro.",
-    investimentos: "Exemplo: investir R$100 por mês pode parecer pouco, mas cria hábito. O hábito vem antes do grande patrimônio.",
-    trabalho: "Exemplo: se você trabalha no campo, em obra, comércio ou serviço, pode transformar sua experiência em conteúdo, consultoria simples ou prestação de serviço melhor organizada.",
-    programacao: "Exemplo: criar um botão em um site é como criar uma campainha. A pessoa aperta e alguma coisa acontece. Esse é o raciocínio por trás do código.",
-    economia: "Exemplo: quando a inflação sobe, seu salário compra menos. Mesmo que o número na conta seja o mesmo, o poder real do dinheiro diminui."
+    "renda-extra": "Exemplo: se você sabe editar imagens simples, pode oferecer posts para pequenos negócios da sua cidade.",
+    programacao: "Exemplo: um botão em um site é como uma campainha. A pessoa clica e alguma coisa acontece.",
+    trabalho: "Exemplo: alguém que trabalha no campo, comércio ou construção pode transformar experiência prática em conteúdo, serviço ou consultoria simples.",
+    financas: "Exemplo: R$15 por dia parecem pouco, mas viram cerca de R$450 por mês.",
+    investimentos: "Exemplo: investir R$100 por mês cria hábito. O hábito vem antes do patrimônio grande.",
+    economia: "Exemplo: quando a inflação sobe, seu salário compra menos mesmo que o número na conta seja igual."
   };
 
-  return examples[category] || examples.financas;
-}
+  const stepText = (steps[category] || steps.financas)
+    .map((item, index) => `${index + 1}. ${item}`)
+    .join("\n");
 
-function generateContent(category, title) {
-  const intro = buildIntro(category, title);
-  const steps = buildSteps(category);
-  const example = buildExamples(category);
+  return `${intro[category] || intro.financas}
 
-  const stepText = steps.map((step, index) => `${index + 1}. ${step}`).join("\n");
+A dor que esse conteúdo resolve
 
-  return `${intro}
+${pain[category] || pain.financas}
 
-O problema principal
-
-A maior trava não é falta de inteligência. É falta de clareza. Quando um assunto parece difícil demais, a pessoa trava, adia e continua no mesmo lugar.
-
-Por isso, o segredo é simplificar o caminho.
-
-Passo a passo prático
+O passo a passo simples
 
 ${stepText}
 
-Exemplo real
+Exemplo prático
 
-${example}
+${examples[category] || examples.financas}
 
 O que evitar
 
-- Promessas de dinheiro fácil.
-- Comparar sua realidade com a de pessoas que já estão muito à frente.
-- Começar grande demais e desistir rápido.
+- Promessa de dinheiro fácil.
+- Começar grande demais.
+- Comprar curso ou ferramenta antes de entender o básico.
+- Comparar sua realidade com quem já está muito à frente.
 - Consumir conteúdo sem aplicar nada.
-- Achar que uma única decisão vai resolver tudo.
 
 O que fazer hoje
 
-Escolha uma ação pequena deste conteúdo e aplique ainda hoje. Pode ser anotar gastos, pesquisar uma ideia de renda extra, estudar um conceito básico ou organizar uma pequena meta.
+Escolha apenas uma ação deste conteúdo e coloque em prática ainda hoje. Pequenas decisões repetidas vencem grandes planos que nunca saem do papel.
 
 Conclusão
 
-Melhorar de vida não é mágica. É direção, repetição e decisão. Como diz Provérbios 21:5, os planos bem elaborados levam à fartura, mas a pressa excessiva leva à pobreza.
+Melhorar de vida não acontece por mágica. Acontece quando você entende sua realidade, toma decisões melhores e repete o processo com paciência.
 
-Comece pequeno, mas comece com seriedade.`;
+Como diz Provérbios 21:5: os planos bem elaborados levam à fartura, mas a pressa excessiva leva à pobreza.`;
 }
 
 function generatePost() {
   const posts = readPosts();
-  const category = pickCategory();
+  const category = getNextCategory();
   const title = pickTitle(category, posts);
   const now = Date.now();
 
@@ -256,18 +264,15 @@ function generatePost() {
     category,
     title,
     description: descriptions[category] || descriptions.financas,
-    content: generateContent(category, title),
+    content: buildContent(category, title),
     seoTitle: `${title} | Renda Extra Inteligente`,
     seoDescription: descriptions[category] || descriptions.financas,
-    seoKeywords: `${category}, dinheiro, renda extra, finanças pessoais, investimentos, trabalho, programação, educação financeira`,
+    seoKeywords: `${category}, ganhar dinheiro, renda extra, finanças pessoais, programação para iniciantes, investimentos, economia, trabalho`,
     createdAt: new Date().toISOString()
   };
 
   posts.unshift(post);
-
-  const limitedPosts = posts.slice(0, 300);
-
-  savePosts(limitedPosts);
+  savePosts(posts.slice(0, 300));
 
   return post;
 }
