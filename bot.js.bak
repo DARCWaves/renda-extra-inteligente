@@ -217,7 +217,8 @@ async function saveLinkFromUrl(url) {
     category,
     tags,
     active: true,
-    source: "telegram",
+    source: "telegram_link",
+    createdBy: "telegram_bot",
     clicks: 0,
     createdAt: new Date().toISOString()
   };

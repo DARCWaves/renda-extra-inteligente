@@ -12,19 +12,12 @@ const FILE = path.join(__dirname, "data", "affiliate-links.json");
 
 function ensureFile() {
   const dir = path.join(__dirname, "data");
-
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-
-  if (!fs.existsSync(FILE)) {
-    fs.writeFileSync(FILE, JSON.stringify([], null, 2), "utf8");
-  }
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  if (!fs.existsSync(FILE)) fs.writeFileSync(FILE, JSON.stringify([], null, 2), "utf8");
 }
 
 function readAffiliates() {
   ensureFile();
-
   try {
     const raw = fs.readFileSync(FILE, "utf8");
     return raw.trim() ? JSON.parse(raw) : [];
@@ -38,6 +31,11 @@ function saveAffiliates(data) {
   fs.writeFileSync(FILE, JSON.stringify(data, null, 2), "utf8");
 }
 
+function isAdmin(msg) {
+  if (!ADMIN_CHAT_ID) return true;
+  return String(msg.chat.id) === ADMIN_CHAT_ID;
+}
+
 function slugify(text) {
   return String(text || "produto")
     .toLowerCase()
@@ -45,16 +43,28 @@ function slugify(text) {
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "")
-    .slice(0, 70);
+    .slice(0, 80);
 }
 
-function isAdmin(msg) {
-  if (!ADMIN_CHAT_ID) return true;
-  return String(msg.chat.id) === ADMIN_CHAT_ID;
-}
+function extractUrlFromMessage(msg) {
+  const text = msg.text || msg.caption || "";
 
-function extractFirstUrl(text) {
-  const match = String(text || "").match(/https?:\/\/[^\s]+/i);
+  const entities = [
+    ...(msg.entities || []),
+    ...(msg.caption_entities || [])
+  ];
+
+  for (const entity of entities) {
+    if (entity.type === "url") {
+      return text.slice(entity.offset, entity.offset + entity.length).trim();
+    }
+
+    if (entity.type === "text_link" && entity.url) {
+      return entity.url.trim();
+    }
+  }
+
+  const match = text.match(/https?:\/\/[^\s]+/i);
   return match ? match[0].trim() : "";
 }
 
@@ -65,12 +75,12 @@ function cleanText(text) {
     .trim();
 }
 
-function getMeta(html, property) {
+function getMeta(html, key) {
   const patterns = [
-    new RegExp(`<meta[^>]+property=["']${property}["'][^>]+content=["']([^"']+)["'][^>]*>`, "i"),
-    new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+property=["']${property}["'][^>]*>`, "i"),
-    new RegExp(`<meta[^>]+name=["']${property}["'][^>]+content=["']([^"']+)["'][^>]*>`, "i"),
-    new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+name=["']${property}["'][^>]*>`, "i")
+    new RegExp(`<meta[^>]+property=["']${key}["'][^>]+content=["']([^"']+)["'][^>]*>`, "i"),
+    new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+property=["']${key}["'][^>]*>`, "i"),
+    new RegExp(`<meta[^>]+name=["']${key}["'][^>]+content=["']([^"']+)["'][^>]*>`, "i"),
+    new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+name=["']${key}["'][^>]*>`, "i")
   ];
 
   for (const pattern of patterns) {
@@ -81,86 +91,54 @@ function getMeta(html, property) {
   return "";
 }
 
-function getTitle(html) {
-  const ogTitle = getMeta(html, "og:title");
-  if (ogTitle) return ogTitle;
+function extractMercadoLivreId(url) {
+  const decoded = decodeURIComponent(String(url || ""));
 
-  const title = html.match(/<title[^>]*>(.*?)<\/title>/is);
-  return title && title[1] ? cleanText(title[1]) : "";
+  const patterns = [
+    /\/(MLB-\d+)/i,
+    /\b(MLB\d{6,})\b/i,
+    /\bMLB-(\d{6,})\b/i
+  ];
+
+  for (const pattern of patterns) {
+    const found = decoded.match(pattern);
+    if (found) {
+      return found[1].replace("-", "").toUpperCase();
+    }
+  }
+
+  return "";
 }
 
-function getDescription(html) {
-  return (
-    getMeta(html, "og:description") ||
-    getMeta(html, "description") ||
-    "Produto recomendado para quem quer melhorar sua vida financeira."
-  );
-}
-
-function getImage(html, baseUrl) {
-  let image =
-    getMeta(html, "og:image") ||
-    getMeta(html, "twitter:image") ||
-    getMeta(html, "image");
-
-  if (!image) return "";
+async function getMercadoLivreProduct(url) {
+  const id = extractMercadoLivreId(url);
+  if (!id) return null;
 
   try {
-    image = new URL(image, baseUrl).href;
-  } catch {}
+    const response = await axios.get(`https://api.mercadolibre.com/items/${id}`, {
+      timeout: 12000,
+      headers: {
+        "Accept": "application/json"
+      }
+    });
 
-  return image;
-}
+    const data = response.data || {};
 
-function getPrice(html) {
-  const metaPrice =
-    getMeta(html, "product:price:amount") ||
-    getMeta(html, "og:price:amount") ||
-    getMeta(html, "twitter:data1");
-
-  if (metaPrice) {
-    const n = String(metaPrice).replace(/[^\d.,]/g, "");
-    if (n) return n.includes("R$") ? n : `R$ ${n}`;
+    return {
+      title: data.title || "Produto Mercado Livre",
+      description: data.title || "Produto recomendado do Mercado Livre.",
+      image: Array.isArray(data.pictures) && data.pictures[0] ? data.pictures[0].secure_url || data.pictures[0].url : "",
+      price: typeof data.price === "number"
+        ? data.price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+        : "",
+      url
+    };
+  } catch {
+    return null;
   }
-
-  const priceMatch = html.match(/R\$\s?[\d.]+,\d{2}/i);
-  return priceMatch ? priceMatch[0] : "";
 }
 
-function autoCategory(text) {
-  const t = String(text || "").toLowerCase();
-
-  if (t.includes("meia") || t.includes("roupa") || t.includes("revenda") || t.includes("atacado")) return "renda-extra";
-  if (t.includes("livro") || t.includes("curso") || t.includes("educação") || t.includes("financeira")) return "financas";
-  if (t.includes("programação") || t.includes("javascript") || t.includes("python") || t.includes("c#") || t.includes("c sharp")) return "programacao";
-  if (t.includes("furadeira") || t.includes("ferramenta") || t.includes("trabalho")) return "trabalho";
-  if (t.includes("investimento") || t.includes("ações") || t.includes("fii") || t.includes("tesouro")) return "investimentos";
-  if (t.includes("planilha") || t.includes("controle") || t.includes("orçamento")) return "financas";
-
-  return "geral";
-}
-
-function autoTags(text) {
-  const t = String(text || "").toLowerCase();
-  const tags = new Set();
-
-  if (t.includes("meia")) ["meia", "revenda", "renda-extra"].forEach(x => tags.add(x));
-  if (t.includes("roupa")) ["moda", "vestuario", "revenda"].forEach(x => tags.add(x));
-  if (t.includes("furadeira")) ["ferramenta", "trabalho", "casa"].forEach(x => tags.add(x));
-  if (t.includes("livro")) ["livro", "educacao", "financas"].forEach(x => tags.add(x));
-  if (t.includes("planilha")) ["planilha", "controle-financeiro", "financas"].forEach(x => tags.add(x));
-  if (t.includes("programação") || t.includes("javascript")) ["programacao", "tecnologia", "renda-extra"].forEach(x => tags.add(x));
-  if (t.includes("investimento")) ["investimentos", "dinheiro", "renda-fixa"].forEach(x => tags.add(x));
-
-  if (!tags.size) {
-    tags.add("produto");
-    tags.add("recomendado");
-  }
-
-  return Array.from(tags);
-}
-
-async function fetchProductData(url) {
+async function fetchGenericProduct(url) {
   try {
     const response = await axios.get(url, {
       timeout: 12000,
@@ -171,48 +149,90 @@ async function fetchProductData(url) {
       }
     });
 
+    const finalUrl = response.request?.res?.responseUrl || url;
     const html = String(response.data || "");
-    const parsed = new URL(url);
 
-    const title = getTitle(html) || `Produto em ${parsed.hostname.replace("www.", "")}`;
-    const description = getDescription(html);
-    const image = getImage(html, url);
-    const price = getPrice(html);
+    const title =
+      getMeta(html, "og:title") ||
+      (html.match(/<title[^>]*>(.*?)<\/title>/is)?.[1] || "");
+
+    const description =
+      getMeta(html, "og:description") ||
+      getMeta(html, "description") ||
+      "Produto recomendado.";
+
+    const image =
+      getMeta(html, "og:image") ||
+      getMeta(html, "twitter:image") ||
+      "";
+
+    const priceMatch = html.match(/R\$\s?[\d.]+,\d{2}/i);
 
     return {
-      title,
-      description,
+      title: cleanText(title) || "Produto recomendado",
+      description: cleanText(description),
       image,
-      price
+      price: priceMatch ? priceMatch[0] : "",
+      url
     };
   } catch {
-    const parsed = new URL(url);
-
     return {
-      title: `Produto recomendado - ${parsed.hostname.replace("www.", "")}`,
-      description: "Produto recomendado para quem quer melhorar sua renda, organização ou conhecimento.",
+      title: "Produto recomendado",
+      description: "Produto cadastrado pelo Telegram.",
       image: "",
-      price: ""
+      price: "",
+      url
     };
   }
 }
 
+function autoCategory(text) {
+  const t = String(text || "").toLowerCase();
+
+  if (t.includes("cueca") || t.includes("meia") || t.includes("roupa") || t.includes("revenda") || t.includes("atacado")) return "renda-extra";
+  if (t.includes("livro") || t.includes("educação financeira") || t.includes("finanças")) return "financas";
+  if (t.includes("programação") || t.includes("javascript") || t.includes("python") || t.includes("c#")) return "programacao";
+  if (t.includes("ferramenta") || t.includes("furadeira") || t.includes("trabalho")) return "trabalho";
+  if (t.includes("investimento") || t.includes("ações") || t.includes("fii")) return "investimentos";
+
+  return "geral";
+}
+
+function autoTags(text) {
+  const t = String(text || "").toLowerCase();
+  const tags = new Set(["telegram", "produto"]);
+
+  if (t.includes("cueca")) ["cueca", "moda", "revenda"].forEach(x => tags.add(x));
+  if (t.includes("meia")) ["meia", "revenda", "renda-extra"].forEach(x => tags.add(x));
+  if (t.includes("livro")) ["livro", "educacao", "financas"].forEach(x => tags.add(x));
+  if (t.includes("programação")) ["programacao", "tecnologia"].forEach(x => tags.add(x));
+  if (t.includes("planilha")) ["planilha", "controle-financeiro"].forEach(x => tags.add(x));
+
+  return Array.from(tags);
+}
+
+async function buildProductFromUrl(url) {
+  const ml = await getMercadoLivreProduct(url);
+  if (ml) return ml;
+
+  return await fetchGenericProduct(url);
+}
+
 async function saveLinkFromUrl(url) {
-  const product = await fetchProductData(url);
+  const product = await buildProductFromUrl(url);
   const baseText = `${product.title} ${product.description} ${url}`;
   const category = autoCategory(baseText);
   const tags = autoTags(baseText);
+
   const affiliates = readAffiliates();
 
-  const id = `${slugify(product.title)}-${Date.now()}`;
-
   const item = {
-    id,
+    id: `${slugify(product.title)}-${Date.now()}`,
     title: product.title,
     description: product.description,
-    url,
-    image: product.image,
-    price: product.price,
+    url: product.url,
+    image: product.image || "",
+    price: product.price || "",
     badge: "Recomendado",
     category,
     tags,
@@ -250,41 +270,42 @@ function startTelegramBot() {
     bot.sendMessage(msg.chat.id, `
 🤖 Renda Extra Inteligente Bot
 
-Agora ficou simples:
+Envie APENAS o link real do produto.
 
-Envie APENAS o link do produto.
-Eu vou tentar identificar automaticamente:
-
-• título
-• descrição
+Eu vou cadastrar automaticamente:
+• nome
 • imagem
 • preço
 • categoria
-• tags
+• link rastreável
 
-Comandos extras:
+Comandos:
 /list
 /stats
-/toggle ID
 /delete ID
+/toggle ID
     `.trim());
   });
 
   bot.on("message", async (msg) => {
     if (!isAdmin(msg)) return;
 
-    const text = msg.text || "";
+    const text = msg.text || msg.caption || "";
 
     if (text.startsWith("/start") || text.startsWith("/help")) return;
-    if (text.startsWith("/list") || text.startsWith("/stats") || text.startsWith("/toggle") || text.startsWith("/delete")) return;
+    if (text.startsWith("/list") || text.startsWith("/stats") || text.startsWith("/delete") || text.startsWith("/toggle")) return;
 
-    const url = extractFirstUrl(text);
+    const url = extractUrlFromMessage(msg);
 
     if (!url) {
-      return bot.sendMessage(msg.chat.id, "Envie apenas um link de produto para cadastrar automaticamente.");
+      return bot.sendMessage(msg.chat.id, "Envie um link real de produto para cadastrar.");
     }
 
-    const loading = await bot.sendMessage(msg.chat.id, "🔎 Lendo o link e cadastrando produto...");
+    if (url.includes("renda-extra-inteligente.onrender.com")) {
+      return bot.sendMessage(msg.chat.id, "Esse é link do seu próprio site. Envie o link direto do produto.");
+    }
+
+    const loading = await bot.sendMessage(msg.chat.id, "🔎 Lendo o produto e cadastrando...");
 
     try {
       const item = await saveLinkFromUrl(url);
@@ -312,26 +333,27 @@ ${BASE_URL}/out/${item.id}
         await bot.deleteMessage(msg.chat.id, loading.message_id);
       } catch {}
     } catch (err) {
-      bot.sendMessage(msg.chat.id, `❌ Não consegui cadastrar esse link: ${err.message}`);
+      bot.sendMessage(msg.chat.id, `❌ Erro ao cadastrar: ${err.message}`);
     }
   });
 
   bot.onText(/\/list/, (msg) => {
     if (!isAdmin(msg)) return;
 
-    const affiliates = readAffiliates();
+    const affiliates = readAffiliates()
+      .filter(item => item.source === "telegram_link" && item.createdBy === "telegram_bot");
 
     if (!affiliates.length) {
-      return bot.sendMessage(msg.chat.id, "Nenhum produto cadastrado.");
+      return bot.sendMessage(msg.chat.id, "Nenhum produto cadastrado pelo Telegram.");
     }
 
     const text = affiliates.slice(0, 20).map((p, i) => {
       return `${i + 1}. ${p.title}
 ID: ${p.id}
-Categoria: ${p.category}
-Cliques: ${p.clicks || 0}
+Preço: ${p.price || "não identificado"}
 Imagem: ${p.image ? "sim" : "não"}
-Ativo: ${p.active ? "sim" : "não"}`;
+Categoria: ${p.category}
+Cliques: ${p.clicks || 0}`;
     }).join("\n\n");
 
     bot.sendMessage(msg.chat.id, text);
@@ -340,41 +362,21 @@ Ativo: ${p.active ? "sim" : "não"}`;
   bot.onText(/\/stats/, (msg) => {
     if (!isAdmin(msg)) return;
 
-    const affiliates = readAffiliates();
+    const affiliates = readAffiliates()
+      .filter(item => item.source === "telegram_link" && item.createdBy === "telegram_bot")
+      .sort((a, b) => Number(b.clicks || 0) - Number(a.clicks || 0));
 
     if (!affiliates.length) {
       return bot.sendMessage(msg.chat.id, "Nenhum dado ainda.");
     }
 
-    const sorted = affiliates
-      .slice()
-      .sort((a, b) => Number(b.clicks || 0) - Number(a.clicks || 0))
-      .slice(0, 15);
-
-    const text = sorted.map((p, i) => {
+    const text = affiliates.slice(0, 15).map((p, i) => {
       return `${i + 1}. ${p.title}
 Cliques: ${p.clicks || 0}
-Categoria: ${p.category}`;
+Preço: ${p.price || "não identificado"}`;
     }).join("\n\n");
 
     bot.sendMessage(msg.chat.id, `📊 Ranking de cliques:\n\n${text}`);
-  });
-
-  bot.onText(/\/toggle\s+(.+)/, (msg, match) => {
-    if (!isAdmin(msg)) return;
-
-    const id = match[1].trim();
-    const affiliates = readAffiliates();
-    const item = affiliates.find(p => p.id === id);
-
-    if (!item) {
-      return bot.sendMessage(msg.chat.id, "❌ Produto não encontrado.");
-    }
-
-    item.active = !item.active;
-    saveAffiliates(affiliates);
-
-    bot.sendMessage(msg.chat.id, `✅ Produto agora está: ${item.active ? "ATIVO" : "INATIVO"}`);
   });
 
   bot.onText(/\/delete\s+(.+)/, (msg, match) => {
@@ -385,19 +387,35 @@ Categoria: ${p.category}`;
     const next = affiliates.filter(p => p.id !== id);
 
     if (next.length === affiliates.length) {
-      return bot.sendMessage(msg.chat.id, "❌ Produto não encontrado.");
+      return bot.sendMessage(msg.chat.id, "Produto não encontrado.");
     }
 
     saveAffiliates(next);
-    bot.sendMessage(msg.chat.id, "🗑️ Produto removido.");
+    bot.sendMessage(msg.chat.id, "Produto removido.");
+  });
+
+  bot.onText(/\/toggle\s+(.+)/, (msg, match) => {
+    if (!isAdmin(msg)) return;
+
+    const id = match[1].trim();
+    const affiliates = readAffiliates();
+    const item = affiliates.find(p => p.id === id);
+
+    if (!item) {
+      return bot.sendMessage(msg.chat.id, "Produto não encontrado.");
+    }
+
+    item.active = !item.active;
+    saveAffiliates(affiliates);
+
+    bot.sendMessage(msg.chat.id, `Produto agora está: ${item.active ? "ATIVO" : "INATIVO"}`);
   });
 
   bot.on("polling_error", (err) => {
     console.log("Erro polling Telegram:", err.message);
   });
 
-  console.log("🤖 Telegram bot iniciado em modo automático.");
-
+  console.log("🤖 Telegram bot iniciado corretamente.");
   return bot;
 }
 
@@ -405,6 +423,4 @@ if (require.main === module) {
   startTelegramBot();
 }
 
-module.exports = {
-  startTelegramBot
-};
+module.exports = { startTelegramBot };
