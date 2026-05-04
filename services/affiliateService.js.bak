@@ -38,26 +38,30 @@ function normalizeText(text) {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
+function normalizeProduct(item) {
+  return {
+    id: item.id,
+    title: item.title,
+    description: item.description || "Produto recomendado.",
+    url: item.url,
+    image: item.image || "",
+    price: item.price || "",
+    badge: item.badge || "Recomendado",
+    category: item.category || "geral",
+    tags: Array.isArray(item.tags) ? item.tags : [],
+    clicks: Number(item.clicks || 0),
+    active: item.active !== false,
+    source: item.source || "",
+    createdAt: item.createdAt || new Date().toISOString()
+  };
+}
+
 function onlyTelegramProducts() {
   return readAffiliates()
     .filter(item => item && item.active !== false)
     .filter(item => item.url && item.title)
     .filter(item => item.source === "telegram")
-    .map(item => ({
-      id: item.id,
-      title: item.title,
-      description: item.description || "Produto recomendado.",
-      url: item.url,
-      image: item.image || "",
-      price: item.price || "",
-      badge: item.badge || "Recomendado",
-      category: item.category || "geral",
-      tags: Array.isArray(item.tags) ? item.tags : [],
-      clicks: Number(item.clicks || 0),
-      active: item.active !== false,
-      source: item.source || "telegram",
-      createdAt: item.createdAt || new Date().toISOString()
-    }));
+    .map(normalizeProduct);
 }
 
 function getActiveAffiliates(limit = 8) {
@@ -70,6 +74,11 @@ function getActiveAffiliate() {
 
 function getAffiliatesForContext(context = "", limit = 8) {
   const products = onlyTelegramProducts();
+
+  if (!products.length) {
+    return [];
+  }
+
   const query = normalizeText(context);
 
   const scored = products.map(item => {
@@ -84,13 +93,15 @@ function getAffiliatesForContext(context = "", limit = 8) {
 
     if (query && text) {
       query.split(/\s+/).forEach(word => {
-        if (word.length > 2 && text.includes(word)) score += 1;
+        if (word.length > 2 && text.includes(word)) {
+          score += 1;
+        }
       });
     }
 
-    if (item.image) score += 2;
+    if (item.image) score += 3;
     if (item.price) score += 1;
-    if (item.clicks) score += Math.min(item.clicks, 10) / 10;
+    if (item.clicks) score += Math.min(Number(item.clicks || 0), 10) / 10;
 
     return { item, score };
   });

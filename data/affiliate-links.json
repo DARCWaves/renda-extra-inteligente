@@ -13,7 +13,11 @@
     ],
     "active": true,
     "clicks": 1,
-    "createdAt": "2026-04-25T07:38:41.443Z"
+    "createdAt": "2026-04-25T07:38:41.443Z",
+    "source": "telegram",
+    "badge": "Recomendado",
+    "image": "",
+    "price": ""
   },
   {
     "id": "livro-educacao-financeira",
@@ -29,7 +33,11 @@
     ],
     "active": true,
     "clicks": 0,
-    "createdAt": "2026-04-25T07:38:41.443Z"
+    "createdAt": "2026-04-25T07:38:41.443Z",
+    "source": "telegram",
+    "badge": "Recomendado",
+    "image": "",
+    "price": ""
   },
   {
     "id": "kit-meias-revenda",
@@ -45,6 +53,10 @@
     ],
     "active": true,
     "clicks": 0,
-    "createdAt": "2026-04-25T07:38:41.443Z"
+    "createdAt": "2026-04-25T07:38:41.443Z",
+    "source": "telegram",
+    "badge": "Recomendado",
+    "image": "",
+    "price": ""
   }
 ]

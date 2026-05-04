@@ -31,17 +31,10 @@ function saveAffiliates(data) {
   fs.writeFileSync(FILE, JSON.stringify(data, null, 2), "utf8");
 }
 
-function normalizeText(text) {
-  return String(text || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
-}
-
 function normalizeProduct(item) {
   return {
     id: item.id,
-    title: item.title,
+    title: item.title || "Produto recomendado",
     description: item.description || "Produto recomendado.",
     url: item.url,
     image: item.image || "",
@@ -51,75 +44,41 @@ function normalizeProduct(item) {
     tags: Array.isArray(item.tags) ? item.tags : [],
     clicks: Number(item.clicks || 0),
     active: item.active !== false,
-    source: item.source || "",
+    source: item.source || "telegram",
     createdAt: item.createdAt || new Date().toISOString()
   };
 }
 
-function onlyTelegramProducts() {
+function getTelegramProducts() {
   return readAffiliates()
     .filter(item => item && item.active !== false)
     .filter(item => item.url && item.title)
-    .filter(item => item.source === "telegram")
-    .map(normalizeProduct);
+    .filter(item => !item.source || item.source === "telegram")
+    .map(normalizeProduct)
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 }
 
-function getActiveAffiliates(limit = 8) {
-  return onlyTelegramProducts().slice(0, limit);
+function getActiveAffiliates(limit = 12) {
+  return getTelegramProducts().slice(0, limit);
 }
 
 function getActiveAffiliate() {
   return getActiveAffiliates(1)[0] || null;
 }
 
-function getAffiliatesForContext(context = "", limit = 8) {
-  const products = onlyTelegramProducts();
-
-  if (!products.length) {
-    return [];
-  }
-
-  const query = normalizeText(context);
-
-  const scored = products.map(item => {
-    const text = normalizeText([
-      item.title,
-      item.description,
-      item.category,
-      ...(item.tags || [])
-    ].join(" "));
-
-    let score = 0;
-
-    if (query && text) {
-      query.split(/\s+/).forEach(word => {
-        if (word.length > 2 && text.includes(word)) {
-          score += 1;
-        }
-      });
-    }
-
-    if (item.image) score += 3;
-    if (item.price) score += 1;
-    if (item.clicks) score += Math.min(Number(item.clicks || 0), 10) / 10;
-
-    return { item, score };
-  });
-
-  return scored
-    .sort((a, b) => b.score - a.score)
-    .map(row => row.item)
-    .slice(0, limit);
+function getAffiliatesForContext(context = "", limit = 12) {
+  return getActiveAffiliates(limit);
 }
 
 function registerAffiliateClick(id, meta = {}) {
   const affiliates = readAffiliates();
   const item = affiliates.find(product => product.id === id);
 
-  if (!item || item.active === false || !item.url || item.source !== "telegram") {
+  if (!item || item.active === false || !item.url) {
     return null;
   }
 
+  item.source = item.source || "telegram";
   item.clicks = Number(item.clicks || 0) + 1;
   item.lastClickAt = new Date().toISOString();
   item.lastClickMeta = {
@@ -135,7 +94,7 @@ function registerAffiliateClick(id, meta = {}) {
 }
 
 function getAffiliateStats() {
-  return onlyTelegramProducts()
+  return getTelegramProducts()
     .slice()
     .sort((a, b) => Number(b.clicks || 0) - Number(a.clicks || 0));
 }
