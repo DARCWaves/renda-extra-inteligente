@@ -5,16 +5,13 @@
 
   <title><%= title || appName %></title>
 
-  <meta name="description" content="<%= description || 'Finanças, renda extra e estratégia real para crescer na vida.' %>">
+  <meta name="description" content="<%= description || 'Estratégias reais para ganhar dinheiro, organizar sua vida financeira e evoluir.' %>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- FAVICON (GOOGLE) -->
+  <!-- FAVICON -->
   <link rel="icon" type="image/png" href="/favicon.png">
-  <link rel="shortcut icon" href="/favicon.png">
 
-  <meta name="theme-color" content="#0b0b0f">
-
-  <!-- ESTILO -->
+  <!-- CSS -->
   <link rel="stylesheet" href="/style.css">
 
   <% if (adsenseClient) { %>
@@ -27,21 +24,24 @@
 
 <body>
 
-<header class="header-premium">
+<header class="header-saas">
 
-  <div class="logo-box">
-    <img src="/logo.png" alt="Renda Extra Inteligente">
-    <span>Renda Extra</span>
+  <div class="logo-area">
+    <img src="/logo.png" alt="Logo">
+    <div class="logo-text">
+      <strong>Renda Extra</strong>
+      <span>Inteligente</span>
+    </div>
   </div>
 
-  <nav>
+  <nav class="nav-saas">
     <a href="/">Home</a>
     <a href="/posts">Conteúdos</a>
     <a href="/categoria/renda-extra">Renda Extra</a>
     <a href="/categoria/financas">Finanças</a>
     <a href="/categoria/programacao">Programação</a>
     <a href="/indicadores">Indicadores</a>
-<a href="/ofertas">Ofertas</a>
+    <a href="/ofertas" class="cta-nav">Ofertas</a>
   </nav>
 
 </header>
@@ -50,7 +50,7 @@
   <%- body %>
 </main>
 
-<footer>
+<footer class="footer-saas">
   <p>© <%= new Date().getFullYear() %> - <%= appName %></p>
 </footer>
 

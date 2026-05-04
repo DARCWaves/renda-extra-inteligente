@@ -6,63 +6,83 @@
 }
 
 body {
-  background: linear-gradient(180deg, #050507, #0b0b0f);
-  color: #ffffff;
-  font-family: "Inter", Arial, sans-serif;
+  font-family: "Inter", sans-serif;
+  color: #fff;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(212,175,55,0.15), transparent),
+    radial-gradient(circle at 80% 100%, rgba(255,255,255,0.05), transparent),
+    #050507;
 }
 
 /* HEADER */
 
-.header-premium {
+.header-saas {
   position: sticky;
   top: 0;
   z-index: 1000;
   padding: 16px 24px;
-  background: rgba(10,10,15,0.9);
-  backdrop-filter: blur(18px);
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  background: rgba(10,10,15,0.7);
+  backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
-.logo-box {
+/* LOGO */
+
+.logo-area {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.logo-box img {
+.logo-area img {
   height: 38px;
 }
 
-.logo-box span {
-  font-weight: 900;
-  letter-spacing: 1px;
-  background: linear-gradient(90deg,#ffffff,#d4af37);
+.logo-text strong {
+  display: block;
+  font-size: 14px;
+  background: linear-gradient(90deg,#fff,#d4af37);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* NAV */
-
-nav {
-  display: flex;
-  gap: 10px;
+.logo-text span {
+  font-size: 11px;
+  color: #aaa;
 }
 
-nav a {
-  color: #aaa;
-  text-decoration: none;
+/* NAV */
+
+.nav-saas {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.nav-saas a {
   padding: 8px 12px;
   border-radius: 999px;
-  font-size: 14px;
+  text-decoration: none;
+  font-size: 13px;
+  color: #aaa;
   transition: 0.2s;
 }
 
-nav a:hover {
-  background: linear-gradient(90deg,#d4af37,#ffffff);
-  color: #000;
+.nav-saas a:hover {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+}
+
+/* CTA NAV */
+
+.cta-nav {
+  background: linear-gradient(90deg,#d4af37,#fff);
+  color: #000 !important;
+  font-weight: bold;
 }
 
 /* MAIN */
@@ -70,76 +90,109 @@ nav a:hover {
 main {
   max-width: 1100px;
   margin: auto;
-  padding: 30px 16px;
+  padding: 32px 16px;
 }
 
 /* SECTIONS */
 
 section {
-  margin-bottom: 30px;
-  padding: 24px;
+  margin-bottom: 28px;
+  padding: 22px;
   border-radius: 20px;
+
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.05);
+
+  backdrop-filter: blur(8px);
 }
 
-/* TITLES */
+/* HERO */
 
-h2 {
-  font-size: 32px;
-  margin-bottom: 10px;
+.hero-home {
+  padding: 32px;
+  background:
+    linear-gradient(135deg, rgba(212,175,55,0.15), rgba(255,255,255,0.03)),
+    rgba(255,255,255,0.02);
+
+  border: 1px solid rgba(212,175,55,0.2);
 }
 
-h3 {
-  font-size: 22px;
-  margin-bottom: 10px;
+.hero-home h2 {
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+
+.hero-home p {
+  color: #ccc;
+  max-width: 600px;
 }
 
 /* BOTÕES */
 
 .btn-primary {
   display: inline-block;
-  padding: 12px 18px;
+  margin-top: 12px;
+  padding: 10px 18px;
   border-radius: 999px;
-  background: linear-gradient(90deg,#d4af37,#ffffff);
+
+  background: linear-gradient(90deg,#d4af37,#fff);
   color: #000;
   font-weight: bold;
   text-decoration: none;
 }
 
 .btn-primary:hover {
-  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* POSTS */
+
+.post-preview {
+  padding: 18px;
+  border-radius: 16px;
+
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.05);
+
+  transition: 0.2s;
+}
+
+.post-preview:hover {
+  border-color: rgba(212,175,55,0.4);
+}
+
+.post-preview h4 {
+  margin-bottom: 6px;
+}
+
+/* GRID */
+
+.indicator-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
 }
 
 /* CARDS */
 
-.post-preview {
-  background: rgba(255,255,255,0.04);
-  padding: 20px;
+.indicator-card {
+  padding: 16px;
   border-radius: 16px;
-  margin-bottom: 16px;
+
+  background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.05);
 }
 
-.post-preview:hover {
-  border-color: rgba(212,175,55,0.6);
-}
-
-/* TAG */
-
-.categoria-tag {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(212,175,55,0.15);
+.indicator-card strong {
+  display: block;
+  margin: 10px 0;
+  font-size: 20px;
   color: #d4af37;
-  font-size: 12px;
 }
 
 /* FOOTER */
 
-footer {
+.footer-saas {
   text-align: center;
   padding: 40px 0;
   color: #777;
