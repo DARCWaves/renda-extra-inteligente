@@ -454,29 +454,120 @@ CATEGORIAS
 
 app.get("/categoria/:categoria", (req, res) => {
   try {
-    const categoria = req.params.categoria;
+    const categoriaOriginal = req.params.categoria || "financas";
+    const categoria = normalizeCategory(categoriaOriginal);
 
-    const posts = safeArray(getPostsByCategory(categoria));
+    let posts = [];
+
+    try {
+      posts = safeArray(getPostsByCategory(categoria));
+    } catch (err) {
+      console.log("⚠️ getPostsByCategory falhou, usando fallback:", err.message);
+      posts = [];
+    }
+
+    if (!posts.length) {
+      try {
+        const allPostsRaw = getAllPosts();
+        const allPosts = Array.isArray(allPostsRaw)
+          ? allPostsRaw
+          : Array.isArray(allPostsRaw?.data)
+          ? allPostsRaw.data
+          : [];
+
+        posts = allPosts.filter((post) => {
+          const postCategory = normalizeCategory(post.category || "");
+          return postCategory === categoria;
+        });
+      } catch (err) {
+        console.log("⚠️ fallback getAllPosts falhou:", err.message);
+        posts = [];
+      }
+    }
+
+    const categoryMap = {
+      financas: {
+        title: "Finanças pessoais",
+        description: "Conteúdos sobre controle financeiro, dívidas, orçamento, gastos invisíveis e organização do dinheiro.",
+        headline: "Organize seu dinheiro sem complicação"
+      },
+      "renda-extra": {
+        title: "Renda extra",
+        description: "Ideias reais para ganhar mais dinheiro começando pequeno e sem promessa milagrosa.",
+        headline: "Crie novas fontes de renda com passos simples"
+      },
+      investimentos: {
+        title: "Investimentos",
+        description: "Conteúdos para começar a investir com pouco dinheiro, segurança e clareza.",
+        headline: "Comece a investir com consciência"
+      },
+      programacao: {
+        title: "Programação simples",
+        description: "Aprenda lógica, criação de sites e programação com linguagem fácil para iniciantes.",
+        headline: "Aprenda programação sem travar na lógica"
+      },
+      trabalho: {
+        title: "Trabalho e renda",
+        description: "Conteúdos para transformar esforço, experiência e habilidade em mais valor e renda.",
+        headline: "Transforme trabalho em crescimento"
+      },
+      economia: {
+        title: "Economia real",
+        description: "Entenda dólar, inflação, Selic e decisões econômicas pelo impacto no seu bolso.",
+        headline: "Entenda a economia que pesa no seu bolso"
+      },
+      noticias: {
+        title: "Notícias financeiras",
+        description: "Notícias e leituras simples sobre economia, dinheiro e renda.",
+        headline: "Notícias que impactam seu dinheiro"
+      }
+    };
+
+    const info = categoryMap[categoria] || {
+      title: categoriaOriginal,
+      description: "Conteúdos simples e práticos para melhorar sua vida financeira.",
+      headline: "Conteúdos práticos para sua vida"
+    };
 
     const affiliates = safeArray(
       getAffiliatesForContext(
-        `${categoria} finanças renda extra investimentos economia dinheiro`,
+        categoria + " " + info.description + " dinheiro renda extra finanças programação trabalho investimentos",
         8
       )
     );
 
     return res.render("category", {
-      title: `Categoria: ${categoria}`,
-      description: "Conteúdos financeiros filtrados por categoria.",
+      title: info.title + " | " + APP_NAME,
+      description: info.description,
       posts,
       categoria,
-      affiliates
+      categoriaOriginal,
+      info,
+      affiliates,
+      adsenseClient: ADSENSE_CLIENT,
+      adsenseSlot: ADSENSE_SLOT
     });
   } catch (err) {
     console.error("ERRO CATEGORIA:", err);
-    return res.status(500).send("Erro do Servidor Interno");
+
+    return res.status(500).render("category", {
+      title: "Categoria em manutenção | " + APP_NAME,
+      description: "Esta categoria está sendo ajustada.",
+      posts: [],
+      categoria: "financas",
+      categoriaOriginal: "financas",
+      info: {
+        title: "Categoria em manutenção",
+        description: "Estamos ajustando esta categoria para manter a qualidade.",
+        headline: "Categoria em manutenção"
+      },
+      affiliates: [],
+      adsenseClient: ADSENSE_CLIENT,
+      adsenseSlot: ADSENSE_SLOT
+    });
   }
 });
+
 /*
 ==================================================
 AFILIADOS - TRACKING

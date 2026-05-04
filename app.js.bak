@@ -386,28 +386,39 @@ POST INDIVIDUAL
 
 app.get("/post/:slug", (req, res) => {
   try {
-    const post = getPostBySlug(req.params.slug);
+    const rawPost = getPostBySlug(req.params.slug);
 
-    if (!post) {
+    if (!rawPost) {
       return res.status(404).send("Post não encontrado");
     }
 
-    const context = `
-      ${post.title || ""}
-      ${post.description || ""}
-      ${post.category || ""}
-      ${post.content || ""}
-      finanças renda extra investimentos economia dinheiro
-    `;
+    const post = {
+      slug: rawPost.slug || req.params.slug,
+      title: rawPost.title || "Conteúdo sobre finanças",
+      description: rawPost.description || rawPost.seoDescription || "Conteúdo educativo, simples e prático.",
+      seoTitle: rawPost.seoTitle || rawPost.title || APP_NAME,
+      seoDescription: rawPost.seoDescription || rawPost.description || "Conteúdo sobre finanças pessoais, renda extra e economia.",
+      category: rawPost.category || "financas",
+      content: rawPost.content || "Conteúdo em atualização.",
+      image: rawPost.image || "",
+      imageAlt: rawPost.imageAlt || rawPost.title || "Imagem do conteúdo",
+      createdAt: rawPost.createdAt || new Date().toISOString(),
+      updatedAt: rawPost.updatedAt || rawPost.createdAt || new Date().toISOString()
+    };
+
+    const context = [
+      post.title,
+      post.description,
+      post.category,
+      post.content,
+      "finanças renda extra investimentos economia dinheiro"
+    ].join(" ");
 
     const affiliates = safeArray(getAffiliatesForContext(context, 8));
 
     return res.render("post", {
-      title: post.seoTitle || post.title || APP_NAME,
-      description:
-        post.seoDescription ||
-        post.description ||
-        "Conteúdo sobre finanças pessoais, renda extra e economia.",
+      title: post.seoTitle,
+      description: post.seoDescription,
       post,
       affiliates,
       adsenseClient: ADSENSE_CLIENT,
@@ -415,9 +426,26 @@ app.get("/post/:slug", (req, res) => {
     });
   } catch (err) {
     console.error("ERRO POST:", err);
-    return res.status(500).send("Erro do Servidor Interno");
+
+    return res.status(500).render("post", {
+      title: "Conteúdo em manutenção",
+      description: "Este conteúdo está sendo ajustado.",
+      post: {
+        title: "Conteúdo em manutenção",
+        description: "Estamos ajustando este conteúdo para manter a qualidade.",
+        category: "financas",
+        content: "Este conteúdo apresentou um erro temporário. Volte em instantes ou acesse outros conteúdos do site.",
+        image: "",
+        imageAlt: "",
+        createdAt: new Date().toISOString()
+      },
+      affiliates: [],
+      adsenseClient: ADSENSE_CLIENT,
+      adsenseSlot: ADSENSE_SLOT
+    });
   }
 });
+
 /*
 ==================================================
 CATEGORIAS
