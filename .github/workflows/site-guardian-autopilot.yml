@@ -1,0 +1,56 @@
+name: Site Guardian Autopilot
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  guardian:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Site Agent
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GUARDIAN_TELEGRAM_BOT_TOKEN: ${{ secrets.GUARDIAN_TELEGRAM_BOT_TOKEN }}
+          GUARDIAN_TELEGRAM_CHAT_ID: ${{ secrets.GUARDIAN_TELEGRAM_CHAT_ID }}
+        run: npm run agent
+
+      - name: Process reminders
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GUARDIAN_TELEGRAM_BOT_TOKEN: ${{ secrets.GUARDIAN_TELEGRAM_BOT_TOKEN }}
+          GUARDIAN_TELEGRAM_CHAT_ID: ${{ secrets.GUARDIAN_TELEGRAM_CHAT_ID }}
+        run: npm run proposals_tick
+
+      - name: Run Guardian
+        run: npm run guardian
+
+      - name: Commit safe state changes
+        run: |
+          git config user.name "site-guardian-bot"
+          git config user.email "site-guardian-bot@users.noreply.github.com"
+          git add data scripts package.json .github/workflows || true
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "guardian autopilot update"
+            git push
+          fi

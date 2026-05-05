@@ -1,0 +1,65 @@
+{
+  "mode": "automatic_with_guardrails",
+  "language": "pt-BR",
+  "ownerApprovalRequired": true,
+  "protectedFiles": [
+    "app.js",
+    "main.js",
+    "views/layout.ejs",
+    "views/home.ejs",
+    "views/posts.ejs",
+    "views/category.ejs",
+    "views/post.ejs",
+    "public/style.css",
+    "services/seoSitemapService.js",
+    "services/postService.js",
+    "services/contentStrategyService.js",
+    "autoContent.js",
+    "package.json"
+  ],
+  "criticalAreas": [
+    "rotas",
+    "backend",
+    "app.js",
+    "deploy",
+    "AdSense",
+    "SEO técnico",
+    "sitemap",
+    "robots",
+    "layout global",
+    "migração de linguagem",
+    "banco de dados"
+  ],
+  "urgencyRules": {
+    "critical": {
+      "expires": false,
+      "reminderEveryHours": 6,
+      "canAutoReject": false,
+      "canAutoApply": false,
+      "requiresExplicitApproval": true
+    },
+    "high": {
+      "expiresAfterDays": 7,
+      "reminderEveryHours": 12,
+      "canAutoReject": false,
+      "canAutoApply": false,
+      "requiresExplicitApproval": true
+    },
+    "medium": {
+      "expiresAfterDays": 4,
+      "reminderEveryHours": 24,
+      "canAutoReject": true,
+      "canAutoApply": false,
+      "requiresExplicitApproval": true
+    },
+    "low": {
+      "expiresAfterDays": 2,
+      "reminderEveryHours": 24,
+      "firstExpirationAction": "needs_review",
+      "secondExpirationAction": "auto_rejected",
+      "canAutoReject": true,
+      "canAutoApply": false,
+      "requiresExplicitApproval": true
+    }
+  }
+}

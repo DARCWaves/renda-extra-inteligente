@@ -5,7 +5,14 @@
   "main": "index.js",
   "scripts": {
     "start": "node main.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "guardian": "node scripts/site-guardian.js",
+    "agent": "node scripts/site-agent.js",
+    "proposals": "node scripts/proposal-manager.js list",
+    "proposals_tick": "node scripts/proposal-manager.js tick",
+    "guardian_bot": "node scripts/guardian-telegram-bot.js",
+    "guardian_worker": "node scripts/guardian-worker.js",
+    "predeploy": "node scripts/site-guardian.js"
   },
   "keywords": [],
   "author": "",

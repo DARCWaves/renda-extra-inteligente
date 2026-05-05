@@ -1,0 +1,29 @@
+{
+  "ok": false,
+  "passed": [
+    "app.js existe.",
+    "app.js sem erro de sintaxe.",
+    "app.js não referencia home.html.",
+    "Rota /sitemap.xml única.",
+    "Rota /robots.txt sem duplicação crítica.",
+    "Nenhum sendFile problemático em views detectado.",
+    "data/posts.json válido.",
+    "seoSitemapService sem erro de sintaxe.",
+    "Sitemap XML válido.",
+    "Robots aponta para sitemap.xml.",
+    "ads.txt detectado.",
+    "views/home.ejs existe.",
+    "views/posts.ejs existe.",
+    "views/category.ejs existe.",
+    "views/post.ejs existe."
+  ],
+  "warnings": [],
+  "failures": [
+    "Categoria obrigatória sem conteúdo: financas."
+  ],
+  "categoryCount": {
+    "programacao": 4,
+    "renda-extra": 14
+  },
+  "checkedAt": "2026-05-05T16:23:00.555Z"
+}

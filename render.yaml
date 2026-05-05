@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: renda-extra-inteligente
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+
+  - type: worker
+    name: renda-extra-inteligente-guardian
+    env: node
+    buildCommand: npm install
+    startCommand: npm run guardian_worker
+    envVars:
+      - key: ENABLE_GUARDIAN_TELEGRAM
+        value: "true"
+      - key: GUARDIAN_CHECK_INTERVAL_MINUTES
+        value: "60"
+      - key: GUARDIAN_AGENT_INTERVAL_MINUTES
+        value: "180"
+      - key: GUARDIAN_REMINDER_INTERVAL_MINUTES
+        value: "15"
