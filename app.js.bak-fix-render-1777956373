@@ -4,7 +4,7 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
-const { generateSitemapXml, generateRobotsTxt } = require("./services/seoSitemapService");
+const { generateSitemap } = require("./sitemap-fix");
 
 const app = express();
 
@@ -81,7 +81,16 @@ app.get("/posts", (req, res) => {
 // =============================
 // ROBOTS.TXT
 // =============================
+app.get("/robots.txt", (req, res) => {
+  res.type("text/plain");
 
+  res.send(`
+User-agent: *
+Allow: /
+
+Sitemap: ${BASE_URL}/sitemap.xml
+  `);
+});
 
 // =============================
 // SITEMAP XML (CORRETO)
@@ -109,20 +118,9 @@ SITEMAP XML — GOOGLE SAFE
 ==================================================
 */
 
-
-
-
-/* SEO_SAFE_ROUTES_START */
-
-/*
-==================================================
-SEO TÉCNICO — SITEMAP E ROBOTS BLINDADOS
-==================================================
-*/
-
 app.get("/sitemap.xml", (req, res) => {
   try {
-    const xml = generateSitemapXml();
+    const xml = generateSitemap();
 
     res.status(200);
     res.setHeader("Content-Type", "application/xml; charset=utf-8");
@@ -131,7 +129,7 @@ app.get("/sitemap.xml", (req, res) => {
 
     return res.send(xml);
   } catch (err) {
-    console.error("ERRO SITEMAP XML:", err);
+    console.error("ERRO SITEMAP:", err);
 
     res.status(500);
     res.setHeader("Content-Type", "application/xml; charset=utf-8");
@@ -139,28 +137,6 @@ app.get("/sitemap.xml", (req, res) => {
     return res.send('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
   }
 });
-
-app.get("/robots.txt", (req, res) => {
-  try {
-    const robots = generateRobotsTxt();
-
-    res.status(200);
-    res.setHeader("Content-Type", "text/plain; charset=utf-8");
-    res.setHeader("X-Content-Type-Options", "nosniff");
-    res.setHeader("Cache-Control", "public, max-age=3600");
-
-    return res.send(robots);
-  } catch (err) {
-    console.error("ERRO ROBOTS TXT:", err);
-
-    res.status(500);
-    res.setHeader("Content-Type", "text/plain; charset=utf-8");
-
-    return res.send("User-agent: *\nAllow: /\n");
-  }
-});
-
-/* SEO_SAFE_ROUTES_END */
 
 app.use((req, res) => {
   res.status(404).send("Página não encontrada");
