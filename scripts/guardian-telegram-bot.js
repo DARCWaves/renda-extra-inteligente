@@ -2,9 +2,16 @@ require("dotenv").config();
 
 const TelegramBot = require("node-telegram-bot-api");
 const fs = require("fs");
-const path = require("path");
 
-const { approve, reject, processRemindersAndExpirations } = require("./proposal-manager");
+const {
+  approve,
+  rejectOrReview,
+  getPendingProposal,
+  formatProposal,
+  proposalKeyboard,
+  processRemindersAndExpirations
+} = require("./proposal-manager");
+
 const { check } = require("./site-guardian");
 
 let botInstance = null;
@@ -24,11 +31,11 @@ function writeJson(file, data) {
 }
 
 function startGuardianTelegramBot() {
-  const token = process.env.GUARDIAN_TELEGRAM_BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN;
-  const adminChatId = String(process.env.GUARDIAN_TELEGRAM_CHAT_ID || process.env.TELEGRAM_CHAT_ID || "");
+  const token = process.env.GUARDIAN_TELEGRAM_BOT_TOKEN;
+  const adminChatId = String(process.env.GUARDIAN_TELEGRAM_CHAT_ID || "");
 
   if (!token) {
-    console.log("Guardian Telegram: token não configurado.");
+    console.log("Guardian Telegram: GUARDIAN_TELEGRAM_BOT_TOKEN não configurado.");
     return null;
   }
 
@@ -36,9 +43,10 @@ function startGuardianTelegramBot() {
 
   botInstance = new TelegramBot(token, { polling: true });
 
-  function isAdmin(msg) {
+  function isAdmin(msgOrQuery) {
+    const chatId = msgOrQuery?.message?.chat?.id || msgOrQuery?.chat?.id;
     if (!adminChatId) return true;
-    return String(msg.chat.id) === adminChatId;
+    return String(chatId) === adminChatId;
   }
 
   botInstance.onText(/\/start|\/help/, (msg) => {
@@ -49,12 +57,118 @@ Guardian Bot ativo.
 
 Comandos:
 propostas
-aprovar change-0001
-rejeitar change-0001 motivo
 guardian
 ideia categoria | título | prioridade
 sugestao area | feedback | urgencia
+
+Você também pode aprovar ou rejeitar usando os botões abaixo de cada proposta.
     `.trim());
+  });
+
+  botInstance.on("callback_query", async (query) => {
+    if (!isAdmin(query)) {
+      return botInstance.answerCallbackQuery(query.id, {
+        text: "Você não tem permissão para isso.",
+        show_alert: true
+      });
+    }
+
+    const data = String(query.data || "");
+    const [action, proposalId] = data.split(":");
+
+    try {
+      if (action === "details") {
+        const proposal = getPendingProposal(proposalId);
+
+        if (!proposal) {
+          return botInstance.answerCallbackQuery(query.id, {
+            text: "Proposta não encontrada ou já resolvida.",
+            show_alert: true
+          });
+        }
+
+        await botInstance.sendMessage(
+          query.message.chat.id,
+          formatProposal(proposal),
+          {
+            parse_mode: "HTML",
+            reply_markup: proposalKeyboard(proposal.id)
+          }
+        );
+
+        return botInstance.answerCallbackQuery(query.id, {
+          text: "Detalhes enviados."
+        });
+      }
+
+      if (action === "approve") {
+        const proposal = approve(proposalId, "telegram_button");
+
+        await botInstance.editMessageReplyMarkup(
+          { inline_keyboard: [] },
+          {
+            chat_id: query.message.chat.id,
+            message_id: query.message.message_id
+          }
+        ).catch(() => {});
+
+        await botInstance.sendMessage(
+          query.message.chat.id,
+          `✅ Proposta ${proposal.id} aprovada pelo botão.\nStatus: ${proposal.status}`
+        );
+
+        return botInstance.answerCallbackQuery(query.id, {
+          text: "Proposta aprovada."
+        });
+      }
+
+      if (action === "reject") {
+        const result = rejectOrReview(
+          proposalId,
+          "Rejeitada pelo botão do Telegram para reanálise.",
+          "telegram_button"
+        );
+
+        await botInstance.editMessageReplyMarkup(
+          { inline_keyboard: [] },
+          {
+            chat_id: query.message.chat.id,
+            message_id: query.message.message_id
+          }
+        ).catch(() => {});
+
+        if (result.action === "review") {
+          await botInstance.sendMessage(
+            query.message.chat.id,
+            `🔁 Proposta ${proposalId} voltou para análise com a mesma numeração.`
+          );
+        } else {
+          await botInstance.sendMessage(
+            query.message.chat.id,
+            `❌ Proposta ${proposalId} rejeitada e arquivada.`
+          );
+        }
+
+        return botInstance.answerCallbackQuery(query.id, {
+          text: result.action === "review" ? "Voltou para análise." : "Rejeitada."
+        });
+      }
+
+      return botInstance.answerCallbackQuery(query.id, {
+        text: "Ação desconhecida.",
+        show_alert: true
+      });
+    } catch (err) {
+      await botInstance.answerCallbackQuery(query.id, {
+        text: err.message,
+        show_alert: true
+      });
+
+      return botInstance.sendMessage(
+        query.message.chat.id,
+        `Erro ao processar ação: ${err.message}`
+      );
+    }
   });
 
   botInstance.on("message", async (msg) => {
@@ -68,24 +182,18 @@ sugestao area | feedback | urgencia
         const data = readJson("data/pending-approvals.json", []);
         if (!data.length) return botInstance.sendMessage(msg.chat.id, "Nenhuma proposta pendente.");
 
-        return botInstance.sendMessage(
-          msg.chat.id,
-          data.map(p => `${p.id} — ${p.title}\nStatus: ${p.status}\nUrgência: ${p.urgency}`).join("\n\n")
-        );
-      }
+        for (const proposal of data) {
+          await botInstance.sendMessage(
+            msg.chat.id,
+            formatProposal(proposal),
+            {
+              parse_mode: "HTML",
+              reply_markup: proposalKeyboard(proposal.id)
+            }
+          );
+        }
 
-      if (text.startsWith("aprovar ")) {
-        const id = text.split(" ")[1];
-        const proposal = approve(id);
-        return botInstance.sendMessage(msg.chat.id, `✅ Proposta aprovada: ${proposal.id}`);
-      }
-
-      if (text.startsWith("rejeitar ")) {
-        const parts = text.split(" ");
-        const id = parts[1];
-        const reason = parts.slice(2).join(" ") || "Rejeitada pelo dono.";
-        const proposal = reject(id, reason);
-        return botInstance.sendMessage(msg.chat.id, `❌ Proposta rejeitada: ${proposal.id}`);
+        return;
       }
 
       if (text === "guardian") {
@@ -94,6 +202,25 @@ sugestao area | feedback | urgencia
           msg.chat.id,
           `Guardian: ${report.ok ? "✅ aprovado" : "❌ bloqueado"}\nFalhas: ${report.failures.length}\nAlertas: ${report.warnings.length}`
         );
+      }
+
+      if (text.startsWith("aprovar ")) {
+        const id = text.split(" ")[1];
+        const proposal = approve(id, "telegram_text");
+        return botInstance.sendMessage(msg.chat.id, `✅ Proposta aprovada: ${proposal.id}`);
+      }
+
+      if (text.startsWith("rejeitar ")) {
+        const parts = text.split(" ");
+        const id = parts[1];
+        const reason = parts.slice(2).join(" ") || "Rejeitada pelo Telegram.";
+        const result = rejectOrReview(id, reason, "telegram_text");
+
+        if (result.action === "review") {
+          return botInstance.sendMessage(msg.chat.id, `🔁 Proposta ${id} voltou para análise.`);
+        }
+
+        return botInstance.sendMessage(msg.chat.id, `❌ Proposta rejeitada: ${id}`);
       }
 
       if (text.startsWith("ideia ")) {
@@ -140,7 +267,7 @@ sugestao area | feedback | urgencia
     processRemindersAndExpirations();
   }, 15 * 60 * 1000);
 
-  console.log("Guardian Telegram Bot iniciado.");
+  console.log("Guardian Telegram Bot iniciado com botões.");
   return botInstance;
 }
 
