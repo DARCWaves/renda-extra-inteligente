@@ -167,68 +167,6 @@ app.get("/robots.txt", (req, res) => {
 
 /* SEO_SAFE_ROUTES_END */
 
-
-
-/* SENDSTREAM_SAFE_FIX_START */
-
-/*
-==================================================
-BLINDAGEM CONTRA SENDSTREAM / ARQUIVOS ESTÁTICOS AUSENTES
-==================================================
-*/
-
-app.get("/logo.svg", (req, res) => {
-  return res.sendFile(path.join(__dirname, "public", "logo.svg"));
-});
-
-app.get("/favicon.svg", (req, res) => {
-  return res.sendFile(path.join(__dirname, "public", "favicon.svg"));
-});
-
-app.get("/logo.png", (req, res) => {
-  return res.redirect(301, "/logo.svg");
-});
-
-app.get("/favicon.ico", (req, res) => {
-  return res.redirect(301, "/favicon.svg");
-});
-
-app.get("/apple-touch-icon.png", (req, res) => {
-  return res.redirect(301, "/logo.svg");
-});
-
-/*
-==================================================
-TRATAMENTO GLOBAL SEGURO DE ERROS
-==================================================
-*/
-
-app.use((err, req, res, next) => {
-  if (res.headersSent) {
-    return next(err);
-  }
-
-  const message = err && err.message ? err.message : "Erro desconhecido";
-  const code = err && err.code ? err.code : "";
-  const status = err && err.status ? Number(err.status) : 500;
-
-  console.error("ERRO GLOBAL:", {
-    path: req.path,
-    method: req.method,
-    status,
-    code,
-    message
-  });
-
-  if (code === "ENOENT" || status === 404) {
-    return res.status(404).send("Página não encontrada");
-  }
-
-  return res.status(500).send("Erro do Servidor Interno");
-});
-
-/* SENDSTREAM_SAFE_FIX_END */
-
 app.use((req, res) => {
   res.status(404).send("Página não encontrada");
 });
