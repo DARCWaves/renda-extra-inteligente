@@ -33,12 +33,7 @@ function getPosts() {
 // HOME
 // =============================
 app.get("/", (req, res) => {
-  res.render("home", {
-    title: "Renda Extra Inteligente",
-    description: "Finanças pessoais, renda extra, investimentos, programação simples e economia real.",
-    posts: [],
-    affiliates: []
-  });
+  res.sendFile(path.join(__dirname, "views/home.html"));
 });
 
 // =============================
