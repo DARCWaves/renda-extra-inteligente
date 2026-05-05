@@ -1,0 +1,242 @@
+
+require("dotenv").config();
+
+const express = require("express");
+const path = require("path");
+const fs = require("fs");
+const { generateSitemapXml, generateRobotsTxt } = require("./services/seoSitemapService");
+
+const app = express();
+
+// =============================
+// CONFIG BASE
+// =============================
+const PORT = process.env.PORT || 3000;
+const BASE_URL = "https://renda-extra-inteligente.onrender.com";
+
+// =============================
+// MIDDLEWARES
+// =============================
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json());
+
+// =============================
+// FUNÇÃO PARA LER POSTS
+// =============================
+function getPosts() {
+  const file = path.join(__dirname, "data/posts.json");
+  if (!fs.existsSync(file)) return [];
+  return JSON.parse(fs.readFileSync(file));
+}
+
+// =============================
+// HOME
+// =============================
+app.get("/", (req, res) => {
+  res.render("home", {
+    title: "Renda Extra Inteligente",
+    description: "Finanças pessoais, renda extra, investimentos, programação simples e economia real.",
+    posts: [],
+    affiliates: []
+  });
+});
+
+// =============================
+// POSTS
+// =============================
+app.get("/post/:slug", (req, res) => {
+  const posts = getPosts();
+  const post = posts.find(p => p.slug === req.params.slug);
+
+  if (!post) {
+    return res.status(404).send("Post não encontrado");
+  }
+
+  res.send(`
+  <!DOCTYPE html>
+  <html lang="pt-br">
+  <head>
+    <title>${post.title}</title>
+    <meta name="description" content="${post.description}">
+    <link rel="canonical" href="${BASE_URL}/post/${post.slug}">
+  </head>
+  <body>
+    <h1>${post.title}</h1>
+    <p>${post.content}</p>
+  </body>
+  </html>
+  `);
+});
+
+// =============================
+// LISTAGEM
+// =============================
+app.get("/posts", (req, res) => {
+  const posts = getPosts();
+
+  let html = "<h1>Conteúdos</h1>";
+
+  posts.forEach(p => {
+    html += `<a href="/post/${p.slug}">${p.title}</a><br>`;
+  });
+
+  res.send(html);
+});
+
+// =============================
+// ROBOTS.TXT
+// =============================
+
+
+// =============================
+// SITEMAP XML (CORRETO)
+// =============================
+
+
+// =============================
+// PROTEÇÃO CONTRA HTML NO XML
+// =============================
+app.use((req, res, next) => {
+  if (req.url.includes(".xml")) {
+    res.set("Content-Type", "application/xml");
+  }
+  next();
+});
+
+// =============================
+// 404 SEGURO
+// =============================
+
+
+/*
+==================================================
+SITEMAP XML — GOOGLE SAFE
+==================================================
+*/
+
+
+
+
+/* SEO_SAFE_ROUTES_START */
+
+/*
+==================================================
+SEO TÉCNICO — SITEMAP E ROBOTS BLINDADOS
+==================================================
+*/
+
+app.get("/sitemap.xml", (req, res) => {
+  try {
+    const xml = generateSitemapXml();
+
+    res.status(200);
+    res.setHeader("Content-Type", "application/xml; charset=utf-8");
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("Cache-Control", "public, max-age=3600");
+
+    return res.send(xml);
+  } catch (err) {
+    console.error("ERRO SITEMAP XML:", err);
+
+    res.status(500);
+    res.setHeader("Content-Type", "application/xml; charset=utf-8");
+
+    return res.send('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
+  }
+});
+
+app.get("/robots.txt", (req, res) => {
+  try {
+    const robots = generateRobotsTxt();
+
+    res.status(200);
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("Cache-Control", "public, max-age=3600");
+
+    return res.send(robots);
+  } catch (err) {
+    console.error("ERRO ROBOTS TXT:", err);
+
+    res.status(500);
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+
+    return res.send("User-agent: *\nAllow: /\n");
+  }
+});
+
+/* SEO_SAFE_ROUTES_END */
+
+
+
+/* SENDSTREAM_SAFE_FIX_START */
+
+/*
+==================================================
+BLINDAGEM CONTRA SENDSTREAM / ARQUIVOS ESTÁTICOS AUSENTES
+==================================================
+*/
+
+app.get("/logo.svg", (req, res) => {
+  return res.sendFile(path.join(__dirname, "public", "logo.svg"));
+});
+
+app.get("/favicon.svg", (req, res) => {
+  return res.sendFile(path.join(__dirname, "public", "favicon.svg"));
+});
+
+app.get("/logo.png", (req, res) => {
+  return res.redirect(301, "/logo.svg");
+});
+
+app.get("/favicon.ico", (req, res) => {
+  return res.redirect(301, "/favicon.svg");
+});
+
+app.get("/apple-touch-icon.png", (req, res) => {
+  return res.redirect(301, "/logo.svg");
+});
+
+/*
+==================================================
+TRATAMENTO GLOBAL SEGURO DE ERROS
+==================================================
+*/
+
+app.use((err, req, res, next) => {
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  const message = err && err.message ? err.message : "Erro desconhecido";
+  const code = err && err.code ? err.code : "";
+  const status = err && err.status ? Number(err.status) : 500;
+
+  console.error("ERRO GLOBAL:", {
+    path: req.path,
+    method: req.method,
+    status,
+    code,
+    message
+  });
+
+  if (code === "ENOENT" || status === 404) {
+    return res.status(404).send("Página não encontrada");
+  }
+
+  return res.status(500).send("Erro do Servidor Interno");
+});
+
+/* SENDSTREAM_SAFE_FIX_END */
+
+app.use((req, res) => {
+  res.status(404).send("Página não encontrada");
+});
+
+// =============================
+// START
+// =============================
+app.listen(PORT, () => {
+  console.log("Servidor rodando na porta " + PORT);
+});
+

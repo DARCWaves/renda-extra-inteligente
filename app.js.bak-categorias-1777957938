@@ -263,181 +263,6 @@ app.get("/", async (req, res) => {
     return res.status(500).send("Erro do Servidor Interno");
   }
 });
-
-
-/*
-==================================================
-CATEGORIAS — ROTA BLINDADA
-==================================================
-*/
-
-app.get("/categoria/:categoria", (req, res) => {
-  try {
-    const rawCategory = String(req.params.categoria || "financas")
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .trim();
-
-    const categoryMap = {
-      financas: {
-        slug: "financas",
-        title: "Finanças pessoais",
-        headline: "Organize seu dinheiro sem complicação",
-        description:
-          "Conteúdos sobre controle financeiro, dívidas, orçamento, gastos invisíveis e organização do dinheiro."
-      },
-      "renda-extra": {
-        slug: "renda-extra",
-        title: "Renda extra",
-        headline: "Crie novas fontes de renda com passos simples",
-        description:
-          "Ideias reais para ganhar mais dinheiro começando pequeno e sem promessa milagrosa."
-      },
-      investimentos: {
-        slug: "investimentos",
-        title: "Investimentos",
-        headline: "Comece a investir com consciência",
-        description:
-          "Conteúdos para começar a investir com pouco dinheiro, segurança e clareza."
-      },
-      programacao: {
-        slug: "programacao",
-        title: "Programação simples",
-        headline: "Aprenda programação sem travar na lógica",
-        description:
-          "Aprenda lógica, criação de sites e programação com linguagem fácil para iniciantes."
-      },
-      trabalho: {
-        slug: "trabalho",
-        title: "Trabalho e renda",
-        headline: "Transforme trabalho em crescimento",
-        description:
-          "Conteúdos para transformar esforço, experiência e habilidade em mais valor e renda."
-      },
-      economia: {
-        slug: "economia",
-        title: "Economia real",
-        headline: "Entenda a economia que pesa no seu bolso",
-        description:
-          "Entenda dólar, inflação, Selic e decisões econômicas pelo impacto no seu bolso."
-      }
-    };
-
-    const aliases = {
-      "finanças": "financas",
-      financeiro: "financas",
-      dinheiro: "financas",
-      renda: "renda-extra",
-      rendaextra: "renda-extra",
-      programação: "programacao",
-      tecnologia: "programacao",
-      codigo: "programacao",
-      código: "programacao",
-      investimento: "investimentos",
-      emprego: "trabalho",
-      mercado: "economia",
-      noticias: "economia",
-      noticia: "economia"
-    };
-
-    const normalizedCategory = aliases[rawCategory] || rawCategory || "financas";
-    const info = categoryMap[normalizedCategory] || categoryMap.financas;
-    const categoria = info.slug;
-
-    function normalizePostCategory(value) {
-      return String(value || "")
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .trim()
-        .replace("finanças", "financas")
-        .replace("programação", "programacao");
-    }
-
-    let posts = [];
-
-    try {
-      if (typeof getPostsByCategory === "function") {
-        posts = safeArray(getPostsByCategory(categoria));
-      }
-    } catch (err) {
-      console.error("ERRO getPostsByCategory:", err.message);
-      posts = [];
-    }
-
-    if (!posts.length) {
-      try {
-        const allPostsRaw = typeof getAllPosts === "function" ? getAllPosts() : [];
-        const allPosts = Array.isArray(allPostsRaw)
-          ? allPostsRaw
-          : Array.isArray(allPostsRaw?.data)
-          ? allPostsRaw.data
-          : [];
-
-        posts = allPosts.filter((post) => {
-          const postCategory = normalizePostCategory(post.category || "");
-
-          if (postCategory === categoria) return true;
-
-          const title = String(post.title || "").toLowerCase();
-
-          if (categoria === "financas") {
-            return title.includes("dinheiro") || title.includes("salário") || title.includes("salario") || title.includes("gasto") || title.includes("dívida") || title.includes("divida");
-          }
-
-          if (categoria === "programacao") {
-            return title.includes("program") || title.includes("código") || title.includes("codigo") || title.includes("site") || title.includes("javascript");
-          }
-
-          return false;
-        });
-      } catch (err) {
-        console.error("ERRO fallback categoria:", err.message);
-        posts = [];
-      }
-    }
-
-    const affiliates = safeArray(
-      getAffiliatesForContext(
-        categoria + " " + info.description + " dinheiro renda extra finanças programação trabalho investimentos",
-        8
-      )
-    );
-
-    return res.render("category", {
-      title: info.title + " | " + APP_NAME,
-      description: info.description,
-      posts,
-      categoria,
-      categoriaOriginal: req.params.categoria,
-      info,
-      affiliates,
-      adsenseClient: ADSENSE_CLIENT,
-      adsenseSlot: ADSENSE_SLOT
-    });
-  } catch (err) {
-    console.error("ERRO CATEGORIA BLINDADA:", err);
-
-    return res.status(500).render("category", {
-      title: "Conteúdos | " + APP_NAME,
-      description: "Conteúdos práticos para melhorar sua vida financeira.",
-      posts: [],
-      categoria: "financas",
-      categoriaOriginal: "financas",
-      info: {
-        slug: "financas",
-        title: "Conteúdos",
-        headline: "Conteúdos práticos para evoluir",
-        description: "Conteúdos simples, úteis e aplicáveis no dia a dia."
-      },
-      affiliates: [],
-      adsenseClient: ADSENSE_CLIENT,
-      adsenseSlot: ADSENSE_SLOT
-    });
-  }
-});
-
 /*
 ==================================================
 INDICADORES
@@ -628,7 +453,31 @@ CATEGORIAS
 ==================================================
 */
 
+app.get("/categoria/:categoria", (req, res) => {
+  try {
+    const categoria = req.params.categoria;
 
+    const posts = safeArray(getPostsByCategory(categoria));
+
+    const affiliates = safeArray(
+      getAffiliatesForContext(
+        `${categoria} finanças renda extra investimentos economia dinheiro`,
+        8
+      )
+    );
+
+    return res.render("category", {
+      title: `Categoria: ${categoria}`,
+      description: "Conteúdos financeiros filtrados por categoria.",
+      posts,
+      categoria,
+      affiliates
+    });
+  } catch (err) {
+    console.error("ERRO CATEGORIA:", err);
+    return res.status(500).send("Erro do Servidor Interno");
+  }
+});
 /*
 ==================================================
 AFILIADOS - TRACKING
