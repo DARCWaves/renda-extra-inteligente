@@ -24,17 +24,12 @@ function readPostsSafe() {
     if (!fs.existsSync(POSTS_FILE)) return [];
     const raw = fs.readFileSync(POSTS_FILE, "utf8");
     if (!raw.trim()) return [];
-    const data = JSON.parse(raw);
-    return Array.isArray(data) ? data : [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
   } catch (err) {
-    console.error("ERRO SEO POSTS:", err.message);
+    console.error("ERRO AO LER POSTS PARA SITEMAP:", err.message);
     return [];
   }
-}
-
-function normalizeDate(value) {
-  const date = value ? new Date(value) : new Date();
-  return Number.isNaN(date.getTime()) ? new Date().toISOString() : date.toISOString();
 }
 
 function cleanSlug(slug) {
@@ -46,6 +41,11 @@ function cleanSlug(slug) {
     .replace(/\/+$/, "");
 }
 
+function normalizeDate(value) {
+  const date = value ? new Date(value) : new Date();
+  return Number.isNaN(date.getTime()) ? new Date().toISOString() : date.toISOString();
+}
+
 function isValidPost(post) {
   if (!post || typeof post !== "object") return false;
 
@@ -53,7 +53,8 @@ function isValidPost(post) {
   const title = String(post.title || "").trim();
   const status = String(post.status || "published").toLowerCase();
 
-  if (!slug || !title) return false;
+  if (!slug) return false;
+  if (!title) return false;
   if (status === "draft") return false;
   if (slug.includes("draft")) return false;
   if (slug.includes("undefined")) return false;
@@ -74,9 +75,17 @@ function addUrl(urls, seen, loc, options = {}) {
 
   seen.add(loc);
 
-  const lastmod = options.lastmod ? `\n    <lastmod>${escapeXml(normalizeDate(options.lastmod))}</lastmod>` : "";
-  const changefreq = options.changefreq ? `\n    <changefreq>${escapeXml(options.changefreq)}</changefreq>` : "";
-  const priority = options.priority ? `\n    <priority>${escapeXml(options.priority)}</priority>` : "";
+  const lastmod = options.lastmod
+    ? `\n    <lastmod>${escapeXml(normalizeDate(options.lastmod))}</lastmod>`
+    : "";
+
+  const changefreq = options.changefreq
+    ? `\n    <changefreq>${escapeXml(options.changefreq)}</changefreq>`
+    : "";
+
+  const priority = options.priority
+    ? `\n    <priority>${escapeXml(options.priority)}</priority>`
+    : "";
 
   urls.push(`  <url>
     <loc>${escapeXml(loc)}</loc>${lastmod}${changefreq}${priority}
