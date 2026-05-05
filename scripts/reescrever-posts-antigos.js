@@ -8,10 +8,10 @@ const {
   normalizeCategory,
   detectCategoryFromTitle,
   improveTitle,
+  buildDescription,
   buildContent,
   makeSignature,
-  slugify,
-  descriptions
+  slugify
 } = require("../services/contentStrategyService");
 
 const raw = fs.existsSync(postsFile) ? fs.readFileSync(postsFile, "utf8") : "[]";
@@ -24,6 +24,7 @@ const usedSignatures = new Set();
 const improved = posts.map((oldPost, index) => {
   const category = normalizeCategory(oldPost.category || detectCategoryFromTitle(oldPost.title));
   const title = improveTitle(oldPost.title, category, usedTitles);
+
   usedTitles.add(normalizeText(title));
 
   let slug = oldPost.slug || slugify(title);
@@ -45,7 +46,7 @@ const improved = posts.map((oldPost, index) => {
   let content = "";
   let signature = "";
 
-  for (let variant = 0; variant < 20; variant++) {
+  for (let variant = 0; variant < 30; variant++) {
     content = buildContent(category, title, index + variant);
     signature = makeSignature(content);
     if (!usedSignatures.has(signature)) break;
@@ -58,10 +59,10 @@ const improved = posts.map((oldPost, index) => {
     slug,
     title,
     category,
-    description: descriptions[category] || descriptions.financas,
+    description: buildDescription(category, title),
     content,
     seoTitle: `${title} | Renda Extra Inteligente`,
-    seoDescription: descriptions[category] || descriptions.financas,
+    seoDescription: buildDescription(category, title),
     seoKeywords: `${category}, dinheiro, renda extra, finanças pessoais, programação para iniciantes, investimentos, economia, trabalho`,
     status: "published",
     contentSignature: signature,
@@ -72,4 +73,4 @@ const improved = posts.map((oldPost, index) => {
 
 fs.writeFileSync(postsFile, JSON.stringify(improved, null, 2), "utf8");
 
-console.log(`✅ Posts antigos reescritos: ${improved.length}`);
+console.log(`✅ Posts antigos reescritos e salvos: ${improved.length}`);

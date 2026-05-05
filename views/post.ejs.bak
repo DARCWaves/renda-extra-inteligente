@@ -1,143 +1,137 @@
-<section class="hero-home compact-hero">
-  <span class="eyebrow">
-    <span class="ui-icon icon-layers"></span>
-    <%= post.category || "financas" %>
-  </span>
+<%
+  const safePost = post || {};
+  const postTitle = safePost.title || "Conteúdo sobre finanças";
+  const postDescription = safePost.description || safePost.seoDescription || "Conteúdo educativo, simples e prático.";
+  const postCategory = safePost.category || "financas";
+  const postContent = safePost.content || "Conteúdo em atualização.";
+  const postDate = safePost.createdAt ? new Date(safePost.createdAt).toLocaleDateString("pt-BR") : "Data não disponível";
+%>
 
-  <h2><%= post.title %></h2>
+<section class="lux-hero compact">
+  <span class="lux-kicker"><%= postCategory %></span>
 
-  <p>
-    <%= post.description || post.seoDescription || "Conteúdo simples, direto e prático para melhorar sua vida financeira." %>
-  </p>
+  <h1><%= postTitle %></h1>
 
-  <p class="text-muted">
-    Publicado em <%= post.createdAt ? new Date(post.createdAt).toLocaleDateString("pt-BR") : "data não disponível" %>
-  </p>
+  <p><%= postDescription %></p>
 
-  <div class="home-actions">
-    <a href="/posts" class="btn-secondary">Ver outros conteúdos</a>
-    <a href="/categoria/<%= post.category || 'financas' %>" class="btn-primary">Mais sobre este tema →</a>
+  <p class="muted">Publicado em <%= postDate %></p>
+
+  <div class="lux-actions">
+    <a href="/posts" class="btn-dark">Ver outros conteúdos</a>
+    <a href="/categoria/<%= postCategory %>" class="btn-gold">Mais sobre este tema →</a>
   </div>
 </section>
 
-<% if (post.image) { %>
-<section class="post-image-section">
-  <img src="<%= post.image %>" alt="<%= post.imageAlt || post.title %>" class="post-hero-image">
-</section>
+<% if (safePost.image) { %>
+  <section class="post-image-section">
+    <img 
+      src="<%= safePost.image %>" 
+      alt="<%= safePost.imageAlt || postTitle %>" 
+      class="post-hero-image"
+      loading="lazy"
+      onerror="this.closest('section').style.display='none';"
+    >
+  </section>
 <% } %>
 
-<section>
-  <h3><span class="ui-icon icon-chart"></span> Resumo direto</h3>
-
-  <div class="card">
-    <p>
-      Este conteúdo foi feito para quem quer entender o assunto sem enrolação e aplicar algo prático ainda hoje.
-    </p>
-
-    <p>
-      A ideia é simples: entender a dor, enxergar o caminho e tomar uma decisão pequena que aproxime você de uma vida financeira mais organizada.
-    </p>
+<section class="lux-section">
+  <div class="section-heading">
+    <span>01</span>
+    <div>
+      <h2>Resumo direto</h2>
+      <p>O objetivo deste conteúdo é transformar uma dor real em uma ação prática.</p>
+    </div>
   </div>
+
+  <article class="lux-card">
+    <p><%= postDescription %></p>
+  </article>
 </section>
 
-<section>
-  <h3><span class="ui-icon icon-route"></span> Conteúdo completo</h3>
-
-  <div class="post-content">
-    <%= post.content %>
+<section class="lux-section">
+  <div class="section-heading">
+    <span>02</span>
+    <div>
+      <h2>Conteúdo completo</h2>
+      <p>Leia com calma, escolha uma ação e coloque em prática ainda hoje.</p>
+    </div>
   </div>
+
+  <article class="lux-card">
+    <div class="post-content"><%= postContent %></div>
+  </article>
 </section>
 
-<section>
-  <h3><span class="ui-icon icon-rocket"></span> Próximo passo prático</h3>
-
-  <div class="shortcut-grid">
-    <a href="/categoria/renda-extra" class="shortcut-card">
-      <span class="ui-icon icon-rocket"></span>
-      Criar renda extra
-      <small>Veja ideias simples para começar com pouco.</small>
-    </a>
-
-    <a href="/categoria/financas" class="shortcut-card">
-      <span class="ui-icon icon-wallet"></span>
-      Organizar dinheiro
-      <small>Controle gastos, dívidas e orçamento.</small>
-    </a>
-
-    <a href="/categoria/programacao" class="shortcut-card">
-      <span class="ui-icon icon-code"></span>
-      Aprender programação
-      <small>Use lógica e sites para criar oportunidades.</small>
-    </a>
-
-    <a href="/indicadores" class="shortcut-card">
-      <span class="ui-icon icon-pulse"></span>
-      Entender economia
-      <small>Veja como os números afetam seu bolso.</small>
-    </a>
-  </div>
-</section>
-
-<section>
-  <h3><span class="ui-icon icon-wallet"></span> Aviso importante</h3>
-
-  <p>
-    Este conteúdo é educativo. Não é recomendação individual de investimento, compra ou decisão financeira. Avalie sua realidade antes de agir.
-  </p>
-<section>
-
-  <h3>🚀 Quer acelerar seus resultados?</h3>
-
-
-
-  <p>
-
-    Se você quer sair do zero mais rápido, vale a pena usar ferramentas e materiais que já funcionam.
-
-  </p>
-
-
-
-  <% if (affiliates && affiliates.length) { %>
-
-
-
-    <div class="post-preview">
-
-
-
-      <% const product = affiliates[0]; %>
-
-
-
-      <% if (product.image) { %>
-
-        <img src="<%= product.image %>" style="width:100%; border-radius:12px; margin-bottom:10px;">
-
-      <% } %>
-
-
-
-      <h4><%= product.title %></h4>
-
-      <p><%= product.description ||  %></p>
-
-
-
-      <a href="/out/<%= product.id %>" class="btn-primary" target="_blank">
-
-        Ver oferta →
-
-      </a>
-
-
-
+<% if (affiliates && affiliates.length) { %>
+  <section class="lux-section">
+    <div class="section-heading">
+      <span>03</span>
+      <div>
+        <h2>Recomendação útil</h2>
+        <p>Uma ferramenta ou produto que pode ajudar você a aplicar melhor o que aprendeu.</p>
+      </div>
     </div>
 
+    <% const product = affiliates[0]; %>
 
+    <article class="lux-card offer-inline-card">
+      <% if (product.image) { %>
+        <img 
+          src="<%= product.image %>" 
+          alt="<%= product.title %>" 
+          class="post-cover"
+          loading="lazy"
+          onerror="this.style.display='none';"
+        >
+      <% } %>
 
-  <% } %>
+      <span class="lux-tag"><%= product.badge || "Recomendado" %></span>
 
+      <h3><%= product.title %></h3>
+
+      <% if (product.price) { %>
+        <p><strong><%= product.price %></strong></p>
+      <% } %>
+
+      <a href="/out/<%= product.id %>" class="btn-gold" target="_blank">Ver oferta →</a>
+    </article>
+  </section>
+<% } %>
+
+<section class="lux-section">
+  <div class="section-heading">
+    <span>04</span>
+    <div>
+      <h2>Continue evoluindo</h2>
+      <p>Escolha outro caminho e continue construindo resultado.</p>
+    </div>
+  </div>
+
+  <div class="path-grid">
+    <a href="/categoria/renda-extra" class="path-card">
+      <strong>Renda extra</strong>
+      <p>Ideias reais para ganhar mais dinheiro começando pequeno.</p>
+    </a>
+
+    <a href="/categoria/financas" class="path-card">
+      <strong>Finanças pessoais</strong>
+      <p>Controle gastos, dívidas e organize seu dinheiro.</p>
+    </a>
+
+    <a href="/categoria/programacao" class="path-card">
+      <strong>Programação simples</strong>
+      <p>Aprenda lógica e criação de sites sem complicação.</p>
+    </a>
+
+    <a href="/indicadores" class="path-card">
+      <strong>Indicadores</strong>
+      <p>Entenda dólar, inflação e juros no seu bolso.</p>
+    </a>
+  </div>
 </section>
 
+<section class="lux-section">
+  <p class="muted">
+    Este conteúdo é educativo. Não é recomendação individual de investimento, compra ou decisão financeira.
+  </p>
 </section>

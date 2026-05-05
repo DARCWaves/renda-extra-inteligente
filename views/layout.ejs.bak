@@ -5,13 +5,20 @@
 
   <title><%= title || appName %></title>
 
-  <meta name="description" content="<%= description || 'Estratégias reais para ganhar dinheiro, organizar sua vida financeira e evoluir.' %>">
+  <meta name="description" content="<%= description || 'Educação financeira, renda extra, programação e investimentos com linguagem simples e prática.' %>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- FAVICON -->
-  <link rel="icon" type="image/png" href="/favicon.png">
+  <meta property="og:title" content="<%= title || appName %>">
+  <meta property="og:description" content="<%= description || 'Aprenda a organizar dinheiro, criar renda extra e evoluir com estratégia.' %>">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="<%= baseUrl || '' %>">
 
-  <!-- CSS -->
+  <meta name="theme-color" content="#050505">
+
+  <link rel="icon" type="image/png" href="/favicon.svg">
+  <link rel="shortcut icon" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/logo.svg">
+
   <link rel="stylesheet" href="/style.css">
 
   <% if (adsenseClient) { %>
@@ -24,35 +31,120 @@
 
 <body>
 
-<header class="header-saas">
+<div class="lux-bg">
+  <div class="lux-orb lux-orb-one"></div>
+  <div class="lux-orb lux-orb-two"></div>
+</div>
 
-  <div class="logo-area">
-    <img src="/logo.png" alt="Logo">
-    <div class="logo-text">
+<header class="lux-header">
+  <a href="/" class="lux-brand">
+    <img src="/logo.svg" alt="<%= appName %>" class="lux-logo" onerror="this.style.display=\'none\'">
+    <div>
       <strong>Renda Extra</strong>
       <span>Inteligente</span>
     </div>
-  </div>
+  </a>
 
-  <nav class="nav-saas">
+  <nav class="lux-nav">
     <a href="/">Home</a>
     <a href="/posts">Conteúdos</a>
     <a href="/categoria/renda-extra">Renda Extra</a>
     <a href="/categoria/financas">Finanças</a>
     <a href="/categoria/programacao">Programação</a>
     <a href="/indicadores">Indicadores</a>
-    <a href="/ofertas" class="cta-nav">Ofertas</a>
+    <a href="/ofertas" class="nav-gold">Ofertas</a>
   </nav>
-
 </header>
 
-<main>
+<main class="lux-main">
   <%- body %>
 </main>
 
-<footer class="footer-saas">
-  <p>© <%= new Date().getFullYear() %> - <%= appName %></p>
+<footer class="lux-footer">
+  <strong><%= appName %></strong>
+  <p>Educação financeira simples, prática e sem promessa milagrosa.</p>
 </footer>
+
+<% if (affiliates && affiliates.length) { %>
+  <div id="affiliate-widget">
+    <button id="affiliate-close" type="button" aria-label="Fechar recomendação">×</button>
+
+    <div class="affiliate-media-wrap">
+      <% if (affiliates[0].image) { %>
+        <img id="affiliate-image" class="affiliate-image" src="<%= affiliates[0].image %>" alt="<%= affiliates[0].title %>">
+      <% } else { %>
+        <div id="affiliate-image-fallback" class="affiliate-image-fallback">
+          <span></span>
+        </div>
+      <% } %>
+    </div>
+
+    <div class="affiliate-content">
+      <div class="affiliate-top">
+        <span id="affiliate-badge" class="affiliate-badge"><%= affiliates[0].badge || 'Recomendado' %></span>
+        <span class="affiliate-count"><span id="affiliate-timer">10</span>s</span>
+      </div>
+
+      <div id="affiliate-title" class="affiliate-title"><%= affiliates[0].title %></div>
+      <div id="affiliate-price" class="affiliate-price"><%= affiliates[0].price || '' %></div>
+
+      <a id="affiliate-link" class="affiliate-button" href="/out/<%= affiliates[0].id %>" target="_blank">
+        Ver oferta →
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const products = <%- JSON.stringify(affiliates) %>;
+    let affiliateIndex = 0;
+    let affiliateCountdown = 10;
+
+    const widget = document.getElementById("affiliate-widget");
+    const closeButton = document.getElementById("affiliate-close");
+    const badge = document.getElementById("affiliate-badge");
+    const title = document.getElementById("affiliate-title");
+    const price = document.getElementById("affiliate-price");
+    const link = document.getElementById("affiliate-link");
+    const timer = document.getElementById("affiliate-timer");
+
+    function renderAffiliate(product) {
+      badge.textContent = product.badge || "Recomendado";
+      title.textContent = product.title || "Produto recomendado";
+      price.textContent = product.price || "";
+      link.href = "/out/" + product.id;
+
+      const mediaWrap = document.querySelector(".affiliate-media-wrap");
+
+      if (product.image) {
+        mediaWrap.innerHTML = '<img id="affiliate-image" class="affiliate-image" src="' + product.image + '" alt="' + (product.title || "Produto recomendado") + '">';
+      } else {
+        mediaWrap.innerHTML = '<div id="affiliate-image-fallback" class="affiliate-image-fallback"><span></span></div>';
+      }
+    }
+
+    if (closeButton) {
+      closeButton.addEventListener("click", () => {
+        widget.classList.add("affiliate-hidden");
+      });
+    }
+
+    setInterval(() => {
+      if (!products || !products.length || widget.classList.contains("affiliate-hidden")) return;
+
+      affiliateCountdown -= 1;
+      timer.textContent = affiliateCountdown;
+
+      if (affiliateCountdown <= 0) {
+        affiliateIndex = (affiliateIndex + 1) % products.length;
+        renderAffiliate(products[affiliateIndex]);
+        affiliateCountdown = 10;
+        timer.textContent = affiliateCountdown;
+      }
+    }, 1000);
+  </script>
+<% } %>
+
+<script src="/app.js"></script>
 
 </body>
 </html>

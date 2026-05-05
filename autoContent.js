@@ -8,11 +8,11 @@ const {
   categories,
   normalizeCategory,
   pickNewTitle,
+  buildDescription,
   buildContent,
   makeSignature,
   normalizeText,
-  slugify,
-  descriptions
+  slugify
 } = require("./services/contentStrategyService");
 
 function ensureFiles() {
@@ -73,7 +73,7 @@ function generatePost() {
   let content = "";
   let signature = "";
 
-  for (let variant = 0; variant < 20; variant++) {
+  for (let variant = 0; variant < 30; variant++) {
     content = buildContent(category, title, variant);
     signature = makeSignature(content);
     if (!usedSignatures.has(signature)) break;
@@ -83,10 +83,10 @@ function generatePost() {
     slug,
     category,
     title,
-    description: descriptions[category] || descriptions.financas,
+    description: buildDescription(category, title),
     content,
     seoTitle: `${title} | Renda Extra Inteligente`,
-    seoDescription: descriptions[category] || descriptions.financas,
+    seoDescription: buildDescription(category, title),
     seoKeywords: `${category}, dinheiro, renda extra, finanças pessoais, programação para iniciantes, investimentos, economia, trabalho`,
     status: "published",
     contentSignature: signature,
@@ -105,7 +105,4 @@ function runAutoPost() {
   return generatePost();
 }
 
-module.exports = {
-  runAutoPost,
-  generatePost
-};
+module.exports = { runAutoPost, generatePost };

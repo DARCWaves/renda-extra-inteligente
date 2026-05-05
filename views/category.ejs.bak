@@ -1,142 +1,94 @@
 <%
-  const categoryInfo = {
-    "financas": {
-      label: "Finanças pessoais",
-      title: "Organize seu dinheiro sem complicação",
-      desc: "Conteúdos para controlar gastos, sair do aperto, montar reserva e tomar decisões melhores.",
-      icon: "icon-wallet"
-    },
-    "renda-extra": {
-      label: "Renda extra",
-      title: "Ideias reais para ganhar mais dinheiro",
-      desc: "Estratégias simples para criar novas fontes de renda sem promessa milagrosa.",
-      icon: "icon-rocket"
-    },
-    "investimentos": {
-      label: "Investimentos",
-      title: "Comece a investir com pouco dinheiro",
-      desc: "Aprenda o básico para investir com segurança, paciência e clareza.",
-      icon: "icon-growth"
-    },
-    "programacao": {
-      label: "Programação simples",
-      title: "Aprenda lógica e criação de sites do zero",
-      desc: "Programação explicada em linguagem simples, como se fosse uma receita de bolo.",
-      icon: "icon-code"
-    },
-    "trabalho": {
-      label: "Trabalho e renda",
-      title: "Use seu trabalho para aumentar sua renda",
-      desc: "Conteúdos para transformar esforço em valor, oportunidade e crescimento.",
-      icon: "icon-work"
-    },
-    "economia": {
-      label: "Economia real",
-      title: "Entenda o que mexe no seu bolso",
-      desc: "Inflação, dólar, juros e decisões econômicas explicadas sem linguagem difícil.",
-      icon: "icon-pulse"
-    }
-  };
-
-  const info = categoryInfo[categoria] || {
-    label: categoria,
-    title: `Conteúdos sobre ${categoria}`,
-    desc: "Conteúdos simples e práticos para melhorar sua vida financeira.",
-    icon: "icon-layers"
-  };
+  const safeInfo = info || {};
+  const safePosts = Array.isArray(posts) ? posts : [];
+  const safeCategoria = categoria || "financas";
+  const titleLabel = safeInfo.title || "Conteúdos";
+  const headline = safeInfo.headline || "Conteúdos práticos para sua vida";
+  const desc = safeInfo.description || "Conteúdos simples, práticos e diretos.";
 %>
 
-<section class="hero-home compact-hero">
-  <span class="eyebrow">
-    <span class="ui-icon <%= info.icon %>"></span>
-    <%= info.label %>
-  </span>
+<section class="lux-hero compact">
+  <span class="lux-kicker"><%= titleLabel %></span>
 
-  <h2><%= info.title %></h2>
+  <h1><%= headline %></h1>
 
-  <p><%= info.desc %></p>
+  <p><%= desc %></p>
 
-  <div class="home-actions">
-    <a href="/posts" class="btn-primary">Ver todos os conteúdos →</a>
-    <a href="/indicadores" class="btn-secondary">Entender indicadores</a>
+  <div class="lux-actions">
+    <a href="/posts" class="btn-dark">Ver todos os conteúdos</a>
+    <a href="/indicadores" class="btn-gold">Entender indicadores →</a>
   </div>
 </section>
 
-<section>
-  <h3><span class="ui-icon <%= info.icon %>"></span> Conteúdos desta categoria</h3>
+<section class="lux-section">
+  <div class="section-heading">
+    <span>01</span>
+    <div>
+      <h2>Conteúdos de <%= titleLabel %></h2>
+      <p>Artigos simples, diretos e criados para resolver dores reais.</p>
+    </div>
+  </div>
 
-  <% if (posts && Array.isArray(posts) && posts.length > 0) { %>
-    <% posts.forEach(post => { %>
-      <article class="card">
-        <% if (post.image) { %>
-          <img 
-            src="<%= post.image %>" 
-            alt="<%= post.imageAlt || post.title %>" 
-            class="post-cover" 
-            loading="lazy"
-            onerror="this.style.display='none';"
-          >
-        <% } %>
-        <div class="categoria-tag">
-          <span class="ui-icon <%= info.icon %>"></span>
-          <%= post.category || categoria %>
-        </div>
-
-        <h3><%= post.title || "Conteúdo sem título" %></h3>
-
-        <p>
-          <%= post.description || post.seoDescription || "Conteúdo educativo, simples e prático." %>
-        </p>
-
-        <a href="/post/<%= post.slug %>" class="btn-primary">
-          Ler conteúdo completo →
-        </a>
-      </article>
-    <% }) %>
-  <% } else { %>
-    <article class="card">
-        <% if (post.image) { %>
-          <img 
-            src="<%= post.image %>" 
-            alt="<%= post.imageAlt || post.title %>" 
-            class="post-cover" 
-            loading="lazy"
-            onerror="this.style.display='none';"
-          >
-        <% } %>
-      <h3>Nenhum conteúdo encontrado</h3>
-      <p>Essa categoria ainda não recebeu conteúdos automáticos. A produção vai continuar rodando em ciclos.</p>
-      <a href="/posts" class="btn-primary">Ver todos os conteúdos →</a>
+  <% if (!safePosts.length) { %>
+    <article class="lux-card">
+      <span class="lux-tag"><%= safeCategoria %></span>
+      <h3>Nenhum conteúdo encontrado ainda</h3>
+      <p>
+        Esta categoria ainda não recebeu conteúdos suficientes. A produção automática continuará criando novos materiais em ciclos.
+      </p>
+      <a href="/posts" class="text-link">Ver todos os conteúdos →</a>
     </article>
+  <% } else { %>
+    <div class="content-grid">
+      <% safePosts.forEach(post => { %>
+        <article class="lux-card post-card">
+          <span class="lux-tag"><%= post.category || safeCategoria %></span>
+
+          <h3><%= post.title || "Conteúdo educativo" %></h3>
+
+          <p>
+            <%= post.description || post.seoDescription || "Conteúdo simples, direto e prático para melhorar sua vida." %>
+          </p>
+
+          <% if (post.slug) { %>
+            <a href="/post/<%= post.slug %>" class="text-link">Ler conteúdo completo →</a>
+          <% } else { %>
+            <a href="/posts" class="text-link">Ver conteúdos →</a>
+          <% } %>
+        </article>
+      <% }) %>
+    </div>
   <% } %>
 </section>
 
-<section>
-  <h3><span class="ui-icon icon-route"></span> Continue explorando</h3>
+<section class="lux-section">
+  <div class="section-heading">
+    <span>02</span>
+    <div>
+      <h2>Continue explorando</h2>
+      <p>O crescimento vem quando você conecta conhecimento, ação e consistência.</p>
+    </div>
+  </div>
 
-  <div class="shortcut-grid">
-    <a href="/categoria/financas" class="shortcut-card">
-      <span class="ui-icon icon-wallet"></span>
-      Finanças
-      <small>Controle financeiro, dívidas, gastos e reserva.</small>
+  <div class="path-grid">
+    <a href="/categoria/financas" class="path-card">
+      <strong>Finanças pessoais</strong>
+      <p>Controle gastos, dívidas e organize seu dinheiro.</p>
     </a>
 
-    <a href="/categoria/renda-extra" class="shortcut-card">
-      <span class="ui-icon icon-rocket"></span>
-      Renda extra
-      <small>Ideias para ganhar mais dinheiro com pouco.</small>
+    <a href="/categoria/renda-extra" class="path-card">
+      <strong>Renda extra</strong>
+      <p>Ideias reais para ganhar mais dinheiro começando pequeno.</p>
     </a>
 
-    <a href="/categoria/programacao" class="shortcut-card">
-      <span class="ui-icon icon-code"></span>
-      Programação
-      <small>Aprenda lógica, sites e projetos simples.</small>
+    <a href="/categoria/programacao" class="path-card">
+      <strong>Programação simples</strong>
+      <p>Aprenda lógica, sites e tecnologia sem complicação.</p>
     </a>
 
-    <a href="/indicadores" class="shortcut-card">
-      <span class="ui-icon icon-pulse"></span>
-      Indicadores
-      <small>Veja o impacto da economia no seu bolso.</small>
+    <a href="/categoria/investimentos" class="path-card">
+      <strong>Investimentos</strong>
+      <p>Comece com pouco, clareza e responsabilidade.</p>
     </a>
   </div>
 </section>
