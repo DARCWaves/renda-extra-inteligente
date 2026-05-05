@@ -1,4 +1,10 @@
 User-agent: *
 Allow: /
 
+Disallow: /post?id=
+Disallow: /draft
+Disallow: /admin
+Disallow: /api/
+Disallow: /health
+
 Sitemap: https://renda-extra-inteligente.onrender.com/sitemap.xml
