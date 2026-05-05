@@ -1,20 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>https://renda-extra-inteligente.onrender.com/</loc></url>
-<url><loc>https://renda-extra-inteligente.onrender.com/posts</loc></url>
-<url><loc>https://renda-extra-inteligente.onrender.com/ofertas</loc></url>
-<url><loc>https://renda-extra-inteligente.onrender.com/post/conteudos-1777476600033</loc></url>
-<url><loc>https://renda-extra-inteligente.onrender.com/post/investimentos-1777475700030</loc></url>
-<url><loc>https://renda-extra-inteligente.onrender.com/post/conteudos-1777391100023</loc></url>
-<url><loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-controle-de-gastos-1777126100789</loc></url>
-<url><loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-educacao-financeira</loc></url>
-<url><loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-dolar-alto</loc></url>
-<url><loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-renda-extra-1777101130842</loc></url>
-<url><loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-controle-de-gastos</loc></url>
-<url><loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-selic-alta</loc></url>
-<url><loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-organizacao-financeira-1777098933360</loc></url>
-<url><loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-renda-extra</loc></url>
-<url><loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-organizacao-financeira</loc></url>
-<url><loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-investimentos-para-iniciantes</loc></url>
-<url><loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-renda-extra-sem-complicacao</loc></url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/posts</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/categoria/financas</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/categoria/renda-extra</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/categoria/programacao</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/categoria/investimentos</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/indicadores</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/post/como-comecar-a-investir-com-pouco-dinheiro-sem-fazer-besteira</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/post/como-aprender-programacao-do-zero-sem-travar-na-logica</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/post/como-transformar-uma-habilidade-simples-em-uma-fonte-de-renda-extra</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/post/como-organizar-seu-dinheiro-mesmo-ganhando-pouco-e-parar-de-viver-no-aperto</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/post/conteudos-1777476600033</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/post/investimentos-1777475700030</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/post/conteudos-1777391100023</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-controle-de-gastos-1777126100789</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-educacao-financeira</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-dolar-alto</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-renda-extra-1777101130842</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-controle-de-gastos</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-selic-alta</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-organizacao-financeira-1777098933360</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-renda-extra</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-organizacao-financeira</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-vida-financeira-com-investimentos-para-iniciantes</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://renda-extra-inteligente.onrender.com/post/como-melhorar-sua-renda-extra-sem-complicacao</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
 </urlset>
