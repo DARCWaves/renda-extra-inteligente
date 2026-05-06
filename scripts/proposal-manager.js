@@ -47,7 +47,10 @@ function nextId() {
 
 function getUrgencyRule(urgency) {
   const rules = readJson(RULES, {});
-  return rules.urgencyRules?.[urgency] || rules.urgencyRules?.low || {};
+  return rules.urgencyRules?.[urgency] || rules.urgencyRules?.low || {
+    expiresAfterDays: 2,
+    reminderEveryHours: 24
+  };
 }
 
 function calculateExpiration(urgency) {
@@ -61,7 +64,7 @@ function sendTelegram(text, keyboard = null) {
   const chatId = process.env.GUARDIAN_TELEGRAM_CHAT_ID;
 
   if (!token || !chatId) {
-    console.log("⚠️ Telegram Guardian não configurado.");
+    console.log("Guardian Telegram não configurado.");
     console.log(text);
     return;
   }
@@ -143,7 +146,6 @@ ${(proposal.filesChanged || []).map(x => "• " + x).join("\n") || "• Nenhum a
 
 function createProposal(input) {
   const urgency = input.urgency || "low";
-  const createdAt = now().toISOString();
 
   const proposal = {
     id: nextId(),
@@ -175,10 +177,10 @@ function createProposal(input) {
     canAutoApply: false,
     canAutoReject: urgency !== "critical" && urgency !== "high",
     reviewCount: 0,
-    maxReviewCycles: urgency === "low" ? 1 : 1,
+    maxReviewCycles: urgency === "critical" ? 999 : 1,
     remindersSent: 0,
     lastReminderAt: null,
-    createdAt,
+    createdAt: now().toISOString(),
     expiresAt: calculateExpiration(urgency),
     createdBy: "site-agent"
   };
@@ -216,7 +218,7 @@ function applyPatchesIfAny(proposal) {
   if (!Array.isArray(proposal.patches) || proposal.patches.length === 0) {
     return {
       applied: false,
-      message: "A proposta não possui patches automáticos. Ela foi aprovada e registrada para execução manual/assistida."
+      message: "Proposta aprovada e registrada. Nenhum patch automático foi encontrado."
     };
   }
 
@@ -244,33 +246,29 @@ function applyPatchesIfAny(proposal) {
 
     if (!guardian.ok) {
       for (const item of backups) {
-        if (fs.existsSync(item.backup)) {
-          fs.copyFileSync(item.backup, item.target);
-        }
+        if (fs.existsSync(item.backup)) fs.copyFileSync(item.backup, item.target);
       }
 
       return {
         applied: false,
         rollback: true,
-        message: "A mudança foi bloqueada pelo Guardian. Rollback aplicado."
+        message: "Guardian bloqueou a aplicação. Rollback executado."
       };
     }
 
     return {
       applied: true,
-      message: "Mudança aplicada e aprovada pelo Guardian."
+      message: "Patch aplicado com sucesso e aprovado pelo Guardian."
     };
   } catch (err) {
     for (const item of backups) {
-      if (fs.existsSync(item.backup)) {
-        fs.copyFileSync(item.backup, item.target);
-      }
+      if (fs.existsSync(item.backup)) fs.copyFileSync(item.backup, item.target);
     }
 
     return {
       applied: false,
       rollback: true,
-      message: `Erro ao aplicar patches. Rollback aplicado. Detalhe: ${err.message}`
+      message: `Erro ao aplicar patch. Rollback executado. Detalhe: ${err.message}`
     };
   }
 }
@@ -320,6 +318,7 @@ function rejectOrReview(idValue, reason = "Rejeitada pelo dono do site.", source
     proposal.rejectionSource = source;
     proposal.reviewReason = reason;
     proposal.expiresAt = proposal.urgency === "critical" ? null : calculateExpiration(proposal.urgency);
+
     proposal.whyChanged = Array.isArray(proposal.whyChanged) ? proposal.whyChanged : [];
     proposal.risks = Array.isArray(proposal.risks) ? proposal.risks : [];
 
@@ -330,14 +329,11 @@ function rejectOrReview(idValue, reason = "Rejeitada pelo dono do site.", source
     writeJson(APPROVALS, approvals);
 
     sendTelegram(
-      `🔁 Proposta ${proposal.id} voltou para análise com a mesma numeração.\n\nMotivo: ${reason}\n\n${formatProposal(proposal)}`,
+      `🔁 Proposta ${proposal.id} voltou para análise.\n\nMotivo: ${reason}\n\n${formatProposal(proposal)}`,
       proposalKeyboard(proposal.id)
     );
 
-    return {
-      action: "review",
-      proposal
-    };
+    return { action: "review", proposal };
   }
 
   proposal.status = "rejected";
@@ -354,10 +350,7 @@ function rejectOrReview(idValue, reason = "Rejeitada pelo dono do site.", source
 
   sendTelegram(`❌ Proposta ${proposal.id} rejeitada e arquivada.\n\nMotivo: ${reason}`);
 
-  return {
-    action: "rejected",
-    proposal
-  };
+  return { action: "rejected", proposal };
 }
 
 function processRemindersAndExpirations() {
@@ -419,15 +412,11 @@ if (require.main === module) {
   const value = process.argv[3];
 
   try {
-    if (action === "tick") {
-      console.log(processRemindersAndExpirations());
-    } else if (action === "list") {
-      console.log(JSON.stringify(readJson(APPROVALS, []), null, 2));
-    } else if (action === "approve") {
-      console.log(approve(value, "cli"));
-    } else if (action === "reject") {
-      console.log(rejectOrReview(value, process.argv.slice(4).join(" ") || undefined, "cli"));
-    } else {
+    if (action === "tick") console.log(processRemindersAndExpirations());
+    else if (action === "list") console.log(JSON.stringify(readJson(APPROVALS, []), null, 2));
+    else if (action === "approve") console.log(approve(value, "cli"));
+    else if (action === "reject") console.log(rejectOrReview(value, process.argv.slice(4).join(" ") || undefined, "cli"));
+    else {
       console.log("Uso:");
       console.log("node scripts/proposal-manager.js tick");
       console.log("node scripts/proposal-manager.js list");

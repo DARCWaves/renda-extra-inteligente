@@ -12,7 +12,9 @@
     "proposals_tick": "node scripts/proposal-manager.js tick",
     "guardian_bot": "node scripts/guardian-telegram-bot.js",
     "guardian_worker": "node scripts/guardian-worker.js",
-    "predeploy": "node scripts/site-guardian.js"
+    "predeploy": "node scripts/site-guardian.js",
+    "affiliate_bot": "node scripts/affiliate-telegram-bot.js",
+    "check_bots": "node scripts/check-bots.js"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +22,7 @@
   "type": "commonjs",
   "dependencies": {
     "axios": "^1.15.2",
+    "cheerio": "^1.2.0",
     "dotenv": "^17.4.2",
     "ejs": "^5.0.2",
     "express": "^5.2.1",

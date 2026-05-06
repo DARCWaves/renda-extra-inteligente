@@ -3,7 +3,7 @@ require("dotenv").config();
 const { check } = require("./site-guardian");
 const { runAgent } = require("./site-agent");
 const { processRemindersAndExpirations, sendTelegram } = require("./proposal-manager");
-const { startGuardianTelegramBot } = require("./guardian-telegram-bot");
+const { startGuardianBot } = require("./guardian-telegram-bot");
 
 function minutes(value, fallback) {
   const number = Number(value);
@@ -16,12 +16,12 @@ const REMINDER_INTERVAL = minutes(process.env.GUARDIAN_REMINDER_INTERVAL_MINUTES
 
 function safeRun(name, fn) {
   try {
-    console.log(`\n[${new Date().toISOString()}] Rodando: ${name}`);
+    console.log(`[${new Date().toISOString()}] Rodando: ${name}`);
     const result = fn();
-    console.log(`[${new Date().toISOString()}] Finalizado: ${name}`);
+    console.log(`[${new Date().toISOString()}] OK: ${name}`);
     return result;
   } catch (err) {
-    console.error(`[${new Date().toISOString()}] Erro em ${name}:`, err.message);
+    console.error(`[${new Date().toISOString()}] ERRO ${name}:`, err.message);
     sendTelegram(`❌ Erro no Guardian Worker em ${name}: ${err.message}`);
     return null;
   }
@@ -30,13 +30,13 @@ function safeRun(name, fn) {
 function boot() {
   console.log("=======================================");
   console.log("Guardian Worker iniciado");
-  console.log(`Guardian check: ${GUARDIAN_INTERVAL} min`);
+  console.log(`Guardian: ${GUARDIAN_INTERVAL} min`);
   console.log(`Agent: ${AGENT_INTERVAL} min`);
   console.log(`Reminders: ${REMINDER_INTERVAL} min`);
   console.log("=======================================");
 
   if (process.env.ENABLE_GUARDIAN_TELEGRAM !== "false") {
-    startGuardianTelegramBot();
+    startGuardianBot();
   }
 
   safeRun("guardian", check);
