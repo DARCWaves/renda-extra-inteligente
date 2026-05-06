@@ -146,7 +146,7 @@ async function fetchArrecadacao() {
 
 /*
 ==================================================
-DADOS ECONÔMICOS (COM CACHE)
+DADOS ECONÔMICOS (COM CACHE E FALLBACK)
 ==================================================
 */
 
@@ -154,9 +154,44 @@ let economicCache = null;
 let lastCacheUpdate = 0;
 const CACHE_TTL = 15 * 60 * 1000; // 15 minutos
 
+/**
+ * Retorna um objeto de dados econômicos seguro em caso de falha total.
+ */
+function getSafeDefaults() {
+  return {
+    dolar: "R$ 5,01",
+    dolarOficial: "R$ 5,01",
+    selic: "14,75%",
+    inflacao: "0,88%",
+    bolsoPopular: "2,51%",
+    salarioMinimo: "R$ 1.621,00",
+    arrecadacao: "R$ 222,1 bilhões",
+    periodos: {
+      dolar: "cotação fallback",
+      dolarOficial: "cotação fallback",
+      selic: "ao ano",
+      inflacao: "último mês",
+      bolsoPopular: "estimativa mensal",
+      salarioMinimo: "valor mensal oficial",
+      arrecadacao: "dado padrão"
+    },
+    raw: {
+      dolar: 5.01,
+      dolarOficial: 5.01,
+      selic: 14.75,
+      inflacao: 0.88,
+      bolsoPopular: 2.51,
+      salarioMinimo: 1621,
+      arrecadacao: 222.1
+    },
+    stale: true
+  };
+}
+
 async function getEconomicData() {
   const now = Date.now();
 
+  // Se o cache for recente, retorna ele imediatamente
   if (economicCache && (now - lastCacheUpdate < CACHE_TTL)) {
     return economicCache;
   }
@@ -201,7 +236,8 @@ async function getEconomicData() {
         bolsoPopular,
         salarioMinimo,
         arrecadacao
-      }
+      },
+      stale: false
     };
 
     economicCache = result;
@@ -209,8 +245,17 @@ async function getEconomicData() {
 
     return result;
   } catch (err) {
-    console.error("Erro ao buscar dados econômicos:", err.message);
-    return economicCache || { error: true };
+    console.error("⚠️ Erro ao atualizar indicadores (usando fallback):", err.message);
+    
+    // Se falhar mas tivermos cache antigo, usamos o cache antigo (stale)
+    if (economicCache) {
+      console.log("ℹ️ Utilizando dados do cache anterior (stale)");
+      return { ...economicCache, stale: true };
+    }
+
+    // Se falhar e não tivermos cache nenhum (primeiro boot), usamos defaults seguros
+    console.log("ℹ️ Utilizando valores padrão (defaults)");
+    return getSafeDefaults();
   }
 }
 

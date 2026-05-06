@@ -1,27 +1,15 @@
-const fs = require("fs");
 const path = require("path");
+const { readJson } = require("./storageAdapter");
 
 const {
   normalizeCategory
 } = require("./contentStrategyService");
 
-const postsFile = path.join(__dirname, "..", "data", "posts.json");
-
-function ensurePostsFile() {
-  const dir = path.dirname(postsFile);
-
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-
-  if (!fs.existsSync(postsFile)) {
-    fs.writeFileSync(postsFile, JSON.stringify([], null, 2), "utf8");
-  }
-}
+const FILE_KEY = "posts";
 
 /*
 ==================================================
-CACHE DE POSTS (EVITA BLOQUEIO SÍNCRONO)
+CACHE DE POSTS (ALTA PERFORMANCE)
 ==================================================
 */
 
@@ -29,35 +17,47 @@ let postsCache = null;
 let lastCacheUpdate = 0;
 const CACHE_TTL = 30000; // 30 segundos
 
-function readPosts() {
-  ensurePostsFile();
+/**
+ * Ordena posts por data de atualização ou criação.
+ */
+function sortByDate(posts) {
+  return posts.slice().sort((a, b) => {
+    const dateA = new Date(a.updatedAt || a.createdAt || 0).getTime();
+    const dateB = new Date(b.updatedAt || b.createdAt || 0).getTime();
+    return dateB - dateA;
+  });
+}
 
+function readPosts() {
   const now = Date.now();
 
+  // Se o cache for válido, retorna os posts já prontos (ordenados e normalizados)
   if (postsCache && (now - lastCacheUpdate < CACHE_TTL)) {
     return postsCache;
   }
 
   try {
-    const raw = fs.readFileSync(postsFile, "utf8");
-    const parsed = raw.trim() ? JSON.parse(raw) : [];
+    const parsed = readJson(FILE_KEY, []);
 
-    if (!Array.isArray(parsed)) return [];
+    if (!Array.isArray(parsed)) return postsCache || [];
 
-    const result = parsed
-      .filter((post) => post && typeof post === "object")
-      .filter((post) => String(post.status || "published").toLowerCase() !== "draft")
-      .map((post) => ({
-        ...post,
-        category: normalizeCategory(post.category, post.title, post.content)
-      }));
+    // Processa os posts: filtra, normaliza categoria e ordena
+    const processed = sortByDate(
+      parsed
+        .filter((post) => post && typeof post === "object")
+        .filter((post) => String(post.status || "published").toLowerCase() !== "draft")
+        .map((post) => ({
+          ...post,
+          category: normalizeCategory(post.category, post.title, post.content)
+        }))
+    );
 
-    postsCache = result;
+    postsCache = processed;
     lastCacheUpdate = now;
 
-    return result;
+    return processed;
   } catch (err) {
-    console.error("ERRO POST SERVICE:", err.message);
+    console.error("❌ [PostService] Erro fatal no processamento:", err.message);
     return postsCache || [];
   }
 }
@@ -70,17 +70,8 @@ function clearPostCache() {
   lastCacheUpdate = 0;
 }
 
-function sortByDate(posts) {
-  return posts.slice().sort((a, b) => {
-    const dateA = new Date(a.updatedAt || a.createdAt || 0).getTime();
-    const dateB = new Date(b.updatedAt || b.createdAt || 0).getTime();
-
-    return dateB - dateA;
-  });
-}
-
 function getAllPosts() {
-  return sortByDate(readPosts());
+  return readPosts();
 }
 
 function getLatestPosts(limit = 6) {
@@ -89,7 +80,6 @@ function getLatestPosts(limit = 6) {
 
 function getPostBySlug(slug) {
   const target = String(slug || "").trim();
-
   if (!target) return null;
 
   return getAllPosts().find((post) => String(post.slug || "") === target) || null;
@@ -99,7 +89,7 @@ function getPostsByCategory(category) {
   const normalized = normalizeCategory(category);
 
   return getAllPosts().filter((post) => {
-    return normalizeCategory(post.category, post.title, post.content) === normalized;
+    return post.category === normalized;
   });
 }
 

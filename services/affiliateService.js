@@ -1,29 +1,14 @@
-const fs = require("fs");
 const path = require("path");
+const { readJson, writeJson } = require("./storageAdapter");
 
-const FILE = path.join(__dirname, "..", "data", "affiliates.json");
-
-function ensureFile() {
-  const dir = path.join(__dirname, "..", "data");
-
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  if (!fs.existsSync(FILE)) fs.writeFileSync(FILE, JSON.stringify([], null, 2), "utf8");
-}
+const FILE_KEY = "affiliates";
 
 function readAffiliates() {
-  ensureFile();
-
-  try {
-    const raw = fs.readFileSync(FILE, "utf8");
-    return raw.trim() ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+  return readJson(FILE_KEY, []);
 }
 
 function saveAffiliates(data) {
-  ensureFile();
-  fs.writeFileSync(FILE, JSON.stringify(data, null, 2), "utf8");
+  return writeJson(FILE_KEY, data);
 }
 
 function isRealTelegramProduct(item) {

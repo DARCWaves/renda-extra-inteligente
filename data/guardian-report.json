@@ -3,15 +3,17 @@
   "passed": [
     "app.js existe.",
     "app.js sem erro de sintaxe.",
-    "app.js não referencia home.html.",
+    "Rota de confiança detectada: /sobre",
+    "Rota de confiança detectada: /contato",
+    "Rota de confiança detectada: /privacidade",
+    "Rota de confiança detectada: /termos",
+    "Rota de confiança detectada: /editorial",
+    "Rota de confiança detectada: /transparencia",
     "Rota /sitemap.xml única.",
-    "Rota /robots.txt sem duplicação crítica.",
-    "Nenhum sendFile problemático em views detectado.",
     "data/posts.json válido.",
-    "seoSitemapService sem erro de sintaxe.",
+    "Base de afiliados validada.",
     "Sitemap XML válido.",
     "Robots aponta para sitemap.xml.",
-    "ads.txt detectado.",
     "views/home.ejs existe.",
     "views/posts.ejs existe.",
     "views/category.ejs existe.",
@@ -27,5 +29,5 @@
     "economia": 1,
     "trabalho": 1
   },
-  "checkedAt": "2026-05-06T23:05:19.203Z"
+  "checkedAt": "2026-05-06T23:42:16.510Z"
 }

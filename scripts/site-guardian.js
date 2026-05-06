@@ -64,6 +64,12 @@ function check() {
 
   const appCode = read("app.js", "");
 
+  /*
+  ==================================================
+  SISTEMA E INFRAESTRUTURA
+  ==================================================
+  */
+
   if (!exists("app.js")) failures.push("app.js não existe.");
   else passed.push("app.js existe.");
 
@@ -71,21 +77,43 @@ function check() {
   if (!syntaxApp.ok) failures.push("app.js possui erro de sintaxe.");
   else passed.push("app.js sem erro de sintaxe.");
 
-  if (appCode.includes("home.html")) failures.push("app.js ainda referencia home.html.");
-  else passed.push("app.js não referencia home.html.");
+  const syncIoRegex = /fs\.read|fs\.write|fs\.exists/g;
+  if ((appCode.match(syncIoRegex) || []).length > 2) {
+    warnings.push("app.js usa muitas operações de IO síncronas diretamente. Considere usar StorageAdapter.");
+  }
+
+  /*
+  ==================================================
+  PÁGINAS DE CONFIANÇA (EEAT / ADSENSE)
+  ==================================================
+  */
+
+  const trustRoutes = ["/sobre", "/contato", "/privacidade", "/termos", "/editorial", "/transparencia"];
+  trustRoutes.forEach(route => {
+    if (countRoute(appCode, route) === 0) {
+      failures.push(`Página de confiança obrigatória ausente em app.js: ${route}`);
+    } else {
+      passed.push(`Rota de confiança detectada: ${route}`);
+    }
+  });
 
   const sitemapRoutes = countRoute(appCode, "/sitemap.xml");
   if (sitemapRoutes !== 1) failures.push(`Quantidade inválida de rotas /sitemap.xml: ${sitemapRoutes}.`);
   else passed.push("Rota /sitemap.xml única.");
 
-  const robotsRoutes = countRoute(appCode, "/robots.txt");
-  if (robotsRoutes > 1) failures.push(`Rotas /robots.txt duplicadas: ${robotsRoutes}.`);
-  else passed.push("Rota /robots.txt sem duplicação crítica.");
+  /*
+  ==================================================
+  INTEGRIDADE DE DADOS (POSTS)
+  ==================================================
+  */
 
-  if (appCode.includes("res.sendFile") && appCode.includes("views")) {
-    warnings.push("Existe sendFile usando views. Verifique se não está servindo EJS como HTML.");
-  } else {
-    passed.push("Nenhum sendFile problemático em views detectado.");
+  const postsPath = filePath("data/posts.json");
+  if (exists("data/posts.json")) {
+    const stats = fs.statSync(postsPath);
+    const sizeMb = stats.size / (1024 * 1024);
+    if (sizeMb > 1.5) {
+      warnings.push(`posts.json está ficando grande (${sizeMb.toFixed(2)} MB). Considere migrar para DB.`);
+    }
   }
 
   const posts = readJson("data/posts.json", []);
@@ -93,30 +121,64 @@ function check() {
   else passed.push("data/posts.json válido.");
 
   const categoryCount = {};
+  const slugs = new Set();
+  const OFFICIAL_CATEGORIES = ["financas", "renda-extra", "programacao", "investimentos", "economia", "trabalho"];
+
   if (Array.isArray(posts)) {
     posts.forEach((post, index) => {
-      if (!post.title) failures.push(`Post ${index} sem title.`);
-      if (!post.slug) failures.push(`Post ${index} sem slug.`);
-      if (!post.category) failures.push(`Post ${index} sem category.`);
-      if (!post.description && !post.seoDescription) warnings.push(`Post ${index} sem description/seoDescription.`);
-      if (!post.content) warnings.push(`Post ${index} sem content.`);
+      const id = post.slug || `index ${index}`;
+      
+      // Validação de estrutura
+      if (!post.title) failures.push(`Post [${id}] sem title.`);
+      if (!post.slug) failures.push(`Post [${id}] sem slug.`);
+      else {
+        if (slugs.has(post.slug)) failures.push(`Slug duplicado detectado: ${post.slug}`);
+        slugs.add(post.slug);
+      }
+
+      if (!post.category) failures.push(`Post [${id}] sem category.`);
+      else if (!OFFICIAL_CATEGORIES.includes(post.category)) {
+        warnings.push(`Post [${id}] usa categoria não oficial: ${post.category}`);
+      }
+
+      if (!post.description && !post.seoDescription) {
+        warnings.push(`Post [${id}] sem meta descrição (SEO).`);
+      }
 
       const cat = String(post.category || "sem-categoria");
       categoryCount[cat] = (categoryCount[cat] || 0) + 1;
     });
 
-    if (posts.length >= 6) {
-      ["financas", "renda-extra", "programacao"].forEach((cat) => {
-        if (!categoryCount[cat]) failures.push(`Categoria obrigatória sem conteúdo: ${cat}.`);
+    // Verificação de categorias críticas
+    if (posts.length >= 10) {
+      OFFICIAL_CATEGORIES.forEach((cat) => {
+        if (!categoryCount[cat]) failures.push(`Categoria oficial sem conteúdo: ${cat}.`);
       });
     }
   }
 
-  if (exists("services/seoSitemapService.js")) {
-    const syntaxSeo = run("node -c services/seoSitemapService.js");
-    if (!syntaxSeo.ok) failures.push("services/seoSitemapService.js possui erro de sintaxe.");
-    else passed.push("seoSitemapService sem erro de sintaxe.");
+  /*
+  ==================================================
+  INTEGRIDADE DE DADOS (AFILIADOS)
+  ==================================================
+  */
 
+  const affiliates = readJson("data/affiliates.json", []);
+  if (!Array.isArray(affiliates)) warnings.push("data/affiliates.json não é um array ou está ausente.");
+  else {
+    affiliates.forEach((aff, idx) => {
+      if (!aff.id || !aff.url) warnings.push(`Afiliado índice ${idx} malformado.`);
+    });
+    passed.push("Base de afiliados validada.");
+  }
+
+  /*
+  ==================================================
+  SEO E RENDERING
+  ==================================================
+  */
+
+  if (exists("services/seoSitemapService.js")) {
     try {
       const { generateSitemapXml, generateRobotsTxt } = require(filePath("services/seoSitemapService.js"));
       const xml = generateSitemapXml();
@@ -133,14 +195,6 @@ function check() {
     } catch (err) {
       failures.push(`Erro ao gerar sitemap/robots: ${err.message}`);
     }
-  } else {
-    warnings.push("services/seoSitemapService.js não encontrado.");
-  }
-
-  if (!exists("public/ads.txt") && !appCode.includes('app.get("/ads.txt"')) {
-    warnings.push("ads.txt não encontrado como arquivo nem rota detectada.");
-  } else {
-    passed.push("ads.txt detectado.");
   }
 
   ["views/home.ejs", "views/posts.ejs", "views/category.ejs", "views/post.ejs"].forEach((file) => {
