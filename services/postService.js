@@ -19,8 +19,24 @@ function ensurePostsFile() {
   }
 }
 
+/*
+==================================================
+CACHE DE POSTS (EVITA BLOQUEIO SÍNCRONO)
+==================================================
+*/
+
+let postsCache = null;
+let lastCacheUpdate = 0;
+const CACHE_TTL = 30000; // 30 segundos
+
 function readPosts() {
   ensurePostsFile();
+
+  const now = Date.now();
+
+  if (postsCache && (now - lastCacheUpdate < CACHE_TTL)) {
+    return postsCache;
+  }
 
   try {
     const raw = fs.readFileSync(postsFile, "utf8");
@@ -28,17 +44,30 @@ function readPosts() {
 
     if (!Array.isArray(parsed)) return [];
 
-    return parsed
+    const result = parsed
       .filter((post) => post && typeof post === "object")
       .filter((post) => String(post.status || "published").toLowerCase() !== "draft")
       .map((post) => ({
         ...post,
         category: normalizeCategory(post.category, post.title, post.content)
       }));
+
+    postsCache = result;
+    lastCacheUpdate = now;
+
+    return result;
   } catch (err) {
     console.error("ERRO POST SERVICE:", err.message);
-    return [];
+    return postsCache || [];
   }
+}
+
+/**
+ * Força a limpeza do cache (útil após criar novo post)
+ */
+function clearPostCache() {
+  postsCache = null;
+  lastCacheUpdate = 0;
 }
 
 function sortByDate(posts) {
@@ -78,5 +107,6 @@ module.exports = {
   getAllPosts,
   getLatestPosts,
   getPostBySlug,
-  getPostsByCategory
+  getPostsByCategory,
+  clearPostCache
 };

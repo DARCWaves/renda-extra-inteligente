@@ -1,0 +1,30 @@
+{
+  "name": "renda-extra-v2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "guardian": "node scripts/site-guardian.js",
+    "agent": "node scripts/site-agent.js",
+    "proposals": "node scripts/proposal-manager.js list",
+    "proposals_tick": "node scripts/proposal-manager.js tick",
+    "guardian_bot": "node scripts/guardian-telegram-bot.js",
+    "guardian_worker": "node scripts/guardian-worker.js",
+    "predeploy": "node scripts/site-guardian.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "axios": "^1.15.2",
+    "dotenv": "^17.4.2",
+    "ejs": "^5.0.2",
+    "express": "^5.2.1",
+    "express-ejs-layouts": "^2.5.1",
+    "node-cron": "^4.2.1",
+    "node-telegram-bot-api": "^0.67.0"
+  }
+}

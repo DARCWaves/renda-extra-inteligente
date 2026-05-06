@@ -26,6 +26,27 @@ function slugify(text) {
 
 function normalizeCategory(category, title = "", content = "") {
   const raw = normalizeText(category);
+
+  // PRIORIDADE 1: Se a categoria já for uma das oficiais, mantém
+  if (CATEGORY_ORDER.includes(raw)) return raw;
+
+  // PRIORIDADE 2: Mapeamento de aliases diretos da categoria original
+  const directMap = {
+    "finanças": "financas",
+    "programação": "programacao",
+    "investimento": "investimentos",
+    "renda": "renda-extra",
+    "rendaextra": "renda-extra",
+    "noticias": "economia",
+    "noticia": "economia",
+    "mercado": "economia",
+    "emprego": "trabalho",
+    "dinheiro": "financas"
+  };
+
+  if (directMap[raw]) return directMap[raw];
+
+  // PRIORIDADE 3: Busca por palavras-chave se a categoria original for genérica ou inválida
   const text = `${raw} ${normalizeText(title)} ${normalizeText(content)}`;
 
   if (

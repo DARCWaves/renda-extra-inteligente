@@ -12,6 +12,8 @@ const {
   contentSignature
 } = require("./services/contentStrategyService");
 
+const { clearPostCache } = require("./services/postService");
+
 const postsFile = path.join(__dirname, "data", "posts.json");
 const stateFile = path.join(__dirname, "data", "auto-post-state.json");
 
@@ -103,6 +105,8 @@ function generatePost() {
 
   posts.unshift(post);
   writeJson(postsFile, posts.slice(0, 500));
+
+  clearPostCache();
 
   console.log("✅ Post automático criado:", post.category, "-", post.title);
 

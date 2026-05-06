@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const axios = require("axios");
+const { clearPostCache } = require("./postService");
 
 /*
 ==================================================
@@ -246,6 +247,8 @@ async function generateAutoPost({
 
     posts.unshift(newPost);
     savePosts(posts);
+
+    clearPostCache();
 
     console.log("✅ POST CRIADO:", newPost.slug);
 

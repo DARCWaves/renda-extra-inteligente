@@ -146,52 +146,72 @@ async function fetchArrecadacao() {
 
 /*
 ==================================================
-DADOS ECONÔMICOS
+DADOS ECONÔMICOS (COM CACHE)
 ==================================================
 */
 
+let economicCache = null;
+let lastCacheUpdate = 0;
+const CACHE_TTL = 15 * 60 * 1000; // 15 minutos
+
 async function getEconomicData() {
-  const [selic, inflacao, dolarData, arrecadacao] = await Promise.all([
-    fetchBCB(432, 14.75, 365),
-    fetchBCB(433, 0.88, 365),
-    fetchDolar(),
-    fetchArrecadacao()
-  ]);
+  const now = Date.now();
 
-  const salarioMinimo = 1621;
-  const bolsoPopular = Number((inflacao * 2.85).toFixed(2));
+  if (economicCache && (now - lastCacheUpdate < CACHE_TTL)) {
+    return economicCache;
+  }
 
-  return {
-    dolar: formatCurrency(dolarData.atual),
-    dolarOficial: formatCurrency(dolarData.oficial),
-    selic: formatPercent(selic),
-    inflacao: formatPercent(inflacao),
-    bolsoPopular: formatPercent(bolsoPopular),
-    salarioMinimo: formatCurrency(salarioMinimo),
-    arrecadacao: formatBillions(arrecadacao),
+  try {
+    const [selic, inflacao, dolarData, arrecadacao] = await Promise.all([
+      fetchBCB(432, 14.75, 365),
+      fetchBCB(433, 0.88, 365),
+      fetchDolar(),
+      fetchArrecadacao()
+    ]);
 
-    periodos: {
-      dolar: "cotação em tempo real",
-      dolarOficial: "cotação oficial BCB",
-      selic: "ao ano",
-      inflacao: "último mês",
-      bolsoPopular: "estimativa mensal",
-      salarioMinimo: "valor mensal oficial",
-      arrecadacao: process.env.BCB_ARRECADACAO_CODE
-        ? "último dado oficial disponível no BCB"
-        : "valor padrão até configurar código SGS"
-    },
+    const salarioMinimo = 1621;
+    const bolsoPopular = Number((inflacao * 2.85).toFixed(2));
 
-    raw: {
-      dolar: dolarData.atual,
-      dolarOficial: dolarData.oficial,
-      selic,
-      inflacao,
-      bolsoPopular,
-      salarioMinimo,
-      arrecadacao
-    }
-  };
+    const result = {
+      dolar: formatCurrency(dolarData.atual),
+      dolarOficial: formatCurrency(dolarData.oficial),
+      selic: formatPercent(selic),
+      inflacao: formatPercent(inflacao),
+      bolsoPopular: formatPercent(bolsoPopular),
+      salarioMinimo: formatCurrency(salarioMinimo),
+      arrecadacao: formatBillions(arrecadacao),
+
+      periodos: {
+        dolar: "cotação em tempo real",
+        dolarOficial: "cotação oficial BCB",
+        selic: "ao ano",
+        inflacao: "último mês",
+        bolsoPopular: "estimativa mensal",
+        salarioMinimo: "valor mensal oficial",
+        arrecadacao: process.env.BCB_ARRECADACAO_CODE
+          ? "último dado oficial disponível no BCB"
+          : "valor padrão até configurar código SGS"
+      },
+
+      raw: {
+        dolar: dolarData.atual,
+        dolarOficial: dolarData.oficial,
+        selic,
+        inflacao,
+        bolsoPopular,
+        salarioMinimo,
+        arrecadacao
+      }
+    };
+
+    economicCache = result;
+    lastCacheUpdate = now;
+
+    return result;
+  } catch (err) {
+    console.error("Erro ao buscar dados econômicos:", err.message);
+    return economicCache || { error: true };
+  }
 }
 
 module.exports = {

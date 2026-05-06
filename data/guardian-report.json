@@ -1,5 +1,5 @@
 {
-  "ok": false,
+  "ok": true,
   "passed": [
     "app.js existe.",
     "app.js sem erro de sintaxe.",
@@ -18,12 +18,14 @@
     "views/post.ejs existe."
   ],
   "warnings": [],
-  "failures": [
-    "Categoria obrigatória sem conteúdo: financas."
-  ],
+  "failures": [],
   "categoryCount": {
-    "programacao": 4,
-    "renda-extra": 14
+    "investimentos": 1,
+    "programacao": 5,
+    "renda-extra": 15,
+    "financas": 1,
+    "economia": 1,
+    "trabalho": 1
   },
-  "checkedAt": "2026-05-06T13:18:30.335Z"
+  "checkedAt": "2026-05-06T22:33:26.151Z"
 }

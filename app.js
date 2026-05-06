@@ -742,9 +742,9 @@ app.get("/api/indicadores", async (req, res) => {
 
 app.get("/api/affiliate-stats", (req, res) => {
   try {
-    const secret = req.query.secret || req.headers["x-admin-secret"];
+    const secret = req.headers["x-admin-secret"];
 
-    if (secret !== process.env.PANEL_SECRET) {
+    if (!secret || secret !== process.env.PANEL_SECRET) {
       return res.status(401).json({
         ok: false,
         error: "Não autorizado"
@@ -826,9 +826,6 @@ function bootAutoContentEngine() {
   });
 }
 
-bootAutoContentEngine();
-
-
 /* SEO_SAFE_ROUTES_START */
 
 /*
@@ -895,4 +892,4 @@ EXPORT
 ==================================================
 */
 
-module.exports = app;
+module.exports = { app, bootAutoContentEngine };

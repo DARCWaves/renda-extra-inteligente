@@ -1,17 +1,30 @@
-const apiRoutes = require("./routes/api");
 require("dotenv").config();
 
-const app = require("./app");
+// Carrega app e o boot do motor de conteúdo
+const { app, bootAutoContentEngine } = require("./app");
 
 const cron = require("node-cron");
 const { runAutoPost } = require("./autoContent");
 
-cron.schedule("*/15 * * * *", () => {
-  console.log("🤖 Gerando conteúdo automático...");
-  Promise.resolve(runAutoPost()).catch((err) => {
-    console.error("Erro ao gerar post automático:", err.message);
+/*
+==================================================
+CONFIGURAÇÃO DE CRONS (CENTRALIZADO)
+==================================================
+*/
+
+// Cron para posts baseados em templates (Rápido e estável)
+if (process.env.AUTO_POSTS === "true") {
+  cron.schedule("*/15 * * * *", () => {
+    console.log("🤖 [Cron] Gerando conteúdo via templates...");
+    Promise.resolve(runAutoPost()).catch((err) => {
+      console.error("Erro ao gerar post automático (template):", err.message);
+    });
   });
-});
+}
+
+// Inicia o motor de conteúdo IA (GPT) se configurado
+// Agora centralizado em main.js para evitar duplicação no boot do app.js
+bootAutoContentEngine();
 
 const PORT = process.env.PORT || 3000;
 
@@ -31,6 +44,8 @@ INICIAR BOT TELEGRAM
 
 function startBotSafely() {
   try {
+    // Se estiver no Render, podemos querer rodar o bot apenas no worker
+    // mas se o usuário habilitar explicitamente no web, permitimos aqui.
     if (process.env.ENABLE_TELEGRAM_BOT === "false") {
       console.log("🤖 Bot Telegram desativado por ENV.");
       return;
