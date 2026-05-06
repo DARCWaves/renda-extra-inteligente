@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const FILE = path.join(__dirname, "..", "data", "affiliate-links.json");
+const FILE = path.join(__dirname, "..", "data", "affiliates.json");
 
 function ensureFile() {
   const dir = path.join(__dirname, "..", "data");
@@ -46,7 +46,7 @@ function normalizeProduct(item) {
     image: item.image || "",
     price: item.price || "",
     badge: item.badge || "Recomendado",
-    category: item.category || "geral",
+    category: String(item.category || "geral").toLowerCase(),
     tags: Array.isArray(item.tags) ? item.tags : [],
     clicks: Number(item.clicks || 0),
     active: item.active !== false,
@@ -57,8 +57,9 @@ function normalizeProduct(item) {
 }
 
 function getTelegramProducts() {
-  return readAffiliates()
-    .filter(isRealTelegramProduct)
+  const raw = readAffiliates();
+  return raw
+    .filter((item) => item && item.active !== false && item.url)
     .map(normalizeProduct)
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 }
@@ -72,7 +73,20 @@ function getActiveAffiliate() {
 }
 
 function getAffiliatesForContext(context = "", limit = 12) {
-  return getActiveAffiliates(limit);
+  const products = getTelegramProducts();
+  const lowerContext = String(context || "").toLowerCase();
+
+  // Tenta encontrar produtos que batem com a categoria ou palavras no contexto
+  const contextual = products.filter(p => {
+    return lowerContext.includes(p.category) || 
+           lowerContext.includes(p.title.toLowerCase());
+  });
+
+  if (contextual.length > 0) {
+    return contextual.slice(0, limit);
+  }
+
+  return products.slice(0, limit);
 }
 
 function registerAffiliateClick(id, meta = {}) {

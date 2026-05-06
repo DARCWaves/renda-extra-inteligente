@@ -8,13 +8,27 @@
 %>
 
 <section class="lux-hero compact">
+  <div class="editorial-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    Conteúdo Revisado Editorialmente
+  </div>
+
   <span class="lux-kicker"><%= postCategory %></span>
 
   <h1><%= postTitle %></h1>
 
   <p><%= postDescription %></p>
 
-  <p class="muted">Publicado em <%= postDate %></p>
+  <div class="post-meta-v2">
+    <span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      Atualizado em <%= postDate %>
+    </span>
+    <span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      Redação Renda Extra
+    </span>
+  </div>
 
   <div class="lux-actions">
     <a href="/posts" class="btn-dark">Ver outros conteúdos</a>
@@ -62,38 +76,38 @@
   </article>
 </section>
 
-<% if (affiliates && affiliates.length) { %>
+<% if (typeof affiliates !== 'undefined' && affiliates.length > 0) { %>
   <section class="lux-section">
-    <div class="section-heading">
-      <span>03</span>
-      <div>
-        <h2>Recomendação útil</h2>
-        <p>Uma ferramenta ou produto que pode ajudar você a aplicar melhor o que aprendeu.</p>
-      </div>
+    <div class="affiliate-disclosure-box">
+      <span class="disclosure-tag">Recomendação Editorial</span>
+      <p class="disclosure-text">
+        Este site é mantido por leitores. Ao comprar através de links em nosso site, podemos receber uma comissão de afiliado sem custo adicional para você.
+      </p>
     </div>
 
     <% const product = affiliates[0]; %>
 
-    <article class="lux-card offer-inline-card">
-      <% if (product.image) { %>
-        <img 
-          src="<%= product.image %>" 
-          alt="<%= product.title %>" 
-          class="post-cover"
-          loading="lazy"
-          onerror="this.style.display='none';"
-        >
-      <% } %>
+    <article class="lux-card native-offer-card">
+      <div class="offer-flex">
+        <% if (product.image) { %>
+          <div class="offer-image-wrap">
+            <img src="<%= product.image %>" alt="<%= product.title %>" loading="lazy">
+          </div>
+        <% } %>
 
-      <span class="lux-tag"><%= product.badge || "Recomendado" %></span>
-
-      <h3><%= product.title %></h3>
-
-      <% if (product.price) { %>
-        <p><strong><%= product.price %></strong></p>
-      <% } %>
-
-      <a href="/out/<%= product.id %>" class="btn-gold" target="_blank">Ver oferta →</a>
+        <div class="offer-details">
+          <span class="lux-tag"><%= product.category %></span>
+          <h3><%= product.title %></h3>
+          <p><%= product.description %></p>
+          
+          <div class="offer-footer">
+            <% if (product.price) { %>
+              <span class="offer-price"><%= product.price %></span>
+            <% } %>
+            <a href="/out/<%= product.id %>" class="btn-gold" target="_blank" rel="nofollow noopener">Ver detalhes da oferta</a>
+          </div>
+        </div>
+      </div>
     </article>
   </section>
 <% } %>
@@ -131,6 +145,45 @@
 </section>
 
 <section class="lux-section">
+  <nav class="post-nav-footer">
+    <a href="/categoria/<%= post.category %>" class="back-link">
+      ← Voltar para <%= post.category.charAt(0).toUpperCase() + post.category.slice(1).replace('-', ' ') %>
+    </a>
+
+    <div class="explore-themes">
+      <span class="lux-kicker">Explore outros temas</span>
+      <div class="theme-tags">
+        <a href="/categoria/financas">Finanças</a>
+        <a href="/categoria/renda-extra">Renda Extra</a>
+        <a href="/categoria/investimentos">Investimentos</a>
+        <a href="/categoria/programacao">Programação</a>
+        <a href="/categoria/economia">Economia</a>
+        <a href="/categoria/trabalho">Trabalho</a>
+      </div>
+    </div>
+  </nav>
+
+  <% if (typeof relatedPosts !== 'undefined' && relatedPosts.length > 0) { %>
+    <section class="related-posts-section">
+      <div class="section-heading">
+        <span>Próximas leituras</span>
+        <div>
+          <h2>Conteúdos relacionados</h2>
+          <p>Continue aprendendo sobre <%= postCategory.replace('-', ' ') %> com estes guias.</p>
+        </div>
+      </div>
+
+      <div class="related-grid">
+        <% relatedPosts.forEach(related => { %>
+          <a href="/post/<%= related.slug %>" class="related-card">
+            <h4><%= related.title %></h4>
+            <p><%= related.description %></p>
+          </a>
+        <% }) %>
+      </div>
+    </section>
+  <% } %>
+
   <p class="muted">
     Este conteúdo é educativo. Não é recomendação individual de investimento, compra ou decisão financeira.
   </p>

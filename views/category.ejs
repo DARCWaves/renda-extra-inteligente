@@ -1,3 +1,9 @@
+<nav class="lux-breadcrumbs">
+  <a href="/">Home</a>
+  <span class="sep">/</span>
+  <span class="current"><%= (info && info.title) ? info.title : ('Categoria: ' + categoria) %></span>
+</nav>
+
 <section class="category-hero">
   <div class="eyebrow">Centro de aprendizado</div>
 
@@ -50,6 +56,36 @@
       <% }) %>
     </div>
   <% } %>
+
+  <div class="category-explore-footer">
+    <div class="section-heading">
+      <span>Explorar</span>
+      <div>
+        <h2>Ver outras categorias</h2>
+        <p>A educação financeira é composta por vários pilares. Escolha outro tema para continuar lendo.</p>
+      </div>
+    </div>
+
+    <div class="path-grid">
+      <% 
+        const others = [
+          { slug: 'financas', title: 'Finanças' },
+          { slug: 'renda-extra', title: 'Renda Extra' },
+          { slug: 'investimentos', title: 'Investimentos' },
+          { slug: 'programacao', title: 'Programação' },
+          { slug: 'trabalho', title: 'Trabalho' },
+          { slug: 'economia', title: 'Economia' }
+        ].filter(c => c.slug !== categoria);
+      %>
+
+      <% others.forEach(other => { %>
+        <a href="/categoria/<%= other.slug %>" class="path-card">
+          <strong><%= other.title %></strong>
+          <p>Ver conteúdos de <%= other.title.toLowerCase() %></p>
+        </a>
+      <% }) %>
+    </div>
+  </div>
 </section>
 
 <section>

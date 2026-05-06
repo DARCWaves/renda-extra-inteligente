@@ -103,10 +103,23 @@ function getPostsByCategory(category) {
   });
 }
 
+function getRelatedPosts(currentSlug, category, limit = 3) {
+  try {
+    const posts = getPostsByCategory(category);
+    return posts
+      .filter((p) => p.slug !== currentSlug)
+      .slice(0, Number(limit || 3));
+  } catch (err) {
+    console.error("ERRO getRelatedPosts:", err.message);
+    return [];
+  }
+}
+
 module.exports = {
   getAllPosts,
   getLatestPosts,
   getPostBySlug,
   getPostsByCategory,
+  getRelatedPosts,
   clearPostCache
 };

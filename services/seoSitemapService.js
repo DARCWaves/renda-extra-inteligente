@@ -109,7 +109,13 @@ function generateSitemapXml() {
     ["/categoria/trabalho", "weekly", "0.7"],
     ["/categoria/economia", "weekly", "0.7"],
     ["/indicadores", "daily", "0.8"],
-    ["/ofertas", "weekly", "0.6"]
+    ["/ofertas", "weekly", "0.6"],
+    ["/sobre", "monthly", "0.4"],
+    ["/contato", "monthly", "0.4"],
+    ["/privacidade", "monthly", "0.3"],
+    ["/termos", "monthly", "0.3"],
+    ["/editorial", "monthly", "0.4"],
+    ["/transparencia", "monthly", "0.4"]
   ].forEach(([url, changefreq, priority]) => {
     addUrl(urls, seen, `${baseUrl}${url}`, { changefreq, priority });
   });

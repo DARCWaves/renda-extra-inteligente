@@ -45,7 +45,7 @@
     </div>
   </a>
 
-  <nav class="lux-nav">
+  <nav class="lux-nav" aria-label="Navegação principal">
     <a href="/">Home</a>
     <a href="/posts">Conteúdos</a>
     <a href="/categoria/renda-extra">Renda Extra</a>
@@ -60,9 +60,37 @@
   <%- body %>
 </main>
 
-<footer class="lux-footer">
-  <strong><%= appName %></strong>
-  <p>Educação financeira simples, prática e sem promessa milagrosa.</p>
+<footer class="lux-footer" aria-label="Rodapé do site">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h2 class="footer-logo"><%= appName %></h2>
+      <p>Educação financeira simples, prática e sem promessa milagrosa.</p>
+    </div>
+    
+    <div class="footer-links">
+      <strong>Institucional</strong>
+      <a href="/sobre">Sobre</a>
+      <a href="/contato">Contato</a>
+      <a href="/editorial">Política Editorial</a>
+      <a href="/transparencia">Transparência</a>
+    </div>
+
+    <div class="footer-links">
+      <strong>Categorias</strong>
+      <a href="/categoria/financas">Finanças</a>
+      <a href="/categoria/renda-extra">Renda Extra</a>
+      <a href="/categoria/investimentos">Investimentos</a>
+      <a href="/categoria/programacao">Programação</a>
+      <a href="/categoria/economia">Economia</a>
+      <a href="/categoria/trabalho">Trabalho</a>
+    </div>
+
+    <div class="footer-links">
+      <strong>Legal</strong>
+      <a href="/privacidade">Privacidade</a>
+      <a href="/termos">Termos de Uso</a>
+    </div>
+  </div>
 </footer>
 
 <% if (affiliates && affiliates.length) { %>

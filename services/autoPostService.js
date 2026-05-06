@@ -60,12 +60,35 @@ SEO PROMPT ENGINE (O OURO)
 ==================================================
 */
 
-function buildPrompt({ topic, category, customPrompt }) {
+const CONTENT_FORMATS = {
+  tutorial: {
+    name: "Tutorial Prático",
+    rules: "Foco em 'Como fazer' com passos numerados claros, dicas de execução e um checklist final."
+  },
+  guide: {
+    name: "Guia para Iniciantes",
+    rules: "Linguagem ultra-simples, focada em conceitos básicos, definições claras e 'o que não fazer' no início."
+  },
+  simulation: {
+    name: "Simulação Financeira",
+    rules: "Inclua cenários hipotéticos de 'e se' (ex: Se você poupar X, terá Y em Z tempo) com cálculos simples e comparativos."
+  },
+  mistakes: {
+    name: "Análise de Erros",
+    rules: "Foque nos erros mais comuns que as pessoas cometem no tema, explicando por que ocorrem e como evitá-los."
+  }
+};
+
+function buildPrompt({ topic, category, customPrompt, format }) {
 
   if (customPrompt) return customPrompt;
 
+  const selectedFormat = CONTENT_FORMATS[format] || { name: "Artigo Geral", rules: "Ensine o passo a passo com exemplos práticos." };
+
   const base = `
 Você é um especialista em SEO avançado e finanças.
+Formato do conteúdo: ${selectedFormat.name}
+Regras do formato: ${selectedFormat.rules}
 
 Crie um conteúdo EXTREMAMENTE otimizado para Google com as regras:
 
@@ -74,7 +97,6 @@ Crie um conteúdo EXTREMAMENTE otimizado para Google com as regras:
 - focado na dor do usuário
 - direto, claro e envolvente
 - evitar termos técnicos sem explicação
-- ensinar passo a passo
 - manter credibilidade
 
 Estrutura obrigatória:
@@ -82,7 +104,7 @@ Estrutura obrigatória:
 TÍTULO (forte e chamativo)
 DESCRIÇÃO (SEO)
 INTRODUÇÃO (conectando com dor real)
-DESENVOLVIMENTO (explicando tudo)
+DESENVOLVIMENTO (respeitando o formato ${selectedFormat.name})
 EXEMPLOS PRÁTICOS
 CONCLUSÃO (com ação clara)
 
@@ -209,7 +231,8 @@ async function generateAutoPost({
   topic = "finanças pessoais",
   category = "financas",
   customPrompt = null,
-  mode = "auto"
+  mode = "auto",
+  format = "tutorial"
 }) {
 
   try {
@@ -224,7 +247,7 @@ async function generateAutoPost({
       return null;
     }
 
-    const prompt = buildPrompt({ topic, category, customPrompt });
+    const prompt = buildPrompt({ topic, category, customPrompt, format });
 
     const rawContent = await generateContent(prompt);
 

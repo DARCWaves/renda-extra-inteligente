@@ -591,12 +591,16 @@ app.get("/post/:slug", (req, res) => {
     ].join(" ");
 
     const affiliates = safeArray(getAffiliatesForContext(context, 8));
+    const relatedPosts = typeof require("./services/postService").getRelatedPosts === "function" 
+      ? require("./services/postService").getRelatedPosts(post.slug, post.category, 3)
+      : [];
 
     return res.render("post", {
       title: post.seoTitle,
       description: post.seoDescription,
       post,
       affiliates,
+      relatedPosts,
       adsenseClient: ADSENSE_CLIENT,
       adsenseSlot: ADSENSE_SLOT
     });
@@ -775,6 +779,54 @@ SEO
 app.get("/ads.txt", (req, res) => {
   res.type("text/plain");
   return res.send("google.com, pub-2679191515040105, DIRECT, f08c47fec0942fa0\n");
+});
+
+/*
+==================================================
+PÁGINAS INSTITUCIONAIS (EEAT)
+==================================================
+*/
+
+app.get("/sobre", (req, res) => {
+  res.render("static/about", {
+    title: "Sobre | " + APP_NAME,
+    description: "Conheça a missão e os valores do Renda Extra Inteligente."
+  });
+});
+
+app.get("/contato", (req, res) => {
+  res.render("static/contact", {
+    title: "Contato | " + APP_NAME,
+    description: "Entre em contato com a equipe do Renda Extra Inteligente."
+  });
+});
+
+app.get("/privacidade", (req, res) => {
+  res.render("static/privacy", {
+    title: "Política de Privacidade | " + APP_NAME,
+    description: "Saiba como protegemos seus dados e sua privacidade."
+  });
+});
+
+app.get("/termos", (req, res) => {
+  res.render("static/terms", {
+    title: "Termos de Uso | " + APP_NAME,
+    description: "Regras e termos para utilização do nosso portal."
+  });
+});
+
+app.get("/editorial", (req, res) => {
+  res.render("static/editorial", {
+    title: "Política Editorial | " + APP_NAME,
+    description: "Como garantimos a qualidade e precisão do nosso conteúdo."
+  });
+});
+
+app.get("/transparencia", (req, res) => {
+  res.render("static/affiliate-disclosure", {
+    title: "Divulgação de Afiliados | " + APP_NAME,
+    description: "Transparência sobre nossa forma de monetização e parcerias."
+  });
 });
 
 /*

@@ -119,6 +119,9 @@ function startContentEngine({ intervalMs = 1800000 }) {
 
   console.log("🤖 Content Engine iniciado");
 
+  const formats = ["tutorial", "guide", "simulation", "mistakes"];
+  let formatIndex = 0;
+
   setInterval(async () => {
     try {
       console.log("🔥 Rodando ciclo automático...");
@@ -130,11 +133,14 @@ function startContentEngine({ intervalMs = 1800000 }) {
       */
 
       const { topic, categoria } = pickRandomTopic();
+      const format = formats[formatIndex % formats.length];
+      formatIndex++;
 
       await generateAutoPost({
         topic,
         category: categoria,
-        mode: "auto"
+        mode: "auto",
+        format
       });
 
       /*
