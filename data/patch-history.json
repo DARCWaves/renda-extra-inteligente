@@ -1,0 +1,108 @@
+[
+  {
+    "timestamp": "2026-05-08T00:02:30.891Z",
+    "cycleLimit": 1,
+    "applied": [
+      {
+        "slug": "conteudos-1777476600033",
+        "oldScore": 20,
+        "newScore": 60,
+        "fields": [
+          "seoDescription",
+          "conclusion",
+          "structureNote",
+          "ctaSnippet"
+        ]
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-05-08T00:08:53.548Z",
+    "cycleLimit": 3,
+    "applied": [
+      {
+        "slug": "logica-de-programacao-explicada-como-uma-receita-simples-para-iniciantes",
+        "oldScore": 40,
+        "newScore": 70,
+        "fields": [
+          "title",
+          "seoDescription",
+          "conclusion",
+          "ctaSnippet"
+        ]
+      },
+      {
+        "slug": "o-que-vender-para-fazer-renda-extra-mesmo-tendo-pouco-dinheiro-para-comecar",
+        "oldScore": 40,
+        "newScore": 70,
+        "fields": [
+          "title",
+          "seoDescription",
+          "conclusion",
+          "ctaSnippet"
+        ]
+      },
+      {
+        "slug": "o-erro-silencioso-que-faz-seu-salario-sumir-antes-do-fim-do-mes",
+        "oldScore": 40,
+        "newScore": 70,
+        "fields": [
+          "title",
+          "seoDescription",
+          "conclusion",
+          "ctaSnippet"
+        ]
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-05-08T00:13:04.317Z",
+    "cycleLimit": 5,
+    "applied": [
+      {
+        "slug": "o-que-entender-antes-de-investir-pela-primeira-vez-e-evitar-decisoes-ruins",
+        "oldScore": 30,
+        "newScore": 70,
+        "fields": [
+          "seoDescription",
+          "conclusion",
+          "structureNote",
+          "ctaSnippet"
+        ]
+      },
+      {
+        "slug": "como-a-inflacao-tira-dinheiro-do-seu-bolso-sem-voce-perceber",
+        "oldScore": 30,
+        "newScore": 70,
+        "fields": [
+          "seoDescription",
+          "conclusion",
+          "structureNote",
+          "ctaSnippet"
+        ]
+      },
+      {
+        "slug": "como-aumentar-sua-renda-usando-melhor-o-trabalho-que-voce-ja-faz",
+        "oldScore": 40,
+        "newScore": 80,
+        "fields": [
+          "seoDescription",
+          "conclusion",
+          "structureNote",
+          "ctaSnippet"
+        ]
+      },
+      {
+        "slug": "como-aprender-programacao-do-zero-sem-travar-na-logica",
+        "oldScore": 40,
+        "newScore": 80,
+        "fields": [
+          "seoDescription",
+          "conclusion",
+          "structureNote",
+          "ctaSnippet"
+        ]
+      }
+    ]
+  }
+]

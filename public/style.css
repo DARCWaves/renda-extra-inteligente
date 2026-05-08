@@ -93,6 +93,139 @@ h1, h2, h3, h4 {
   outline-offset: 4px;
 }
 
+/* Pillar Page Architecture */
+.pillar-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  background: var(--gold);
+  z-index: 2000;
+  width: 0%;
+  transition: width 0.1s ease-out;
+}
+
+.pillar-header {
+  max-width: 1240px;
+  margin: 0 auto 4rem;
+  padding: 0 14px;
+}
+
+.pillar-header h1 {
+  font-size: clamp(32px, 6vw, 64px);
+  margin: 1.5rem 0;
+}
+
+.pillar-lead {
+  font-size: 1.3rem;
+  opacity: 0.9;
+  max-width: 800px;
+  line-height: 1.6;
+}
+
+.pillar-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 4rem;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 14px;
+}
+
+.pillar-sidebar {
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+}
+
+.toc-box {
+  background: var(--black-2);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+}
+
+.toc-box strong {
+  display: block;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.toc-box ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.toc-box a {
+  font-size: 0.9rem;
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.toc-box a:hover {
+  opacity: 1;
+  color: var(--gold);
+}
+
+.pillar-main-content {
+  max-width: 840px;
+}
+
+.pillar-section {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.pillar-section h2 {
+  font-size: 2.2rem;
+  margin-bottom: 2rem;
+}
+
+.pillar-faq-section {
+  margin-top: 6rem;
+  padding: 4rem 2rem;
+  background: var(--black-2);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+
+.faq-grid {
+  display: grid;
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.faq-item h3 {
+  font-size: 1.2rem;
+  color: var(--gold);
+  margin-bottom: 0.8rem;
+}
+
+.faq-item p {
+  font-size: 1rem;
+  opacity: 0.8;
+  margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .pillar-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .pillar-sidebar {
+    position: static;
+    order: -1;
+  }
+}
+
 .lux-card {
   padding: 2.5rem;
   background: var(--black-2);

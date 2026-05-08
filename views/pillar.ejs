@@ -1,0 +1,113 @@
+<%
+  const safePillar = pillar || {};
+  const pillarTitle = safePillar.title || "Guia de Autoridade";
+  const pillarDescription = safePillar.seoDescription || safePillar.description || "Guia completo e aprofundado sobre o tema.";
+  const pillarContent = safePillar.content || "Conteúdo em preparação.";
+  const sections = safePillar.sections || [];
+  const faqs = safePillar.faqs || [];
+  const relatedPosts = safePillar.relatedPosts || [];
+  const lastUpdate = safePillar.updatedAt ? new Date(safePillar.updatedAt).toLocaleDateString("pt-BR") : new Date().toLocaleDateString("pt-BR");
+%>
+
+<div class="pillar-progress-bar" id="pillarProgress"></div>
+
+<nav class="lux-breadcrumbs">
+  <a href="/">Home</a>
+  <span class="sep">/</span>
+  <span class="current"><%= pillarTitle %></span>
+</nav>
+
+<header class="pillar-header">
+  <div class="editorial-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    Pilar de Autoridade Especializada
+  </div>
+  <h1><%= pillarTitle %></h1>
+  <p class="pillar-lead"><%= pillarDescription %></p>
+  
+  <div class="post-meta-v2">
+    <span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      Guia Atualizado em <%= lastUpdate %>
+    </span>
+    <span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      Conselho Editorial Renda Extra
+    </span>
+  </div>
+</header>
+
+<div class="pillar-layout">
+  <aside class="pillar-sidebar">
+    <div class="toc-box">
+      <strong>Neste guia</strong>
+      <nav id="pillarToc">
+        <ul>
+          <% sections.forEach((section, idx) => { %>
+            <li><a href="#section-<%= idx %>"><%= section.title %></a></li>
+          <% }) %>
+          <% if (faqs.length) { %>
+            <li><a href="#pillar-faq">Perguntas Frequentes</a></li>
+          <% } %>
+        </ul>
+      </nav>
+    </div>
+  </aside>
+
+  <article class="pillar-main-content">
+    <div class="post-content">
+      <%- pillarContent %>
+
+      <% sections.forEach((section, idx) => { %>
+        <section id="section-<%= idx %>" class="pillar-section">
+          <h2><%= section.title %></h2>
+          <%- section.content %>
+        </section>
+      <% }) %>
+    </div>
+
+    <% if (faqs.length) { %>
+      <section id="pillar-faq" class="pillar-faq-section">
+        <div class="section-heading">
+          <span>FAQ</span>
+          <h2>Dúvidas comuns</h2>
+        </div>
+        <div class="faq-grid">
+          <% faqs.forEach(faq => { %>
+            <div class="faq-item">
+              <h3><%= faq.question %></h3>
+              <p><%= faq.answer %></p>
+            </div>
+          <% }) %>
+        </div>
+      </section>
+    <% } %>
+
+    <% if (relatedPosts.length) { %>
+      <section class="related-posts-section">
+        <div class="section-heading">
+          <span>Aprofundamento</span>
+          <h2>Conteúdos complementares</h2>
+        </div>
+        <div class="related-grid">
+          <% relatedPosts.forEach(related => { %>
+            <a href="/post/<%= related.slug %>" class="related-card">
+              <h4><%= related.title %></h4>
+              <p><%= related.description %></p>
+            </a>
+          <% }) %>
+        </div>
+      </section>
+    <% } %>
+  </article>
+</div>
+
+<script>
+  // Simple reading progress indicator
+  window.addEventListener('scroll', () => {
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    document.getElementById("pillarProgress").style.width = scrolled + "%";
+  });
+</script>

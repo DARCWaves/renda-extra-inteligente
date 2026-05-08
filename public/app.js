@@ -33,4 +33,34 @@
 
   fetchLiveIndicators();
   setInterval(fetchLiveIndicators, 60000);
+
+  // Analytics Clicks (Privativo e Leve)
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest("a");
+    if (!link) return;
+
+    const href = link.getAttribute("href") || "";
+    let type = null;
+    let id = "";
+
+    if (href.startsWith("/out/")) {
+      type = "click";
+      id = href.replace("/out/", "").split("?")[0];
+    } else if (href.startsWith("/categoria/")) {
+      type = "internal";
+      id = "cat:" + href.replace("/categoria/", "");
+    } else if (href.startsWith("/sobre") || href.startsWith("/contato")) {
+      type = "internal";
+      id = href.replace("/", "");
+    }
+
+    if (type) {
+      fetch("/api/analytics/event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type, id }),
+        keepalive: true
+      }).catch(() => {});
+    }
+  });
 })();

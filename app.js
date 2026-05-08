@@ -3,19 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const expressLayouts = require("express-ejs-layouts");
-const cron = require("node-cron");
-const { runAutoPost } = require("./autoContent");
-
-/*
-==================================================
-SERVICES
-==================================================
-*/
-
-const { getEconomicData } = require("./services/economicService");
-const { analyzeFinancialScenario } = require("./services/financialAI");
-const { getIndicators } = require("./services/indicatorService");
-const { buildLiveIndicators } = require("./services/liveIndicatorService");
+const axios = require("axios");
 
 const {
   getAllPosts,
@@ -25,6 +13,10 @@ const {
 } = require("./services/postService");
 
 const {
+  getPillarBySlug
+} = require("./services/pillarService");
+
+const {
   getActiveAffiliate,
   getActiveAffiliates,
   getAffiliatesForContext,
@@ -32,160 +24,48 @@ const {
   getAffiliateStats
 } = require("./services/affiliateService");
 
+const { analyticsMiddleware, trackEvent } = require("./services/analyticsService");
+
 /*
 ==================================================
 CONTENT ENGINE
 ==================================================
 */
 
-let startContentEngine = null;
-
-try {
-  const contentEngine = require("./services/contentEngine");
-  startContentEngine = contentEngine.startContentEngine;
-} catch (err) {
-  console.log("⚠️ contentEngine não carregado:", err.message);
-}
-
-/*
-==================================================
-CONFIG
-==================================================
-*/
-
-const apiRoutes = require("./routes/api");
-const { generateSitemapXml, generateRobotsTxt } = require("./services/seoSitemapService");
-const app = express();
+const { startContentEngine } = require("./services/contentEngine");
 
 const APP_NAME = "Renda Extra Inteligente";
+const BASE_URL = process.env.BASE_URL || process.env.SITE_URL || "https://renda-extra-inteligente.onrender.com";
+const ADSENSE_CLIENT = process.env.ADSENSE_CLIENT;
+const ADSENSE_SLOT = process.env.ADSENSE_SLOT;
 
-const BASE_URL =
-  process.env.BASE_URL ||
-  process.env.SITE_URL ||
-  "http://localhost:3000";
-
-const ADSENSE_CLIENT = process.env.ADSENSE_CLIENT || "";
-const ADSENSE_SLOT = process.env.ADSENSE_SLOT || "";
-/*
-==================================================
-HELPERS
-==================================================
-*/
-
-function safeArray(value) {
-  return Array.isArray(value) ? value : [];
-}
-
-function safeString(value, fallback = "") {
-  if (typeof value === "string" && value.trim()) return value;
-  return fallback;
-}
-
-function normalizeCategory(category) {
-  const value = String(category || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim();
-
-  const map = {
-    financas: "financas",
-    "finanças": "financas",
-    financeiro: "financas",
-    investimentos: "investimentos",
-    investimento: "investimentos",
-    "renda-extra": "renda-extra",
-    rendaextra: "renda-extra",
-    renda: "renda-extra",
-    trabalho: "trabalho",
-    emprego: "trabalho",
-    empregos: "trabalho",
-    economia: "economia",
-    noticias: "noticias",
-    noticia: "noticias",
-    notícias: "noticias"
-  };
-
-  return map[value] || value || "financas";
-}
-
-function normalizeIndicators(indicators, economicData) {
-  if (indicators && Array.isArray(indicators.resumo)) {
-    return indicators;
-  }
-
-  return {
-    resumo: [
-      {
-        nome: "Dólar",
-        valor: economicData?.dolar || "Carregando...",
-        periodo: economicData?.periodos?.dolar || "",
-        slug: "dolar"
-      },
-      {
-        nome: "Taxa Selic",
-        valor: economicData?.selic || "Carregando...",
-        periodo: economicData?.periodos?.selic || "",
-        slug: "selic"
-      },
-      {
-        nome: "Inflação oficial",
-        valor: economicData?.inflacao || "Carregando...",
-        periodo: economicData?.periodos?.inflacao || "",
-        slug: "inflacao"
-      },
-      {
-        nome: "Índice do Bolso Popular",
-        valor: economicData?.bolsoPopular || "Carregando...",
-        periodo: economicData?.periodos?.bolsoPopular || "",
-        slug: "bolso-popular"
-      },
-      {
-        nome: "Salário mínimo",
-        valor: economicData?.salarioMinimo || "Carregando...",
-        periodo: economicData?.periodos?.salarioMinimo || "",
-        slug: "salario-minimo"
-      },
-      {
-        nome: "Arrecadação de tributos",
-        valor: economicData?.arrecadacao || "Carregando...",
-        periodo: economicData?.periodos?.arrecadacao || "",
-        slug: "tributos"
-      }
-    ],
-    detalhes: indicators?.detalhes || {},
-    iaFinanceira: indicators?.iaFinanceira || null
-  };
-}
-/*
-==================================================
-MIDDLEWARES
-==================================================
-*/
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/api", apiRoutes);
-
-app.use((req, res, next) => {
-  res.setHeader("X-Content-Type-Options", "nosniff");
-  res.setHeader("X-Frame-Options", "DENY");
-  res.setHeader("X-XSS-Protection", "1; mode=block");
-  next();
-});
+const app = express();
 
 /*
 ==================================================
-VIEW ENGINE
+CONFIGURAÇÕES
 ==================================================
 */
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-
 app.use(expressLayouts);
 app.set("layout", "layout");
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "public")));
+app.use(analyticsMiddleware);
+
+/*
+==================================================
+UTILS
+==================================================
+*/
+
+function safeArray(arr) {
+  return Array.isArray(arr) ? arr : [];
+}
 
 /*
 ==================================================
@@ -199,388 +79,99 @@ app.use((req, res, next) => {
 
     res.locals.appName = APP_NAME;
     res.locals.baseUrl = BASE_URL;
-
-    res.locals.title = APP_NAME;
-    res.locals.description =
-      "Finanças pessoais, renda extra, investimentos, indicadores econômicos e inteligência financeira.";
-
     res.locals.adsenseClient = ADSENSE_CLIENT;
     res.locals.adsenseSlot = ADSENSE_SLOT;
-
     res.locals.affiliates = affiliates;
-    res.locals.affiliate =
-      typeof getActiveAffiliate === "function" ? getActiveAffiliate() : affiliates[0] || null;
-
-    next();
+    res.locals.path = req.path;
+    res.locals.title = null;
+    res.locals.description = null;
+    res.locals.ogImage = `${BASE_URL}/logo.png`;
+    res.locals.canonical = `${BASE_URL}${req.path}`;
+    
+    // Injeta funções globais úteis nas views
+    res.locals.formatDate = (date) => new Date(date).toLocaleDateString("pt-BR");
+    
   } catch (err) {
     console.error("ERRO LOCALS:", err.message);
-
-    res.locals.appName = APP_NAME;
-    res.locals.baseUrl = BASE_URL;
-    res.locals.title = APP_NAME;
-    res.locals.description =
-      "Finanças pessoais, renda extra, investimentos, indicadores econômicos e inteligência financeira.";
-    res.locals.adsenseClient = ADSENSE_CLIENT;
-    res.locals.adsenseSlot = ADSENSE_SLOT;
-    res.locals.affiliates = [];
-    res.locals.affiliate = null;
-
-    next();
   }
+  next();
 });
+
 /*
 ==================================================
-HOME
+ROTAS PRINCIPAIS
 ==================================================
 */
 
 app.get("/", async (req, res) => {
   try {
     const posts = safeArray(getLatestPosts(6));
-
-    const economicData = await getEconomicData();
-    const rawIndicators = await getIndicators();
-    const indicators = normalizeIndicators(rawIndicators, economicData);
-
-    const affiliates = safeArray(
-      getAffiliatesForContext(
-        "home finanças renda extra investimentos economia controle financeiro dinheiro",
-        8
-      )
-    );
+    const { getIndicators } = require("./services/indicatorService");
+    const indicators = getIndicators();
 
     return res.render("home", {
-      title: APP_NAME,
-      description:
-        "Finanças pessoais, renda extra, investimentos, indicadores econômicos e inteligência financeira sem promessas irreais.",
       posts,
-      data: economicData,
       indicators,
-      affiliates
+      title: "Renda Extra Inteligente | Aprenda a Lucrar com Estratégia",
+      description: "Descubra formas reais de fazer renda extra, investir com inteligência e organizar sua vida financeira."
     });
   } catch (err) {
     console.error("ERRO HOME:", err);
-    return res.status(500).send("Erro do Servidor Interno");
+    return res.status(500).send("Erro no servidor");
   }
 });
 
-
-/*
-==================================================
-CATEGORIAS — ROTA BLINDADA
-==================================================
-*/
-
-app.get("/categoria/:categoria", (req, res) => {
+app.get("/posts", async (req, res) => {
   try {
-    const rawCategory = String(req.params.categoria || "financas")
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .trim();
-
-    const categoryMap = {
-      financas: {
-        slug: "financas",
-        title: "Finanças pessoais",
-        headline: "Organize seu dinheiro sem complicação",
-        description:
-          "Conteúdos sobre controle financeiro, dívidas, orçamento, gastos invisíveis e organização do dinheiro."
-      },
-      "renda-extra": {
-        slug: "renda-extra",
-        title: "Renda extra",
-        headline: "Crie novas fontes de renda com passos simples",
-        description:
-          "Ideias reais para ganhar mais dinheiro começando pequeno e sem promessa milagrosa."
-      },
-      investimentos: {
-        slug: "investimentos",
-        title: "Investimentos",
-        headline: "Comece a investir com consciência",
-        description:
-          "Conteúdos para começar a investir com pouco dinheiro, segurança e clareza."
-      },
-      programacao: {
-        slug: "programacao",
-        title: "Programação simples",
-        headline: "Aprenda programação sem travar na lógica",
-        description:
-          "Aprenda lógica, criação de sites e programação com linguagem fácil para iniciantes."
-      },
-      trabalho: {
-        slug: "trabalho",
-        title: "Trabalho e renda",
-        headline: "Transforme trabalho em crescimento",
-        description:
-          "Conteúdos para transformar esforço, experiência e habilidade em mais valor e renda."
-      },
-      economia: {
-        slug: "economia",
-        title: "Economia real",
-        headline: "Entenda a economia que pesa no seu bolso",
-        description:
-          "Entenda dólar, inflação, Selic e decisões econômicas pelo impacto no seu bolso."
-      }
-    };
-
-    const aliases = {
-      "finanças": "financas",
-      financeiro: "financas",
-      dinheiro: "financas",
-      renda: "renda-extra",
-      rendaextra: "renda-extra",
-      programação: "programacao",
-      tecnologia: "programacao",
-      codigo: "programacao",
-      código: "programacao",
-      investimento: "investimentos",
-      emprego: "trabalho",
-      mercado: "economia",
-      noticias: "economia",
-      noticia: "economia"
-    };
-
-    const normalizedCategory = aliases[rawCategory] || rawCategory || "financas";
-    const info = categoryMap[normalizedCategory] || categoryMap.financas;
-    const categoria = info.slug;
-
-    function normalizePostCategory(value) {
-      return String(value || "")
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .trim()
-        .replace("finanças", "financas")
-        .replace("programação", "programacao");
-    }
-
-    let posts = [];
-
-    try {
-      if (typeof getPostsByCategory === "function") {
-        posts = safeArray(getPostsByCategory(categoria));
-      }
-    } catch (err) {
-      console.error("ERRO getPostsByCategory:", err.message);
-      posts = [];
-    }
-
-    if (!posts.length) {
-      try {
-        const allPostsRaw = typeof getAllPosts === "function" ? getAllPosts() : [];
-        const allPosts = Array.isArray(allPostsRaw)
-          ? allPostsRaw
-          : Array.isArray(allPostsRaw?.data)
-          ? allPostsRaw.data
-          : [];
-
-        posts = allPosts.filter((post) => {
-          const postCategory = normalizePostCategory(post.category || "");
-
-          if (postCategory === categoria) return true;
-
-          const title = String(post.title || "").toLowerCase();
-
-          if (categoria === "financas") {
-            return title.includes("dinheiro") || title.includes("salário") || title.includes("salario") || title.includes("gasto") || title.includes("dívida") || title.includes("divida");
-          }
-
-          if (categoria === "programacao") {
-            return title.includes("program") || title.includes("código") || title.includes("codigo") || title.includes("site") || title.includes("javascript");
-          }
-
-          return false;
-        });
-      } catch (err) {
-        console.error("ERRO fallback categoria:", err.message);
-        posts = [];
-      }
-    }
-
-    const affiliates = safeArray(
-      getAffiliatesForContext(
-        categoria + " " + info.description + " dinheiro renda extra finanças programação trabalho investimentos",
-        8
-      )
-    );
-
-    return res.render("category", {
-      title: info.title + " | " + APP_NAME,
-      description: info.description,
-      posts,
-      categoria,
-      categoriaOriginal: req.params.categoria,
-      info,
-      affiliates,
-      adsenseClient: ADSENSE_CLIENT,
-      adsenseSlot: ADSENSE_SLOT
-    });
-  } catch (err) {
-    console.error("ERRO CATEGORIA BLINDADA:", err);
-
-    return res.status(500).render("category", {
-      title: "Conteúdos | " + APP_NAME,
-      description: "Conteúdos práticos para melhorar sua vida financeira.",
-      posts: [],
-      categoria: "financas",
-      categoriaOriginal: "financas",
-      info: {
-        slug: "financas",
-        title: "Conteúdos",
-        headline: "Conteúdos práticos para evoluir",
-        description: "Conteúdos simples, úteis e aplicáveis no dia a dia."
-      },
-      affiliates: [],
-      adsenseClient: ADSENSE_CLIENT,
-      adsenseSlot: ADSENSE_SLOT
-    });
-  }
-});
-
-/*
-==================================================
-INDICADORES
-==================================================
-*/
-
-app.get("/indicadores", async (req, res) => {
-  try {
-    const economicData = await getEconomicData();
-    const ai = analyzeFinancialScenario(economicData);
-
-    const rawIndicators = await getIndicators();
-    const indicators = normalizeIndicators(rawIndicators, economicData);
-
-    const affiliates = safeArray(
-      getAffiliatesForContext(
-        "indicadores economia inflação selic dólar salário mínimo tributos bolso popular",
-        8
-      )
-    );
-
-    return res.render("indicadores", {
-      title: "Indicadores Econômicos",
-      description:
-        "Dólar, Selic, inflação, salário mínimo, arrecadação, bolso popular e análise financeira inteligente.",
-      data: economicData,
-      ai,
-      indicators,
-      affiliates
-    });
-  } catch (err) {
-    console.error("ERRO INDICADORES:", err);
-    return res.status(500).send("Erro do Servidor Interno");
-  }
-});
-/*
-==================================================
-INDICADOR INDIVIDUAL
-==================================================
-*/
-
-app.get("/indicador/:slug", async (req, res) => {
-  try {
-    const economicData = await getEconomicData();
-    const rawIndicators = await getIndicators();
-    const indicators = normalizeIndicators(rawIndicators, economicData);
-
-    const indicador = indicators.detalhes?.[req.params.slug] || null;
-
-    if (!indicador) {
-      return res.status(404).send("Indicador não encontrado");
-    }
-
-    const context = `
-      ${indicador.titulo || ""}
-      ${indicador.explicacao || ""}
-      ${indicador.slug || ""}
-      finanças economia renda extra investimentos dinheiro
-    `;
-
-    const affiliates = safeArray(getAffiliatesForContext(context, 8));
-
-    return res.render("indicator", {
-      title: indicador.seoTitle || indicador.titulo || APP_NAME,
-      description:
-        indicador.seoDescription ||
-        indicador.explicacao ||
-        "Indicador econômico explicado de forma simples.",
-      indicador,
-      iaFinanceira: indicators.iaFinanceira,
-      affiliates,
-      adsenseClient: ADSENSE_CLIENT,
-      adsenseSlot: ADSENSE_SLOT
-    });
-  } catch (err) {
-    console.error("ERRO INDICADOR:", err);
-    return res.status(500).send("Erro do Servidor Interno");
-  }
-});
-/*
-==================================================
-POSTS (LISTAGEM)
-==================================================
-*/
-
-app.get("/posts", (req, res) => {
-  try {
-    // 🔥 CORREÇÃO CRÍTICA AQUI
-    const result = getAllPosts();
-
-    // Garante que sempre será array
-    const posts = Array.isArray(result)
-      ? result
-      : Array.isArray(result?.data)
-      ? result.data
-      : [];
-
-    const affiliates = safeArray(
-      getAffiliatesForContext(
-        "conteúdos finanças renda extra investimentos educação financeira dinheiro",
-        8
-      )
-    );
+    const posts = safeArray(getAllPosts());
 
     return res.render("posts", {
-      title: "Conteúdos sobre Finanças",
-      description:
-        "Conteúdos educativos sobre finanças pessoais, renda extra, investimentos e economia real.",
       posts,
-      affiliates
+      title: "Todos os Conteúdos | " + APP_NAME,
+      description: "Acesse nosso guia completo de conteúdos sobre finanças, renda extra e investimentos."
     });
   } catch (err) {
     console.error("ERRO POSTS:", err);
-    return res.status(500).send("Erro do Servidor Interno");
+    return res.status(500).send("Erro ao carregar posts");
   }
 });
-/*
-==================================================
-POST INDIVIDUAL
-==================================================
-*/
 
-app.get("/post/:slug", (req, res) => {
+app.get("/categoria/:slug", async (req, res) => {
   try {
-    const rawPost = getPostBySlug(req.params.slug);
+    const categoria = req.params.slug;
+    const posts = safeArray(getPostsByCategory(categoria));
+    
+    const categoryInfo = {
+      "financas": { title: "Finanças Pessoais", headline: "Domine seu dinheiro", description: "Aprenda a organizar suas contas e fazer o salário render mais." },
+      "renda-extra": { title: "Renda Extra", headline: "Novas fontes de lucro", description: "Estratégias reais para ganhar dinheiro extra no tempo livre." },
+      "investimentos": { title: "Investimentos", headline: "Cresça seu patrimônio", description: "Guia para iniciantes e avançados no mundo dos investimentos." },
+      "programacao": { title: "Programação", headline: "Tecnologia e Lucro", description: "Aprenda a programar e monetize suas habilidades digitais." },
+      "economia": { title: "Economia", headline: "Entenda o Cenário", description: "O impacto dos indicadores econômicos no seu dia a dia." },
+      "trabalho": { title: "Trabalho", headline: "Carreira e Eficiência", description: "Como valorizar seu tempo e crescer profissionalmente." }
+    };
 
-    if (!rawPost) {
+    const info = categoryInfo[categoria] || { title: categoria, headline: "Conteúdos", description: "Explore nossos artigos." };
+
+    return res.render("category", {
+      categoria,
+      posts,
+      info,
+      title: info.title + " | " + APP_NAME,
+      description: info.description
+    });
+  } catch (err) {
+    console.error("ERRO CATEGORIA:", err);
+    return res.status(500).send("Erro ao carregar categoria");
+  }
+});
+
+app.get("/post/:slug", async (req, res) => {
+  try {
+    const post = getPostBySlug(req.params.slug);
+
+    if (!post) {
       return res.status(404).send("Post não encontrado");
     }
-
-    const post = {
-      slug: rawPost.slug || req.params.slug,
-      title: rawPost.title || "Conteúdo sobre finanças",
-      description: rawPost.description || rawPost.seoDescription || "Conteúdo educativo, simples e prático.",
-      seoTitle: rawPost.seoTitle || rawPost.title || APP_NAME,
-      seoDescription: rawPost.seoDescription || rawPost.description || "Conteúdo sobre finanças pessoais, renda extra e economia.",
-      category: rawPost.category || "financas",
-      content: rawPost.content || "Conteúdo em atualização.",
-      image: rawPost.image || "",
-      imageAlt: rawPost.imageAlt || rawPost.title || "Imagem do conteúdo",
-      createdAt: rawPost.createdAt || new Date().toISOString(),
-      updatedAt: rawPost.updatedAt || rawPost.createdAt || new Date().toISOString()
-    };
 
     const context = [
       post.title,
@@ -596,8 +187,8 @@ app.get("/post/:slug", (req, res) => {
       : [];
 
     return res.render("post", {
-      title: post.seoTitle,
-      description: post.seoDescription,
+      title: post.seoTitle || post.title,
+      description: post.seoDescription || post.description,
       post,
       affiliates,
       relatedPosts,
@@ -606,179 +197,27 @@ app.get("/post/:slug", (req, res) => {
     });
   } catch (err) {
     console.error("ERRO POST:", err);
-
-    return res.status(500).render("post", {
-      title: "Conteúdo em manutenção",
-      description: "Este conteúdo está sendo ajustado.",
-      post: {
-        title: "Conteúdo em manutenção",
-        description: "Estamos ajustando este conteúdo para manter a qualidade.",
-        category: "financas",
-        content: "Este conteúdo apresentou um erro temporário. Volte em instantes ou acesse outros conteúdos do site.",
-        image: "",
-        imageAlt: "",
-        createdAt: new Date().toISOString()
-      },
-      affiliates: [],
-      adsenseClient: ADSENSE_CLIENT,
-      adsenseSlot: ADSENSE_SLOT
-    });
+    return res.status(500).send("Erro ao carregar o conteúdo");
   }
 });
 
-/*
-==================================================
-CATEGORIAS
-==================================================
-*/
-
-
-/*
-==================================================
-AFILIADOS - TRACKING
-==================================================
-*/
-
-app.get("/out/:id", (req, res) => {
-  try {
-    const affiliate = registerAffiliateClick(req.params.id, {
-      source: req.query.source || "site",
-      page: req.get("referer") || "",
-      userAgent: req.get("user-agent") || "",
-      ip: req.ip || ""
-    });
-
-    if (!affiliate || !affiliate.url) {
-      return res.redirect("/");
-    }
-
-    return res.redirect(affiliate.url);
-  } catch (err) {
-    console.error("ERRO AFILIADO:", err);
-    return res.redirect("/");
-  }
-});
-/*
-==================================================
-APIS
-==================================================
-*/
-
-app.get("/api/posts", (req, res) => {
-  try {
-    const posts = safeArray(getAllPosts());
-
-    return res.json({
-      ok: true,
-      data: posts
-    });
-  } catch (err) {
-    return res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
+app.get("/indicadores", (req, res) => {
+  const { getIndicators } = require("./services/indicatorService");
+  const indicators = getIndicators();
+  res.render("indicadores", {
+    indicators,
+    title: "Indicadores Econômicos em Tempo Real | " + APP_NAME,
+    description: "Acompanhe o Dólar, Selic, IPCA e outros dados que afetam seu bolso hoje."
+  });
 });
 
-
-app.get("/api/indicadores-live", async (req, res) => {
-  try {
-    const economicData = await getEconomicData();
-    const rawIndicators = await getIndicators();
-    const indicators = normalizeIndicators(rawIndicators, economicData);
-
-    return res.json({
-      ok: true,
-      data: economicData,
-      indicators,
-      updatedAt: new Date().toISOString(),
-      updatedAtLabel: "Atualizado automaticamente"
-    });
-  } catch (err) {
-    return res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-
-app.get("/api/indicadores-live-v2", async (req, res) => {
-  try {
-    const economicData = await getEconomicData();
-    const rawIndicators = await getIndicators();
-    const normalized = normalizeIndicators(rawIndicators, economicData);
-    const indicators = await buildLiveIndicators(normalized);
-
-    return res.json({
-      ok: true,
-      indicators,
-      updatedAt: indicators.updatedAt,
-      updatedAtLabel: indicators.updatedAtLabel
-    });
-  } catch (err) {
-    console.error("ERRO INDICADORES LIVE V2:", err.message);
-
-    return res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-app.get("/api/indicadores", async (req, res) => {
-  try {
-    const data = await getEconomicData();
-    const ai = analyzeFinancialScenario(data);
-
-    return res.json({
-      ok: true,
-      data,
-      ai
-    });
-  } catch (err) {
-    return res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-app.get("/api/affiliate-stats", (req, res) => {
-  try {
-    const secret = req.headers["x-admin-secret"];
-
-    if (!secret || secret !== process.env.PANEL_SECRET) {
-      return res.status(401).json({
-        ok: false,
-        error: "Não autorizado"
-      });
-    }
-
-    return res.json({
-      ok: true,
-      data: getAffiliateStats()
-    });
-  } catch (err) {
-    return res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-/*
-==================================================
-SEO
-==================================================
-*/
-
-
-
-
-
-app.get("/ads.txt", (req, res) => {
-  res.type("text/plain");
-  return res.send("google.com, pub-2679191515040105, DIRECT, f08c47fec0942fa0\n");
+app.get("/ofertas", (req, res) => {
+  const affiliates = safeArray(getActiveAffiliates(20));
+  res.render("ofertas", {
+    affiliates,
+    title: "Melhores Ofertas e Ferramentas | " + APP_NAME,
+    description: "Seleção de produtos e serviços recomendados para sua evolução financeira."
+  });
 });
 
 /*
@@ -831,21 +270,115 @@ app.get("/transparencia", (req, res) => {
 
 /*
 ==================================================
-HEALTH CHECK
+PÁGINAS PILAR (AUTHORITY HUBS)
 ==================================================
 */
 
-app.get("/health", (req, res) => {
-  return res.json({
-    ok: true,
-    app: APP_NAME,
-    status: "online",
-    time: new Date().toISOString(),
-    autoPosts: process.env.AUTO_POSTS === "true",
-    adsenseClient: Boolean(ADSENSE_CLIENT),
-    adsenseSlot: Boolean(ADSENSE_SLOT),
-    baseUrl: BASE_URL
-  });
+app.get("/guia/:slug", async (req, res) => {
+  try {
+    const pillar = getPillarBySlug(req.params.slug);
+
+    if (!pillar) {
+      return res.status(404).send("Guia não encontrado");
+    }
+
+    const context = [
+      pillar.title,
+      pillar.description,
+      "guia mestre autoridade completa",
+      pillar.category || ""
+    ].join(" ");
+
+    const affiliates = safeArray(getAffiliatesForContext(context, 8));
+
+    return res.render("pillar", {
+      title: pillar.seoTitle || pillar.title,
+      description: pillar.seoDescription || pillar.description,
+      pillar,
+      affiliates,
+      adsenseClient: ADSENSE_CLIENT,
+      adsenseSlot: ADSENSE_SLOT
+    });
+  } catch (err) {
+    console.error("ERRO PILAR:", err);
+    return res.status(500).send("Erro ao carregar o guia mestre.");
+  }
+});
+
+/*
+==================================================
+AFILIADOS - TRACKING
+==================================================
+*/
+
+app.get("/out/:id", (req, res) => {
+  try {
+    const id = req.params.id;
+    const affiliates = safeArray(getActiveAffiliates(100));
+    const item = affiliates.find((a) => a.id === id);
+
+    if (!item) return res.redirect("/");
+
+    registerAffiliateClick(id, {
+      referer: req.get("Referer"),
+      ua: req.get("User-Agent")
+    });
+
+    return res.redirect(item.url);
+  } catch (err) {
+    return res.redirect("/");
+  }
+});
+
+/*
+==================================================
+API
+==================================================
+*/
+
+const apiRoutes = require("./routes/api");
+app.use("/api", apiRoutes);
+
+app.post("/api/analytics/event", (req, res) => {
+  try {
+    const { type, id } = req.body;
+    trackEvent(type, id);
+    return res.status(204).end();
+  } catch {
+    return res.status(500).end();
+  }
+});
+
+app.get("/ads.txt", (req, res) => {
+  return res.send("google.com, pub-2679191515040105, DIRECT, f08c47fec0942fa0\n");
+});
+
+/*
+==================================================
+SEO TÉCNICO
+==================================================
+*/
+
+const { generateSitemapXml, generateRobotsTxt } = require("./services/seoSitemapService");
+
+app.get("/sitemap.xml", (req, res) => {
+  try {
+    const xml = generateSitemapXml();
+    res.header("Content-Type", "application/xml");
+    res.send(xml);
+  } catch (err) {
+    res.status(500).end();
+  }
+});
+
+app.get("/robots.txt", (req, res) => {
+  try {
+    const robots = generateRobotsTxt();
+    res.header("Content-Type", "text/plain");
+    res.send(robots);
+  } catch (err) {
+    res.status(500).end();
+  }
 });
 
 /*
@@ -856,20 +389,9 @@ AUTO ENGINE
 
 function bootAutoContentEngine() {
   if (global.__ENGINE_STARTED__) return;
-
   global.__ENGINE_STARTED__ = true;
 
-  if (process.env.AUTO_POSTS !== "true") {
-    console.log("🤖 Auto posts desligado");
-    return;
-  }
-
-  if (typeof startContentEngine !== "function") {
-    console.log("⚠️ contentEngine não disponível");
-    return;
-  }
-
-  console.log("🔥 AUTO ENGINE ATIVO");
+  if (process.env.AUTO_POSTS !== "true") return;
 
   startContentEngine({
     intervalMs: Number(process.env.AUTO_POST_INTERVAL_MS || 1800000),
@@ -877,56 +399,6 @@ function bootAutoContentEngine() {
     baseUrl: BASE_URL
   });
 }
-
-/* SEO_SAFE_ROUTES_START */
-
-/*
-==================================================
-SEO TÉCNICO — SITEMAP E ROBOTS BLINDADOS
-==================================================
-*/
-
-app.get("/sitemap.xml", (req, res) => {
-  try {
-    const xml = generateSitemapXml();
-
-    res.status(200);
-    res.setHeader("Content-Type", "application/xml; charset=utf-8");
-    res.setHeader("X-Content-Type-Options", "nosniff");
-    res.setHeader("Cache-Control", "public, max-age=3600");
-
-    return res.send(xml);
-  } catch (err) {
-    console.error("ERRO SITEMAP XML:", err);
-
-    res.status(500);
-    res.setHeader("Content-Type", "application/xml; charset=utf-8");
-
-    return res.send('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
-  }
-});
-
-app.get("/robots.txt", (req, res) => {
-  try {
-    const robots = generateRobotsTxt();
-
-    res.status(200);
-    res.setHeader("Content-Type", "text/plain; charset=utf-8");
-    res.setHeader("X-Content-Type-Options", "nosniff");
-    res.setHeader("Cache-Control", "public, max-age=3600");
-
-    return res.send(robots);
-  } catch (err) {
-    console.error("ERRO ROBOTS TXT:", err);
-
-    res.status(500);
-    res.setHeader("Content-Type", "text/plain; charset=utf-8");
-
-    return res.send("User-agent: *\nAllow: /\n");
-  }
-});
-
-/* SEO_SAFE_ROUTES_END */
 
 /*
 ==================================================
