@@ -1,42 +1,9 @@
 {
-  "generatedAt": "2026-05-08T19:53:55.640Z",
+  "generatedAt": "2026-05-08T20:58:09.755Z",
   "count": 5,
   "patches": [
     {
       "slug": "investimentos-1777475700030",
-      "currentScore": 20,
-      "projectedScore": 50,
-      "changes": {
-        "conclusion": "\n\nConclusão: O segredo da evolução financeira não é a velocidade, mas a direção correta e a consistência das suas ações diárias.",
-        "structureNote": "Adicionar subtítulos (H2/H3) para melhorar a escaneabilidade.",
-        "ctaSnippet": "\n\n**Ação prática:** Escolha uma das estratégias acima e comece a aplicar hoje mesmo."
-      },
-      "confidence": "Alta"
-    },
-    {
-      "slug": "conteudos-1777391100023",
-      "currentScore": 20,
-      "projectedScore": 50,
-      "changes": {
-        "conclusion": "\n\nConclusão: O segredo da evolução financeira não é a velocidade, mas a direção correta e a consistência das suas ações diárias.",
-        "structureNote": "Adicionar subtítulos (H2/H3) para melhorar a escaneabilidade.",
-        "ctaSnippet": "\n\n**Ação prática:** Escolha uma das estratégias acima e comece a aplicar hoje mesmo."
-      },
-      "confidence": "Alta"
-    },
-    {
-      "slug": "como-melhorar-sua-vida-financeira-com-controle-de-gastos-1777126100789",
-      "currentScore": 20,
-      "projectedScore": 50,
-      "changes": {
-        "conclusion": "\n\nConclusão: O segredo da evolução financeira não é a velocidade, mas a direção correta e a consistência das suas ações diárias.",
-        "structureNote": "Adicionar subtítulos (H2/H3) para melhorar a escaneabilidade.",
-        "ctaSnippet": "\n\n**Próximo passo:** Revise seu plano atual e ajuste um detalhe com base no que aprendeu aqui."
-      },
-      "confidence": "Alta"
-    },
-    {
-      "slug": "como-melhorar-sua-vida-financeira-com-organizacao-financeira-1777098933360",
       "currentScore": 20,
       "projectedScore": 50,
       "changes": {
@@ -47,12 +14,45 @@
       "confidence": "Alta"
     },
     {
+      "slug": "conteudos-1777391100023",
+      "currentScore": 20,
+      "projectedScore": 50,
+      "changes": {
+        "conclusion": "\n\nConclusão: O segredo da evolução financeira não é a velocidade, mas a direção correta e a consistência das suas ações diárias.",
+        "structureNote": "Adicionar subtítulos (H2/H3) para melhorar a escaneabilidade.",
+        "ctaSnippet": "\n\n**Foco total:** O conhecimento só gera valor quando vira ação. Qual será sua primeira mudança?"
+      },
+      "confidence": "Alta"
+    },
+    {
+      "slug": "como-melhorar-sua-vida-financeira-com-controle-de-gastos-1777126100789",
+      "currentScore": 20,
+      "projectedScore": 50,
+      "changes": {
+        "conclusion": "\n\nConclusão: O segredo da evolução financeira não é a velocidade, mas a direção correta e a consistência das suas ações diárias.",
+        "structureNote": "Adicionar subtítulos (H2/H3) para melhorar a escaneabilidade.",
+        "ctaSnippet": "\n\n**Foco total:** O conhecimento só gera valor quando vira ação. Qual será sua primeira mudança?"
+      },
+      "confidence": "Alta"
+    },
+    {
+      "slug": "como-melhorar-sua-vida-financeira-com-organizacao-financeira-1777098933360",
+      "currentScore": 20,
+      "projectedScore": 50,
+      "changes": {
+        "conclusion": "\n\nConclusão: O segredo da evolução financeira não é a velocidade, mas a direção correta e a consistência das suas ações diárias.",
+        "structureNote": "Adicionar subtítulos (H2/H3) para melhorar a escaneabilidade.",
+        "ctaSnippet": "\n\n**Foco total:** O conhecimento só gera valor quando vira ação. Qual será sua primeira mudança?"
+      },
+      "confidence": "Alta"
+    },
+    {
       "slug": "o-que-entender-antes-de-investir-pela-primeira-vez-e-evitar-decisoes-ruins",
       "currentScore": 30,
       "projectedScore": 55,
       "changes": {
         "structureNote": "Adicionar subtítulos (H2/H3) para melhorar a escaneabilidade.",
-        "ctaSnippet": "\n\n**Ação prática:** Escolha uma das estratégias acima e comece a aplicar hoje mesmo."
+        "ctaSnippet": "\n\n**Próximo passo:** Revise seu plano atual e ajuste um detalhe com base no que aprendeu aqui."
       },
       "confidence": "Alta"
     }
