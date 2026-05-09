@@ -402,12 +402,29 @@ function bootAutoContentEngine() {
 
 /*
 ==================================================
-404
+404 E GLOBAL ERROR HANDLER (PLAN B)
 ==================================================
 */
 
-app.use((req, res) => {
-  return res.status(404).send("Página não encontrada");
+const { logRuntimeFailure } = require("./services/runtimeValidationService");
+
+app.use((req, res, next) => {
+  return res.status(404).render("fallback", {
+    title: "Página não encontrada",
+    errorId: "404-NOT-FOUND"
+  });
+});
+
+// Global Error Handler (Graceful Degradation)
+app.use((err, req, res, next) => {
+  const errorId = logRuntimeFailure(req.path, err);
+
+  if (res.headersSent) return next(err);
+
+  res.status(500).render("fallback", {
+    title: "Recurso em Manutenção",
+    errorId: errorId
+  });
 });
 
 /*

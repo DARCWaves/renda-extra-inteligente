@@ -1,13 +1,11 @@
-const fs = require("fs");
-const path = require("path");
 const axios = require("axios");
+const { ensureDirectory, fileExists, ROOT, writeRaw } = require("./storageAdapter");
+const path = require("path");
 
-const outputDir = path.join(__dirname, "..", "public", "images", "posts");
+const outputDir = path.join(ROOT, "public", "images", "posts");
 
 function ensureDir() {
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
-  }
+  ensureDirectory(outputDir);
 }
 
 function slugify(text) {
@@ -98,7 +96,7 @@ async function generatePostImage(post) {
   const filePath = path.join(outputDir, fileName);
   const publicPath = `/images/posts/${fileName}`;
 
-  if (fs.existsSync(filePath)) {
+  if (fileExists(filePath, "")) {
     return {
       image: publicPath,
       imageAlt: `${post.title || "Conteúdo"} - imagem visual do conteúdo`,
@@ -131,7 +129,7 @@ async function generatePostImage(post) {
     throw new Error("A API de imagem não retornou b64_json.");
   }
 
-  fs.writeFileSync(filePath, Buffer.from(b64, "base64"));
+  writeRaw(filePath, Buffer.from(b64, "base64"), "");
 
   return {
     image: publicPath,

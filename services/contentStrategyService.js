@@ -1,13 +1,5 @@
 const crypto = require("crypto");
-
-const CATEGORY_ORDER = [
-  "financas",
-  "renda-extra",
-  "programacao",
-  "investimentos",
-  "trabalho",
-  "economia"
-];
+const { OFFICIAL_CATEGORIES: CATEGORY_ORDER } = require("../config/constants");
 
 function normalizeText(text) {
   return String(text || "")

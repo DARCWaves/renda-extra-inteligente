@@ -1,0 +1,13 @@
+[
+  {
+    "id": "RT-MOXKCIDG",
+    "timestamp": "2026-05-08T23:45:45.988Z",
+    "route": "/simulate-error",
+    "type": "Error",
+    "message": "Simulação de falha crítica para teste do Plan B",
+    "rootCause": "Inconsistência de dados ou acesso a propriedade indefinida.",
+    "recommendation": "Adicionar null-guards e usar safeGet para acesso a propriedades aninhadas.",
+    "urgency": "Média",
+    "status": "open"
+  }
+]

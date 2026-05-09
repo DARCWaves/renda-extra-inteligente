@@ -3,7 +3,18 @@
  * Analisa a conectividade semântica e distribuição de autoridade.
  */
 
-const { analyzeConnectivity } = require("./internalLinkingService");
+const { 
+  analyzeConnectivity, 
+  generateSemanticPathways, 
+  mapSemanticJourneys 
+} = require("./internalLinkingService");
+
+const { OFFICIAL_CATEGORIES } = require("../config/constants");
+const { sanitizeNumeric, sanitizeObject } = require("./realtimeIndicatorService");
+const { analyzeFreshnessCompetitiveness, calculateHeadlineScore, isDiscoverReady } = require("./trafficIntelligenceService");
+const { calculateRevenueEfficiency } = require("./monetizationIntelligenceService");
+const { evaluatePerformanceHealth } = require("./performanceEngine");
+const { calculateHealingMetrics, syncFailureQueue } = require("./selfHealingEngine");
 
 /**
  * Calcula métricas detalhadas para cada categoria/cluster.
@@ -13,8 +24,6 @@ const { analyzeConnectivity } = require("./internalLinkingService");
  */
 function calculateAuthorityMetrics(posts, pillars) {
   const connectivity = analyzeConnectivity(posts, pillars);
-  const OFFICIAL_CATEGORIES = ["financas", "renda-extra", "programacao", "investimentos", "economia", "trabalho"];
-  const { generateSemanticPathways, mapSemanticJourneys } = require("./internalLinkingService");
   
   const clusterMetrics = {};
   let totalOrphans = 0;
@@ -83,33 +92,43 @@ function calculateAuthorityMetrics(posts, pillars) {
   });
 
   const semanticJourneys = mapSemanticJourneys(posts, pillars);
-  const { analyzeFreshnessCompetitiveness, calculateHeadlineScore, isDiscoverReady } = require("./trafficIntelligenceService");
-  const { calculateRevenueEfficiency } = require("./monetizationIntelligenceService");
+
+  // Sincroniza fila de falhas antes do reporte
+  syncFailureQueue();
 
   const discoverReadyCount = posts.filter(isDiscoverReady).length;
   const avgHeadlineScore = Math.round(posts.reduce((acc, p) => acc + calculateHeadlineScore(p.title), 0) / posts.length);
   const monetization = calculateRevenueEfficiency(posts);
+  const performance = evaluatePerformanceHealth(posts, pillars, connectivity);
+  const healing = calculateHealingMetrics();
 
-  return {
+  const report = {
     global: {
       orphanReduction: posts.length > 0 ? ((1 - (totalOrphans / posts.length)) * 100).toFixed(1) + "%" : "0%",
-      averageClusterScore: Math.round(Object.values(clusterMetrics).reduce((acc, c) => acc + c.score, 0) / OFFICIAL_CATEGORIES.length),
-      knowledgeFlowEfficiency: (crossClusterLinks / Math.max(1, posts.length)).toFixed(2),
-      semanticCohesionGlobal: (Object.values(clusterMetrics).reduce((acc, c) => acc + Number(c.semanticCohesion || 0), 0) / OFFICIAL_CATEGORIES.length).toFixed(2),
-      crossClusterReinforcement: (crossClusterLinks / 10).toFixed(2),
-      trafficAttractionScore: avgHeadlineScore,
-      freshnessCompetitiveness: analyzeFreshnessCompetitiveness(posts),
-      discoverabilityStrength: (discoverReadyCount / posts.length).toFixed(2),
-      monetizationAlignment: monetization.globalAlignment,
-      monetizationTrust: monetization.globalTrust,
-      revenueFlowEfficiency: (1 - monetization.saturationRisk).toFixed(2)
+      averageClusterScore: sanitizeNumeric(Math.round(Object.values(clusterMetrics).reduce((acc, c) => acc + c.score, 0) / OFFICIAL_CATEGORIES.length)),
+      knowledgeFlowEfficiency: sanitizeNumeric((crossClusterLinks / Math.max(1, posts.length)).toFixed(2), { max: 1 }),
+      semanticCohesionGlobal: sanitizeNumeric((Object.values(clusterMetrics).reduce((acc, c) => acc + Number(c.semanticCohesion || 0), 0) / OFFICIAL_CATEGORIES.length).toFixed(2), { max: 1 }),
+      crossClusterReinforcement: sanitizeNumeric((crossClusterLinks / 10).toFixed(2), { max: 10 }),
+      trafficAttractionScore: sanitizeNumeric(avgHeadlineScore),
+      freshnessCompetitiveness: sanitizeNumeric(analyzeFreshnessCompetitiveness(posts), { max: 1 }),
+      discoverabilityStrength: sanitizeNumeric((discoverReadyCount / posts.length).toFixed(2), { max: 1 }),
+      monetizationAlignment: sanitizeNumeric(monetization.globalAlignment),
+      monetizationTrust: sanitizeNumeric(monetization.globalTrust),
+      revenueFlowEfficiency: sanitizeNumeric((1 - monetization.saturationRisk).toFixed(2), { max: 1 }),
+      performanceScore: performance.score,
+      healingEffectiveness: healing.effectivenessScore,
+      searchDominance: Math.round(Number(performance.metrics.crawlEfficiency) * 100)
     },
     clusters: clusterMetrics,
     semanticJourneys,
     semanticRisks: detectSemanticRisks(posts, pillars, clusterMetrics),
     growthOpportunities: detectGrowthOpportunities(posts, clusterMetrics),
-    monetization
+    monetization: sanitizeObject(monetization, ["globalAlignment", "globalTrust", "saturationRisk"]),
+    performance,
+    healing
   };
+
+  return report;
 }
 
 function getMaturity(count, score, hasPillar) {
@@ -178,8 +197,6 @@ function detectSemanticRisks(posts, pillars, metrics) {
 
   return risks;
 }
-
-const OFFICIAL_CATEGORIES = ["financas", "renda-extra", "programacao", "investimentos", "economia", "trabalho"];
 
 module.exports = {
   calculateAuthorityMetrics

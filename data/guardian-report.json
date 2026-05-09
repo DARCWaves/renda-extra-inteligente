@@ -1,70 +1,27 @@
 {
   "ok": true,
+  "globalScore": 68,
   "passed": [
-    "app.js existe.",
-    "app.js sem erro de sintaxe.",
-    "Rota de confiança detectada: /sobre",
-    "Rota de confiança detectada: /contato",
-    "Rota de confiança detectada: /privacidade",
-    "Rota de confiança detectada: /termos",
-    "Rota de confiança detectada: /editorial",
-    "Rota de confiança detectada: /transparencia",
-    "Rota /sitemap.xml única.",
-    "data/posts.json válido.",
-    "Base de afiliados validada.",
-    "Sitemap XML válido.",
-    "Robots aponta para sitemap.xml.",
-    "views/home.ejs existe.",
-    "views/posts.ejs existe.",
-    "views/category.ejs existe.",
-    "views/post.ejs existe."
+    "Integridade de dados JSON validada.",
+    "Simulação de carregamento de serviços OK.",
+    "Estrutura do site validada.",
+    "Redução de Órfãos saudável: 32.0%",
+    "Performance Score saudável: 85%"
   ],
   "warnings": [
     "Saúde Global do SEO está baixa: 36% (Ideal > 70%)",
-    "Post de baixa autoridade [20%]: investimentos-1777475700030. Sugestão: Título fora do tamanho ideal (45-75 caracteres)",
-    "Post de baixa autoridade [20%]: conteudos-1777391100023. Sugestão: Título fora do tamanho ideal (45-75 caracteres)",
-    "Post de baixa autoridade [20%]: como-melhorar-sua-vida-financeira-com-controle-de-gastos-1777126100789. Sugestão: Título fora do tamanho ideal (45-75 caracteres)",
-    "Post de baixa autoridade [20%]: como-melhorar-sua-vida-financeira-com-organizacao-financeira-1777098933360. Sugestão: Título fora do tamanho ideal (45-75 caracteres)",
-    "Post de baixa autoridade [30%]: o-que-entender-antes-de-investir-pela-primeira-vez-e-evitar-decisoes-ruins. Sugestão: Título fora do tamanho ideal (45-75 caracteres)",
-    "Post de baixa autoridade [30%]: como-comecar-a-investir-com-pouco-dinheiro-sem-fazer-besteira. Sugestão: Título fora do tamanho ideal (45-75 caracteres)",
-    "Post de baixa autoridade [30%]: como-melhorar-sua-vida-financeira-com-educacao-financeira. Sugestão: Título fora do tamanho ideal (45-75 caracteres)",
-    "Post de baixa autoridade [30%]: como-melhorar-sua-vida-financeira-com-renda-extra-1777101130842. Sugestão: Meta descrição fora do tamanho ideal (110-170 caracteres)",
-    "Post de baixa autoridade [30%]: como-melhorar-sua-vida-financeira-com-controle-de-gastos. Sugestão: Título fora do tamanho ideal (45-75 caracteres)",
-    "Post de baixa autoridade [30%]: como-melhorar-sua-vida-financeira-com-renda-extra. Sugestão: Título fora do tamanho ideal (45-75 caracteres)",
-    "Conteúdo Órfão detectado (sem links internos): logica-de-programacao-explicada-como-uma-receita-simples-para-iniciantes",
-    "Conteúdo Órfão detectado (sem links internos): o-que-vender-para-fazer-renda-extra-mesmo-tendo-pouco-dinheiro-para-comecar",
-    "Conteúdo Órfão detectado (sem links internos): como-a-inflacao-tira-dinheiro-do-seu-bolso-sem-voce-perceber",
-    "Conteúdo Órfão detectado (sem links internos): como-aumentar-sua-renda-usando-melhor-o-trabalho-que-voce-ja-faz",
-    "Conteúdo Órfão detectado (sem links internos): como-comecar-a-investir-com-pouco-dinheiro-sem-fazer-besteira",
-    "Conteúdo Órfão detectado (sem links internos): como-aprender-programacao-do-zero-sem-travar-na-logica",
-    "Conteúdo Órfão detectado (sem links internos): como-transformar-uma-habilidade-simples-em-uma-fonte-de-renda-extra",
-    "Conteúdo Órfão detectado (sem links internos): como-organizar-seu-dinheiro-mesmo-ganhando-pouco-e-parar-de-viver-no-aperto",
-    "Conteúdo Órfão detectado (sem links internos): conteudos-1777476600033",
-    "Conteúdo Órfão detectado (sem links internos): investimentos-1777475700030",
-    "Conteúdo Órfão detectado (sem links internos): conteudos-1777391100023",
-    "Conteúdo Órfão detectado (sem links internos): como-melhorar-sua-vida-financeira-com-controle-de-gastos-1777126100789",
-    "Conteúdo Órfão detectado (sem links internos): como-melhorar-sua-vida-financeira-com-educacao-financeira",
-    "Conteúdo Órfão detectado (sem links internos): como-melhorar-sua-vida-financeira-com-dolar-alto",
-    "Conteúdo Órfão detectado (sem links internos): como-melhorar-sua-vida-financeira-com-renda-extra-1777101130842",
-    "Conteúdo Órfão detectado (sem links internos): como-melhorar-sua-vida-financeira-com-controle-de-gastos",
-    "Conteúdo Órfão detectado (sem links internos): como-melhorar-sua-vida-financeira-com-selic-alta",
-    "Conteúdo Órfão detectado (sem links internos): como-melhorar-sua-vida-financeira-com-organizacao-financeira-1777098933360",
-    "Conteúdo Órfão detectado (sem links internos): como-melhorar-sua-vida-financeira-com-renda-extra",
-    "Conteúdo Órfão detectado (sem links internos): como-melhorar-sua-vida-financeira-com-organizacao-financeira",
-    "Conteúdo Órfão detectado (sem links internos): como-melhorar-sua-vida-financeira-com-investimentos-para-iniciantes",
-    "Conteúdo Órfão detectado (sem links internos): como-melhorar-sua-renda-extra-sem-complicacao",
-    "[PADRÃO IA] IA usando conclusão repetida (3x): \"...eto de ganhos para 2026.</div>\"",
-    "[PADRÃO IA] IA usando conclusão repetida (14x): \"...essa excessiva leva à pobreza.\"",
-    "[PADRÃO IA] [AUTORIDADE] Nicho sub-representado: investimentos (4.0%)",
-    "[PADRÃO IA] [AUTORIDADE] Nicho sub-representado: economia (4.0%)",
-    "[PADRÃO IA] [AUTORIDADE] Nicho sub-representado: trabalho (4.0%)",
-    "[Oportunidade Link] Vincular como-aprender-programacao-do-zero-sem-travar-na-logica -> logica-de-programacao-explicada-como-uma-receita-simples-para-iniciantes (Reforço Horizontal (2 keywords))",
-    "[Oportunidade Link] Vincular conteudos-1777476600033 -> o-que-vender-para-fazer-renda-extra-mesmo-tendo-pouco-dinheiro-para-comecar (Reforço Horizontal (4 keywords))",
-    "[Oportunidade Link] Vincular como-transformar-uma-habilidade-simples-em-uma-fonte-de-renda-extra -> como-comecar-a-investir-com-pouco-dinheiro-sem-fazer-besteira (Reforço Horizontal (4 keywords))",
-    "[REFRESH RECOMENDADO] o-que-entender-antes-de-investir-pela-primeira-vez-e-evitar-decisoes-ruins: Título fora do tamanho ideal (45-75 caracteres)",
-    "[REFRESH RECOMENDADO] logica-de-programacao-explicada-como-uma-receita-simples-para-iniciantes: Título fora do tamanho ideal (45-75 caracteres)",
-    "[REFRESH RECOMENDADO] o-que-vender-para-fazer-renda-extra-mesmo-tendo-pouco-dinheiro-para-comecar: Título fora do tamanho ideal (45-75 caracteres)",
-    "Falha ao gerar insights autônomos: Cannot read properties of undefined (reading 'saturationRisk')"
+    "Post de baixa autoridade [20%]: investimentos-1777475700030",
+    "Post de baixa autoridade [20%]: conteudos-1777391100023",
+    "Post de baixa autoridade [20%]: como-melhorar-sua-vida-financeira-com-controle-de-gastos-1777126100789",
+    "Post de baixa autoridade [20%]: como-melhorar-sua-vida-financeira-com-organizacao-financeira-1777098933360",
+    "Post de baixa autoridade [30%]: o-que-entender-antes-de-investir-pela-primeira-vez-e-evitar-decisoes-ruins",
+    "Post de baixa autoridade [30%]: como-comecar-a-investir-com-pouco-dinheiro-sem-fazer-besteira",
+    "Post de baixa autoridade [30%]: como-melhorar-sua-vida-financeira-com-educacao-financeira",
+    "Post de baixa autoridade [30%]: como-melhorar-sua-vida-financeira-com-renda-extra-1777101130842",
+    "Post de baixa autoridade [30%]: como-melhorar-sua-vida-financeira-com-controle-de-gastos",
+    "Post de baixa autoridade [30%]: como-melhorar-sua-vida-financeira-com-renda-extra",
+    "[PERFORMANCE] Inatividades de Rastreio: Crawl Efficiency abaixo de 50% (32%).",
+    "[Oportunidade Link] Vincular como-aprender-programacao-do-zero-sem-travar-na-logica -> logica-de-programacao-explicada-como-uma-receita-simples-para-iniciantes"
   ],
   "failures": [],
   "categoryCount": {
@@ -75,1013 +32,168 @@
     "economia": 1,
     "trabalho": 1
   },
-  "seoHealth": {
-    "averageScore": 36,
-    "totalPosts": 25,
-    "priorityPosts": [
-      {
-        "score": 20,
-        "improvements": [
-          "Título fora do tamanho ideal (45-75 caracteres)",
-          "Meta descrição fora do tamanho ideal (110-170 caracteres)",
-          "Estrutura pobre: faltam subtítulos H2 ou H3",
-          "Conteúdo curto demais (Thin Content)",
-          "Falta um Call to Action (CTA) claro",
-          "Slug não amigável (contém ID numérico longo)",
-          "Falta menção à transparência editorial/afiliados"
-        ],
-        "quickWins": [
-          {
-            "type": "metadata",
-            "msg": "Ajustar título para SEO",
-            "impact": 10
-          },
-          {
-            "type": "metadata",
-            "msg": "Ajustar meta descrição",
-            "impact": 10
-          },
-          {
-            "type": "ux",
-            "msg": "Adicionar frase de ação (CTA)",
-            "impact": 10
-          },
-          {
-            "type": "slug",
-            "msg": "Simplificar URL (remover timestamp)",
-            "impact": 10
-          },
-          {
-            "type": "eeat",
-            "msg": "Adicionar disclosure de afiliados",
-            "impact": 10
-          }
-        ],
-        "recoveryPotential": 80,
-        "slug": "investimentos-1777475700030",
-        "title": "Como começar a vender algo simples e fazer sua primeira renda extra",
-        "wordCount": 338
-      },
-      {
-        "score": 20,
-        "improvements": [
-          "Título fora do tamanho ideal (45-75 caracteres)",
-          "Meta descrição fora do tamanho ideal (110-170 caracteres)",
-          "Estrutura pobre: faltam subtítulos H2 ou H3",
-          "Conteúdo curto demais (Thin Content)",
-          "Falta um Call to Action (CTA) claro",
-          "Slug não amigável (contém ID numérico longo)",
-          "Falta menção à transparência editorial/afiliados"
-        ],
-        "quickWins": [
-          {
-            "type": "metadata",
-            "msg": "Ajustar título para SEO",
-            "impact": 10
-          },
-          {
-            "type": "metadata",
-            "msg": "Ajustar meta descrição",
-            "impact": 10
-          },
-          {
-            "type": "ux",
-            "msg": "Adicionar frase de ação (CTA)",
-            "impact": 10
-          },
-          {
-            "type": "slug",
-            "msg": "Simplificar URL (remover timestamp)",
-            "impact": 10
-          },
-          {
-            "type": "eeat",
-            "msg": "Adicionar disclosure de afiliados",
-            "impact": 10
-          }
-        ],
-        "recoveryPotential": 80,
-        "slug": "conteudos-1777391100023",
-        "title": "Renda extra para iniciantes: o caminho mais simples para começar hoje",
-        "wordCount": 331
-      },
-      {
-        "score": 20,
-        "improvements": [
-          "Título fora do tamanho ideal (45-75 caracteres)",
-          "Meta descrição fora do tamanho ideal (110-170 caracteres)",
-          "Estrutura pobre: faltam subtítulos H2 ou H3",
-          "Conteúdo curto demais (Thin Content)",
-          "Falta um Call to Action (CTA) claro",
-          "Slug não amigável (contém ID numérico longo)",
-          "Falta menção à transparência editorial/afiliados"
-        ],
-        "quickWins": [
-          {
-            "type": "metadata",
-            "msg": "Ajustar título para SEO",
-            "impact": 10
-          },
-          {
-            "type": "metadata",
-            "msg": "Ajustar meta descrição",
-            "impact": 10
-          },
-          {
-            "type": "ux",
-            "msg": "Adicionar frase de ação (CTA)",
-            "impact": 10
-          },
-          {
-            "type": "slug",
-            "msg": "Simplificar URL (remover timestamp)",
-            "impact": 10
-          },
-          {
-            "type": "eeat",
-            "msg": "Adicionar disclosure de afiliados",
-            "impact": 10
-          }
-        ],
-        "recoveryPotential": 80,
-        "slug": "como-melhorar-sua-vida-financeira-com-controle-de-gastos-1777126100789",
-        "title": "Como melhorar sua vida financeira com controle de gastos",
-        "wordCount": 330
-      },
-      {
-        "score": 20,
-        "improvements": [
-          "Título fora do tamanho ideal (45-75 caracteres)",
-          "Meta descrição fora do tamanho ideal (110-170 caracteres)",
-          "Estrutura pobre: faltam subtítulos H2 ou H3",
-          "Conteúdo curto demais (Thin Content)",
-          "Falta um Call to Action (CTA) claro",
-          "Slug não amigável (contém ID numérico longo)",
-          "Falta menção à transparência editorial/afiliados"
-        ],
-        "quickWins": [
-          {
-            "type": "metadata",
-            "msg": "Ajustar título para SEO",
-            "impact": 10
-          },
-          {
-            "type": "metadata",
-            "msg": "Ajustar meta descrição",
-            "impact": 10
-          },
-          {
-            "type": "ux",
-            "msg": "Adicionar frase de ação (CTA)",
-            "impact": 10
-          },
-          {
-            "type": "slug",
-            "msg": "Simplificar URL (remover timestamp)",
-            "impact": 10
-          },
-          {
-            "type": "eeat",
-            "msg": "Adicionar disclosure de afiliados",
-            "impact": 10
-          }
-        ],
-        "recoveryPotential": 80,
-        "slug": "como-melhorar-sua-vida-financeira-com-organizacao-financeira-1777098933360",
-        "title": "Como melhorar sua vida financeira com organização financeira",
-        "wordCount": 329
-      },
-      {
-        "score": 30,
-        "improvements": [
-          "Título fora do tamanho ideal (45-75 caracteres)",
-          "Meta descrição fora do tamanho ideal (110-170 caracteres)",
-          "Estrutura pobre: faltam subtítulos H2 ou H3",
-          "Conteúdo curto demais (Thin Content)",
-          "Falta um Call to Action (CTA) claro",
-          "Falta menção à transparência editorial/afiliados"
-        ],
-        "quickWins": [
-          {
-            "type": "metadata",
-            "msg": "Ajustar título para SEO",
-            "impact": 10
-          },
-          {
-            "type": "metadata",
-            "msg": "Ajustar meta descrição",
-            "impact": 10
-          },
-          {
-            "type": "ux",
-            "msg": "Adicionar frase de ação (CTA)",
-            "impact": 10
-          },
-          {
-            "type": "eeat",
-            "msg": "Adicionar disclosure de afiliados",
-            "impact": 10
-          }
-        ],
-        "recoveryPotential": 70,
-        "slug": "o-que-entender-antes-de-investir-pela-primeira-vez-e-evitar-decisoes-ruins",
-        "title": "O que entender antes de investir pela primeira vez e evitar decisões ruins",
-        "wordCount": 286
-      },
-      {
-        "score": 30,
-        "improvements": [
-          "Título fora do tamanho ideal (45-75 caracteres)",
-          "Meta descrição fora do tamanho ideal (110-170 caracteres)",
-          "Estrutura pobre: faltam subtítulos H2 ou H3",
-          "Conteúdo curto demais (Thin Content)",
-          "Falta um Call to Action (CTA) claro",
-          "Falta menção à transparência editorial/afiliados"
-        ],
-        "quickWins": [
-          {
-            "type": "metadata",
-            "msg": "Ajustar título para SEO",
-            "impact": 10
-          },
-          {
-            "type": "metadata",
-            "msg": "Ajustar meta descrição",
-            "impact": 10
-          },
-          {
-            "type": "ux",
-            "msg": "Adicionar frase de ação (CTA)",
-            "impact": 10
-          },
-          {
-            "type": "eeat",
-            "msg": "Adicionar disclosure de afiliados",
-            "impact": 10
-          }
-        ],
-        "recoveryPotential": 70,
-        "slug": "como-comecar-a-investir-com-pouco-dinheiro-sem-fazer-besteira",
-        "title": "Como começar a investir com pouco dinheiro sem fazer besteira",
-        "wordCount": 267
-      },
-      {
-        "score": 30,
-        "improvements": [
-          "Título fora do tamanho ideal (45-75 caracteres)",
-          "Meta descrição fora do tamanho ideal (110-170 caracteres)",
-          "Estrutura pobre: faltam subtítulos H2 ou H3",
-          "Conteúdo curto demais (Thin Content)",
-          "Falta um Call to Action (CTA) claro",
-          "Falta menção à transparência editorial/afiliados"
-        ],
-        "quickWins": [
-          {
-            "type": "metadata",
-            "msg": "Ajustar título para SEO",
-            "impact": 10
-          },
-          {
-            "type": "metadata",
-            "msg": "Ajustar meta descrição",
-            "impact": 10
-          },
-          {
-            "type": "ux",
-            "msg": "Adicionar frase de ação (CTA)",
-            "impact": 10
-          },
-          {
-            "type": "eeat",
-            "msg": "Adicionar disclosure de afiliados",
-            "impact": 10
-          }
-        ],
-        "recoveryPotential": 70,
-        "slug": "como-melhorar-sua-vida-financeira-com-educacao-financeira",
-        "title": "Como melhorar sua vida financeira com educação financeira",
-        "wordCount": 329
-      },
-      {
-        "score": 30,
-        "improvements": [
-          "Meta descrição fora do tamanho ideal (110-170 caracteres)",
-          "Estrutura pobre: faltam subtítulos H2 ou H3",
-          "Conteúdo curto demais (Thin Content)",
-          "Falta um Call to Action (CTA) claro",
-          "Slug não amigável (contém ID numérico longo)",
-          "Falta menção à transparência editorial/afiliados"
-        ],
-        "quickWins": [
-          {
-            "type": "metadata",
-            "msg": "Ajustar meta descrição",
-            "impact": 10
-          },
-          {
-            "type": "ux",
-            "msg": "Adicionar frase de ação (CTA)",
-            "impact": 10
-          },
-          {
-            "type": "slug",
-            "msg": "Simplificar URL (remover timestamp)",
-            "impact": 10
-          },
-          {
-            "type": "eeat",
-            "msg": "Adicionar disclosure de afiliados",
-            "impact": 10
-          }
-        ],
-        "recoveryPotential": 70,
-        "slug": "como-melhorar-sua-vida-financeira-com-renda-extra-1777101130842",
-        "title": "Como melhorar sua vida financeira com renda extra",
-        "wordCount": 329
-      },
-      {
-        "score": 30,
-        "improvements": [
-          "Título fora do tamanho ideal (45-75 caracteres)",
-          "Meta descrição fora do tamanho ideal (110-170 caracteres)",
-          "Estrutura pobre: faltam subtítulos H2 ou H3",
-          "Conteúdo curto demais (Thin Content)",
-          "Falta um Call to Action (CTA) claro",
-          "Falta menção à transparência editorial/afiliados"
-        ],
-        "quickWins": [
-          {
-            "type": "metadata",
-            "msg": "Ajustar título para SEO",
-            "impact": 10
-          },
-          {
-            "type": "metadata",
-            "msg": "Ajustar meta descrição",
-            "impact": 10
-          },
-          {
-            "type": "ux",
-            "msg": "Adicionar frase de ação (CTA)",
-            "impact": 10
-          },
-          {
-            "type": "eeat",
-            "msg": "Adicionar disclosure de afiliados",
-            "impact": 10
-          }
-        ],
-        "recoveryPotential": 70,
-        "slug": "como-melhorar-sua-vida-financeira-com-controle-de-gastos",
-        "title": "Como ganhar dinheiro em casa começando do zero: 7 ideias reais para testar hoje",
-        "wordCount": 334
-      },
-      {
-        "score": 30,
-        "improvements": [
-          "Título fora do tamanho ideal (45-75 caracteres)",
-          "Meta descrição fora do tamanho ideal (110-170 caracteres)",
-          "Estrutura pobre: faltam subtítulos H2 ou H3",
-          "Conteúdo curto demais (Thin Content)",
-          "Falta um Call to Action (CTA) claro",
-          "Falta menção à transparência editorial/afiliados"
-        ],
-        "quickWins": [
-          {
-            "type": "metadata",
-            "msg": "Ajustar título para SEO",
-            "impact": 10
-          },
-          {
-            "type": "metadata",
-            "msg": "Ajustar meta descrição",
-            "impact": 10
-          },
-          {
-            "type": "ux",
-            "msg": "Adicionar frase de ação (CTA)",
-            "impact": 10
-          },
-          {
-            "type": "eeat",
-            "msg": "Adicionar disclosure de afiliados",
-            "impact": 10
-          }
-        ],
-        "recoveryPotential": 70,
-        "slug": "como-melhorar-sua-vida-financeira-com-renda-extra",
-        "title": "Ideias de renda extra para quem ganha pouco e precisa de dinheiro rápido",
-        "wordCount": 333
+  "moduleReports": {
+    "structural": {
+      "service": "Structural Integrity",
+      "status": "healthy",
+      "category": "infrastructure",
+      "score": 100,
+      "confidence": 1,
+      "timestamp": 1778291001063,
+      "metrics": {},
+      "warnings": [],
+      "criticalIssues": [],
+      "recommendations": [],
+      "metadata": {},
+      "runtime": {
+        "executionTime": 188,
+        "recovered": false,
+        "fallbackUsed": false
       }
-    ],
-    "intelligence": {
-      "orphans": [
-        "logica-de-programacao-explicada-como-uma-receita-simples-para-iniciantes",
-        "o-que-vender-para-fazer-renda-extra-mesmo-tendo-pouco-dinheiro-para-comecar",
-        "como-a-inflacao-tira-dinheiro-do-seu-bolso-sem-voce-perceber",
-        "como-aumentar-sua-renda-usando-melhor-o-trabalho-que-voce-ja-faz",
-        "como-comecar-a-investir-com-pouco-dinheiro-sem-fazer-besteira",
-        "como-aprender-programacao-do-zero-sem-travar-na-logica",
-        "como-transformar-uma-habilidade-simples-em-uma-fonte-de-renda-extra",
-        "como-organizar-seu-dinheiro-mesmo-ganhando-pouco-e-parar-de-viver-no-aperto",
-        "conteudos-1777476600033",
-        "investimentos-1777475700030",
-        "conteudos-1777391100023",
-        "como-melhorar-sua-vida-financeira-com-controle-de-gastos-1777126100789",
-        "como-melhorar-sua-vida-financeira-com-educacao-financeira",
-        "como-melhorar-sua-vida-financeira-com-dolar-alto",
-        "como-melhorar-sua-vida-financeira-com-renda-extra-1777101130842",
-        "como-melhorar-sua-vida-financeira-com-controle-de-gastos",
-        "como-melhorar-sua-vida-financeira-com-selic-alta",
-        "como-melhorar-sua-vida-financeira-com-organizacao-financeira-1777098933360",
-        "como-melhorar-sua-vida-financeira-com-renda-extra",
-        "como-melhorar-sua-vida-financeira-com-organizacao-financeira",
-        "como-melhorar-sua-vida-financeira-com-investimentos-para-iniciantes",
-        "como-melhorar-sua-renda-extra-sem-complicacao"
-      ],
-      "patternWarnings": [
-        "IA usando conclusão repetida (3x): \"...eto de ganhos para 2026.</div>\"",
-        "IA usando conclusão repetida (14x): \"...essa excessiva leva à pobreza.\"",
-        "[AUTORIDADE] Nicho sub-representado: investimentos (4.0%)",
-        "[AUTORIDADE] Nicho sub-representado: economia (4.0%)",
-        "[AUTORIDADE] Nicho sub-representado: trabalho (4.0%)"
-      ],
-      "categoryBalance": {
-        "financas": {
-          "count": 2,
-          "percentage": "8.0%"
-        },
-        "renda-extra": {
-          "count": 15,
-          "percentage": "60.0%"
-        },
-        "programacao": {
-          "count": 5,
-          "percentage": "20.0%"
-        },
-        "investimentos": {
-          "count": 1,
-          "percentage": "4.0%"
-        },
-        "economia": {
-          "count": 1,
-          "percentage": "4.0%"
-        },
-        "trabalho": {
-          "count": 1,
-          "percentage": "4.0%"
-        }
-      },
-      "quickWinRoadmap": [
-        {
-          "slug": "reserva-de-emergencia-onde-deixar-dinheiro-sem-riscos",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "o-que-entender-antes-de-investir-pela-primeira-vez-e-evitar-decisoes-ruins",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "o-que-entender-antes-de-investir-pela-primeira-vez-e-evitar-decisoes-ruins",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "o-que-entender-antes-de-investir-pela-primeira-vez-e-evitar-decisoes-ruins",
-          "type": "ux",
-          "msg": "Adicionar frase de ação (CTA)",
-          "impact": 10
-        },
-        {
-          "slug": "o-que-entender-antes-de-investir-pela-primeira-vez-e-evitar-decisoes-ruins",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "logica-de-programacao-explicada-como-uma-receita-simples-para-iniciantes",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "logica-de-programacao-explicada-como-uma-receita-simples-para-iniciantes",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "logica-de-programacao-explicada-como-uma-receita-simples-para-iniciantes",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "o-que-vender-para-fazer-renda-extra-mesmo-tendo-pouco-dinheiro-para-comecar",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "o-que-vender-para-fazer-renda-extra-mesmo-tendo-pouco-dinheiro-para-comecar",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "o-que-vender-para-fazer-renda-extra-mesmo-tendo-pouco-dinheiro-para-comecar",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "o-erro-silencioso-que-faz-seu-salario-sumir-antes-do-fim-do-mes",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "o-erro-silencioso-que-faz-seu-salario-sumir-antes-do-fim-do-mes",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "o-erro-silencioso-que-faz-seu-salario-sumir-antes-do-fim-do-mes",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "como-a-inflacao-tira-dinheiro-do-seu-bolso-sem-voce-perceber",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "como-a-inflacao-tira-dinheiro-do-seu-bolso-sem-voce-perceber",
-          "type": "ux",
-          "msg": "Adicionar frase de ação (CTA)",
-          "impact": 10
-        },
-        {
-          "slug": "como-a-inflacao-tira-dinheiro-do-seu-bolso-sem-voce-perceber",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "como-aumentar-sua-renda-usando-melhor-o-trabalho-que-voce-ja-faz",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "como-aumentar-sua-renda-usando-melhor-o-trabalho-que-voce-ja-faz",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "como-aumentar-sua-renda-usando-melhor-o-trabalho-que-voce-ja-faz",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "como-comecar-a-investir-com-pouco-dinheiro-sem-fazer-besteira",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "como-comecar-a-investir-com-pouco-dinheiro-sem-fazer-besteira",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "como-comecar-a-investir-com-pouco-dinheiro-sem-fazer-besteira",
-          "type": "ux",
-          "msg": "Adicionar frase de ação (CTA)",
-          "impact": 10
-        },
-        {
-          "slug": "como-comecar-a-investir-com-pouco-dinheiro-sem-fazer-besteira",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "como-aprender-programacao-do-zero-sem-travar-na-logica",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "como-aprender-programacao-do-zero-sem-travar-na-logica",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "como-aprender-programacao-do-zero-sem-travar-na-logica",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "como-transformar-uma-habilidade-simples-em-uma-fonte-de-renda-extra",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "como-transformar-uma-habilidade-simples-em-uma-fonte-de-renda-extra",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "como-transformar-uma-habilidade-simples-em-uma-fonte-de-renda-extra",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "como-organizar-seu-dinheiro-mesmo-ganhando-pouco-e-parar-de-viver-no-aperto",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "como-organizar-seu-dinheiro-mesmo-ganhando-pouco-e-parar-de-viver-no-aperto",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "como-organizar-seu-dinheiro-mesmo-ganhando-pouco-e-parar-de-viver-no-aperto",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "conteudos-1777476600033",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "conteudos-1777476600033",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "conteudos-1777476600033",
-          "type": "ux",
-          "msg": "Adicionar frase de ação (CTA)",
-          "impact": 10
-        },
-        {
-          "slug": "conteudos-1777476600033",
-          "type": "slug",
-          "msg": "Simplificar URL (remover timestamp)",
-          "impact": 10
-        },
-        {
-          "slug": "conteudos-1777476600033",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "investimentos-1777475700030",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "investimentos-1777475700030",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "investimentos-1777475700030",
-          "type": "ux",
-          "msg": "Adicionar frase de ação (CTA)",
-          "impact": 10
-        },
-        {
-          "slug": "investimentos-1777475700030",
-          "type": "slug",
-          "msg": "Simplificar URL (remover timestamp)",
-          "impact": 10
-        },
-        {
-          "slug": "investimentos-1777475700030",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "conteudos-1777391100023",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "conteudos-1777391100023",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "conteudos-1777391100023",
-          "type": "ux",
-          "msg": "Adicionar frase de ação (CTA)",
-          "impact": 10
-        },
-        {
-          "slug": "conteudos-1777391100023",
-          "type": "slug",
-          "msg": "Simplificar URL (remover timestamp)",
-          "impact": 10
-        },
-        {
-          "slug": "conteudos-1777391100023",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-controle-de-gastos-1777126100789",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-controle-de-gastos-1777126100789",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-controle-de-gastos-1777126100789",
-          "type": "ux",
-          "msg": "Adicionar frase de ação (CTA)",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-controle-de-gastos-1777126100789",
-          "type": "slug",
-          "msg": "Simplificar URL (remover timestamp)",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-controle-de-gastos-1777126100789",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-educacao-financeira",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-educacao-financeira",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-educacao-financeira",
-          "type": "ux",
-          "msg": "Adicionar frase de ação (CTA)",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-educacao-financeira",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-dolar-alto",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-dolar-alto",
-          "type": "ux",
-          "msg": "Adicionar frase de ação (CTA)",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-dolar-alto",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-renda-extra-1777101130842",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-renda-extra-1777101130842",
-          "type": "ux",
-          "msg": "Adicionar frase de ação (CTA)",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-renda-extra-1777101130842",
-          "type": "slug",
-          "msg": "Simplificar URL (remover timestamp)",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-renda-extra-1777101130842",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-controle-de-gastos",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-controle-de-gastos",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-controle-de-gastos",
-          "type": "ux",
-          "msg": "Adicionar frase de ação (CTA)",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-controle-de-gastos",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-selic-alta",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-selic-alta",
-          "type": "ux",
-          "msg": "Adicionar frase de ação (CTA)",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-selic-alta",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-organizacao-financeira-1777098933360",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-organizacao-financeira-1777098933360",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-organizacao-financeira-1777098933360",
-          "type": "ux",
-          "msg": "Adicionar frase de ação (CTA)",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-organizacao-financeira-1777098933360",
-          "type": "slug",
-          "msg": "Simplificar URL (remover timestamp)",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-organizacao-financeira-1777098933360",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-renda-extra",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-renda-extra",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-renda-extra",
-          "type": "ux",
-          "msg": "Adicionar frase de ação (CTA)",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-renda-extra",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-organizacao-financeira",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-organizacao-financeira",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-organizacao-financeira",
-          "type": "ux",
-          "msg": "Adicionar frase de ação (CTA)",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-organizacao-financeira",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-investimentos-para-iniciantes",
-          "type": "metadata",
-          "msg": "Ajustar título para SEO",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-investimentos-para-iniciantes",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-investimentos-para-iniciantes",
-          "type": "ux",
-          "msg": "Adicionar frase de ação (CTA)",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-vida-financeira-com-investimentos-para-iniciantes",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-renda-extra-sem-complicacao",
-          "type": "metadata",
-          "msg": "Ajustar meta descrição",
-          "impact": 10
-        },
-        {
-          "slug": "como-melhorar-sua-renda-extra-sem-complicacao",
-          "type": "eeat",
-          "msg": "Adicionar disclosure de afiliados",
-          "impact": 10
-        }
-      ]
     },
-    "evolution": {
-      "current": 36,
-      "target": 65,
-      "projected": 72,
-      "gap": 29
+    "runtime": {
+      "service": "Runtime Availability",
+      "status": "healthy",
+      "category": "infrastructure",
+      "score": 100,
+      "confidence": 1,
+      "timestamp": 1778291000874,
+      "metrics": {},
+      "warnings": [],
+      "criticalIssues": [],
+      "recommendations": [],
+      "metadata": {},
+      "runtime": {
+        "executionTime": 22,
+        "recovered": false,
+        "fallbackUsed": false
+      }
+    },
+    "rendering": {
+      "service": "Rendering Simulation",
+      "status": "healthy",
+      "category": "ux",
+      "score": 70,
+      "confidence": 1,
+      "timestamp": 1778291001102,
+      "metrics": {},
+      "warnings": [
+        "Falha na simulação de renderização: Home",
+        "Falha na simulação de renderização: Post",
+        "Falha na simulação de renderização: Pillar"
+      ],
+      "criticalIssues": [],
+      "recommendations": [],
+      "metadata": {},
+      "runtime": {
+        "executionTime": 0,
+        "recovered": false,
+        "fallbackUsed": false
+      }
+    },
+    "seo": {
+      "service": "SEO Quality",
+      "status": "warning",
+      "category": "content",
+      "score": 36,
+      "confidence": 1,
+      "timestamp": 1778291001071,
+      "metrics": {
+        "averageScore": 36,
+        "totalPosts": 25
+      },
+      "warnings": [
+        "Saúde Global do SEO está baixa: 36% (Ideal > 70%)",
+        "Post de baixa autoridade [20%]: investimentos-1777475700030",
+        "Post de baixa autoridade [20%]: conteudos-1777391100023",
+        "Post de baixa autoridade [20%]: como-melhorar-sua-vida-financeira-com-controle-de-gastos-1777126100789",
+        "Post de baixa autoridade [20%]: como-melhorar-sua-vida-financeira-com-organizacao-financeira-1777098933360",
+        "Post de baixa autoridade [30%]: o-que-entender-antes-de-investir-pela-primeira-vez-e-evitar-decisoes-ruins",
+        "Post de baixa autoridade [30%]: como-comecar-a-investir-com-pouco-dinheiro-sem-fazer-besteira",
+        "Post de baixa autoridade [30%]: como-melhorar-sua-vida-financeira-com-educacao-financeira",
+        "Post de baixa autoridade [30%]: como-melhorar-sua-vida-financeira-com-renda-extra-1777101130842",
+        "Post de baixa autoridade [30%]: como-melhorar-sua-vida-financeira-com-controle-de-gastos",
+        "Post de baixa autoridade [30%]: como-melhorar-sua-vida-financeira-com-renda-extra"
+      ],
+      "criticalIssues": [],
+      "recommendations": [
+        "Melhorar SEO de: investimentos-1777475700030",
+        "Melhorar SEO de: conteudos-1777391100023",
+        "Melhorar SEO de: como-melhorar-sua-vida-financeira-com-controle-de-gastos-1777126100789"
+      ],
+      "metadata": {},
+      "runtime": {
+        "executionTime": 6,
+        "recovered": false,
+        "fallbackUsed": false
+      }
+    },
+    "authority": {
+      "service": "Topical Authority",
+      "status": "warning",
+      "category": "content",
+      "score": 32,
+      "confidence": 1,
+      "timestamp": 1778291001097,
+      "metrics": {
+        "orphanReduction": "32.0%"
+      },
+      "warnings": [],
+      "criticalIssues": [],
+      "recommendations": [],
+      "metadata": {},
+      "runtime": {
+        "executionTime": 1,
+        "recovered": false,
+        "fallbackUsed": false
+      }
+    },
+    "monetization": {
+      "service": "Monetization Health",
+      "status": "warning",
+      "category": "revenue",
+      "score": 50,
+      "confidence": 1,
+      "timestamp": 1778291001101,
+      "metrics": {
+        "saturationRisk": "0.00"
+      },
+      "warnings": [],
+      "criticalIssues": [],
+      "recommendations": [],
+      "metadata": {},
+      "runtime": {
+        "executionTime": 0,
+        "recovered": false,
+        "fallbackUsed": false
+      }
+    },
+    "performance": {
+      "service": "System Performance",
+      "status": "healthy",
+      "category": "infrastructure",
+      "score": 85,
+      "confidence": 1,
+      "timestamp": 1778291001101,
+      "metrics": {
+        "totalPosts": 25,
+        "heavyContentRatio": "0.00",
+        "crawlEfficiency": "0.32"
+      },
+      "warnings": [
+        "[PERFORMANCE] Inatividades de Rastreio: Crawl Efficiency abaixo de 50% (32%)."
+      ],
+      "criticalIssues": [],
+      "recommendations": [],
+      "metadata": {},
+      "runtime": {
+        "executionTime": 0,
+        "recovered": false,
+        "fallbackUsed": false
+      }
     }
   },
+  "seoHealth": {},
   "refreshRecommendations": [
     {
       "slug": "o-que-entender-antes-de-investir-pela-primeira-vez-e-evitar-decisoes-ruins",
@@ -1437,7 +549,7 @@
       "slug": "o-que-entender-antes-de-investir-pela-primeira-vez-e-evitar-decisoes-ruins",
       "title": "O que entender antes de investir pela primeira vez e evitar decisões ruins",
       "category": "investimentos",
-      "inLinks": 1,
+      "inLinks": 2,
       "outLinks": 0,
       "isOrphan": false,
       "leakageRisk": false,
@@ -1483,9 +595,9 @@
       "slug": "o-que-vender-para-fazer-renda-extra-mesmo-tendo-pouco-dinheiro-para-comecar",
       "title": "O que vender para fazer renda extra mesmo tendo pouco dinheiro para começar: Guia Prático e Estratégico",
       "category": "renda-extra",
-      "inLinks": 0,
+      "inLinks": 1,
       "outLinks": 0,
-      "isOrphan": true,
+      "isOrphan": false,
       "leakageRisk": false,
       "opportunities": [
         {
@@ -1567,16 +679,6 @@
           "type": "horizontal"
         }
       ]
-    },
-    {
-      "slug": "como-transformar-uma-habilidade-simples-em-uma-fonte-de-renda-extra",
-      "title": "Como transformar uma habilidade simples em uma fonte de renda extra",
-      "category": "programacao",
-      "inLinks": 0,
-      "outLinks": 0,
-      "isOrphan": true,
-      "leakageRisk": false,
-      "opportunities": []
     },
     {
       "slug": "como-organizar-seu-dinheiro-mesmo-ganhando-pouco-e-parar-de-viver-no-aperto",
@@ -1692,9 +794,9 @@
       "slug": "como-melhorar-sua-vida-financeira-com-controle-de-gastos-1777126100789",
       "title": "Como melhorar sua vida financeira com controle de gastos",
       "category": "renda-extra",
-      "inLinks": 0,
+      "inLinks": 1,
       "outLinks": 0,
-      "isOrphan": true,
+      "isOrphan": false,
       "leakageRisk": false,
       "opportunities": [
         {
@@ -1808,9 +910,9 @@
       "slug": "como-melhorar-sua-vida-financeira-com-controle-de-gastos",
       "title": "Como ganhar dinheiro em casa começando do zero: 7 ideias reais para testar hoje",
       "category": "renda-extra",
-      "inLinks": 0,
+      "inLinks": 1,
       "outLinks": 0,
-      "isOrphan": true,
+      "isOrphan": false,
       "leakageRisk": false,
       "opportunities": [
         {
@@ -1982,9 +1084,9 @@
       "slug": "como-melhorar-sua-renda-extra-sem-complicacao",
       "title": "Como melhorar sua renda extra sem complicação",
       "category": "renda-extra",
-      "inLinks": 0,
+      "inLinks": 1,
       "outLinks": 0,
-      "isOrphan": true,
+      "isOrphan": false,
       "leakageRisk": false,
       "opportunities": [
         {
@@ -2016,7 +1118,7 @@
       "changes": {
         "conclusion": "\n\nConclusão: O segredo da evolução financeira não é a velocidade, mas a direção correta e a consistência das suas ações diárias.",
         "structureNote": "Adicionar subtítulos (H2/H3) para melhorar a escaneabilidade.",
-        "ctaSnippet": "\n\n**Desafio de hoje:** Identifique um ponto de melhoria no seu processo e mude agora."
+        "ctaSnippet": "\n\n**Próximo passo:** Revise seu plano atual e ajuste um detalhe com base no que aprendeu aqui."
       },
       "confidence": "Alta"
     },
@@ -2038,7 +1140,7 @@
       "changes": {
         "conclusion": "\n\nConclusão: O segredo da evolução financeira não é a velocidade, mas a direção correta e a consistência das suas ações diárias.",
         "structureNote": "Adicionar subtítulos (H2/H3) para melhorar a escaneabilidade.",
-        "ctaSnippet": "\n\n**Desafio de hoje:** Identifique um ponto de melhoria no seu processo e mude agora."
+        "ctaSnippet": "\n\n**Ação prática:** Escolha uma das estratégias acima e comece a aplicar hoje mesmo."
       },
       "confidence": "Alta"
     },
@@ -2049,7 +1151,7 @@
       "changes": {
         "conclusion": "\n\nConclusão: O segredo da evolução financeira não é a velocidade, mas a direção correta e a consistência das suas ações diárias.",
         "structureNote": "Adicionar subtítulos (H2/H3) para melhorar a escaneabilidade.",
-        "ctaSnippet": "\n\n**Próximo passo:** Revise seu plano atual e ajuste um detalhe com base no que aprendeu aqui."
+        "ctaSnippet": "\n\n**Evolução constante:** Não espere o momento perfeito. Aplique o que é possível hoje e melhore no caminho."
       },
       "confidence": "Alta"
     },
@@ -2059,7 +1161,7 @@
       "projectedScore": 55,
       "changes": {
         "structureNote": "Adicionar subtítulos (H2/H3) para melhorar a escaneabilidade.",
-        "ctaSnippet": "\n\n**Ação prática:** Escolha uma das estratégias acima e comece a aplicar hoje mesmo."
+        "ctaSnippet": "\n\n**Próximo passo:** Revise seu plano atual e ajuste um detalhe com base no que aprendeu aqui."
       },
       "confidence": "Alta"
     }
@@ -2068,15 +1170,18 @@
     "global": {
       "orphanReduction": "32.0%",
       "averageClusterScore": 32,
-      "knowledgeFlowEfficiency": "0.20",
-      "semanticCohesionGlobal": "0.25",
-      "crossClusterReinforcement": "0.50",
+      "knowledgeFlowEfficiency": 0.2,
+      "semanticCohesionGlobal": 0.25,
+      "crossClusterReinforcement": 0.5,
       "trafficAttractionScore": 51,
-      "freshnessCompetitiveness": "1.00",
-      "discoverabilityStrength": "0.08",
+      "freshnessCompetitiveness": 1,
+      "discoverabilityStrength": 0.08,
       "monetizationAlignment": 77,
       "monetizationTrust": 50,
-      "revenueFlowEfficiency": "1.00"
+      "revenueFlowEfficiency": 1,
+      "performanceScore": 85,
+      "healingEffectiveness": 95,
+      "searchDominance": 32
     },
     "clusters": {
       "financas": {
@@ -2426,9 +1531,96 @@
           "trustScore": 50
         }
       ]
+    },
+    "performance": {
+      "score": 85,
+      "risks": [
+        "Inatividades de Rastreio: Crawl Efficiency abaixo de 50% (32%)."
+      ],
+      "metrics": {
+        "totalPosts": 25,
+        "heavyContentRatio": "0.00",
+        "crawlEfficiency": "0.32"
+      }
+    },
+    "healing": {
+      "preventedCrashes": 0,
+      "openIssues": 1,
+      "recurringIssues": 0,
+      "effectivenessScore": 95,
+      "queue": [
+        {
+          "id": "RT-MOXKCIDG",
+          "timestamp": "2026-05-08T23:45:45.988Z",
+          "route": "/simulate-error",
+          "type": "Error",
+          "message": "Simulação de falha crítica para teste do Plan B",
+          "rootCause": "Inconsistência de dados ou acesso a propriedade indefinida.",
+          "recommendation": "Adicionar null-guards e usar safeGet para acesso a propriedades aninhadas.",
+          "urgency": "Média",
+          "status": "open"
+        }
+      ]
     }
   },
-  "checkedAt": "2026-05-09T01:16:50.787Z",
+  "serviceHealth": {
+    "Content Refresh": {
+      "status": "Saudável",
+      "reliability": "100.0%",
+      "failures": 0,
+      "lastFailure": null
+    },
+    "Pillar Service": {
+      "status": "Saudável",
+      "reliability": "100.0%",
+      "failures": 0,
+      "lastFailure": null
+    },
+    "Connectivity Analyzer": {
+      "status": "Saudável",
+      "reliability": "100.0%",
+      "failures": 0,
+      "lastFailure": null
+    },
+    "Internal Linking": {
+      "status": "Saudável",
+      "reliability": "100.0%",
+      "failures": 0,
+      "lastFailure": null
+    },
+    "Authority Metrics": {
+      "status": "Saudável",
+      "reliability": "100.0%",
+      "failures": 0,
+      "lastFailure": null
+    },
+    "SEO Refactor": {
+      "status": "Saudável",
+      "reliability": "100.0%",
+      "failures": 0,
+      "lastFailure": null
+    },
+    "Render [Home]": {
+      "status": "Saudável",
+      "reliability": "100.0%",
+      "failures": 0,
+      "lastFailure": null
+    },
+    "Render [Post]": {
+      "status": "Saudável",
+      "reliability": "100.0%",
+      "failures": 0,
+      "lastFailure": null
+    },
+    "Render [Pillar]": {
+      "status": "Saudável",
+      "reliability": "100.0%",
+      "failures": 0,
+      "lastFailure": null
+    }
+  },
+  "recoveryLog": [],
+  "checkedAt": "2026-05-09T01:43:21.102Z",
   "posts": [
     {
       "slug": "reserva-de-emergencia-onde-deixar-dinheiro-sem-riscos",
@@ -2529,6 +1721,35 @@
     {
       "slug": "como-melhorar-sua-renda-extra-sem-complicacao",
       "title": "Como melhorar sua renda extra sem complicação"
+    }
+  ],
+  "autonomousInsights": {
+    "priorities": [],
+    "diagnosis": [],
+    "opportunities": [
+      {
+        "type": "Google Discover",
+        "action": "Otimizar Headlines de alto potencial",
+        "benefit": "Captura de tráfego viral orgânico"
+      }
+    ],
+    "health": {
+      "impactPotential": 0,
+      "stabilityScore": 13,
+      "sustainabilityIndex": 50,
+      "runtimeSafetyScore": 74,
+      "performanceScore": 0,
+      "healingEffectiveness": 0
+    }
+  },
+  "runtimeAnomalies": [
+    {
+      "id": "RT-MOXKCIDG",
+      "timestamp": "2026-05-08T23:45:45.988Z",
+      "route": "/simulate-error",
+      "type": "Error",
+      "message": "Simulação de falha crítica para teste do Plan B",
+      "severity": "Média"
     }
   ]
 }

@@ -1,8 +1,6 @@
-const fs = require("fs");
-const path = require("path");
+const { readJson, ROOT } = require("./storageAdapter");
 
 const DEFAULT_BASE_URL = "https://renda-extra-inteligente.onrender.com";
-const POSTS_FILE = path.join(__dirname, "..", "data", "posts.json");
 
 function getBaseUrl() {
   return String(process.env.BASE_URL || process.env.SITE_URL || DEFAULT_BASE_URL)
@@ -20,16 +18,7 @@ function escapeXml(value) {
 }
 
 function readPostsSafe() {
-  try {
-    if (!fs.existsSync(POSTS_FILE)) return [];
-    const raw = fs.readFileSync(POSTS_FILE, "utf8");
-    if (!raw.trim()) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (err) {
-    console.error("ERRO AO LER POSTS PARA SITEMAP:", err.message);
-    return [];
-  }
+  return readJson("posts", []);
 }
 
 function cleanSlug(slug) {

@@ -1,15 +1,12 @@
-const fs = require("fs");
-const path = require("path");
 const axios = require("axios");
 const { clearPostCache } = require("./postService");
+const { readJson, writeJson } = require("./storageAdapter");
 
 /*
 ==================================================
 CONFIG
 ==================================================
 */
-
-const POSTS_PATH = path.join(__dirname, "..", "data", "posts.json");
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
@@ -19,19 +16,12 @@ UTILS
 ==================================================
 */
 
-function ensurePostsFile() {
-  if (!fs.existsSync(POSTS_PATH)) {
-    fs.writeFileSync(POSTS_PATH, JSON.stringify([], null, 2));
-  }
-}
-
 function readPosts() {
-  ensurePostsFile();
-  return JSON.parse(fs.readFileSync(POSTS_PATH));
+  return readJson("posts", []);
 }
 
 function savePosts(posts) {
-  fs.writeFileSync(POSTS_PATH, JSON.stringify(posts, null, 2));
+  return writeJson("posts", posts.slice(0, 1000));
 }
 
 function slugify(text) {

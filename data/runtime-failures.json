@@ -1,0 +1,10 @@
+[
+  {
+    "id": "RT-MOXKCIDG",
+    "timestamp": "2026-05-08T23:45:45.988Z",
+    "route": "/simulate-error",
+    "type": "Error",
+    "message": "Simulação de falha crítica para teste do Plan B",
+    "severity": "Média"
+  }
+]

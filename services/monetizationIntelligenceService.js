@@ -47,19 +47,21 @@ function evaluateMonetizationContext(post) {
  * Calcula a eficiência de fluxo de receita (Revenue Flow) global.
  */
 function calculateRevenueEfficiency(posts) {
-  if (!posts.length) return { globalAlignment: 0, globalTrust: 0, saturationRisk: 0 };
+  if (!Array.isArray(posts) || posts.length === 0) {
+    return { globalAlignment: 0, globalTrust: 0, saturationRisk: 0, revenueOpportunityDensity: 0, evaluations: [] };
+  }
 
   const evaluations = posts.map(evaluateMonetizationContext);
   
-  const avgAlignment = Math.round(evaluations.reduce((acc, e) => acc + e.alignmentScore, 0) / posts.length);
-  const avgTrust = Math.round(evaluations.reduce((acc, e) => acc + e.trustScore, 0) / posts.length);
+  const avgAlignment = Math.round(evaluations.reduce((acc, e) => acc + (e.alignmentScore || 0), 0) / evaluations.length);
+  const avgTrust = Math.round(evaluations.reduce((acc, e) => acc + (e.trustScore || 0), 0) / evaluations.length);
   const saturatedCount = evaluations.filter(e => e.isSaturated).length;
 
   return {
     globalAlignment: avgAlignment,
     globalTrust: avgTrust,
-    saturationRisk: (saturatedCount / posts.length).toFixed(2),
-    revenueOpportunityDensity: (evaluations.filter(e => e.intent === "transactional" && !e.isSaturated).length / posts.length).toFixed(2),
+    saturationRisk: (saturatedCount / evaluations.length).toFixed(2),
+    revenueOpportunityDensity: (evaluations.filter(e => e.intent === "transactional" && !e.isSaturated).length / evaluations.length).toFixed(2),
     evaluations
   };
 }

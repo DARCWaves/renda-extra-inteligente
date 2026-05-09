@@ -3,7 +3,7 @@
  * Avalia a qualidade técnica e autoridade do conteúdo.
  */
 
-const OFFICIAL_CATEGORIES = ["financas", "renda-extra", "programacao", "investimentos", "economia", "trabalho"];
+const { OFFICIAL_CATEGORIES } = require("../config/constants");
 
 /**
  * Calcula o score de SEO e o potencial de recuperação de um post.

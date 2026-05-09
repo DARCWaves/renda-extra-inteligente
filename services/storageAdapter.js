@@ -14,37 +14,81 @@ const DATA_DIR = path.join(__dirname, "..", "data");
  * Resolve o caminho de um arquivo de dados de forma segura.
  * Impede path traversal (acesso a arquivos fora da pasta data).
  * @param {string} key - Nome do arquivo ou chave de dados.
+ * @param {string} baseDir - Diretório base opcional (default: DATA_DIR).
  * @returns {string} - Caminho absoluto seguro.
  */
-function getSafeFilePath(key) {
-  // Remove extensões e limpa o nome para evitar subidas de diretório
-  const safeName = path.basename(key, ".json");
-  return path.join(DATA_DIR, `${safeName}.json`);
+function getSafeFilePath(key, baseDir = DATA_DIR) {
+  // Se for um caminho relativo que tenta subir, limpa
+  const safeName = key.replace(/\.\.\//g, "").replace(/\.\.\\/g, "");
+  
+  // Se o nome já tiver extensão, preserva. Se não, assume .json
+  const hasExtension = safeName.includes(".");
+  const fileName = hasExtension ? safeName : `${safeName}.json`;
+  
+  return path.join(baseDir, fileName);
 }
 
 /**
- * Verifica se um conjunto de dados existe.
- * @param {string} key - Chave dos dados.
- * @returns {boolean}
+ * Garante que um diretório exista.
  */
-function exists(key) {
-  return fs.existsSync(getSafeFilePath(key));
+function ensureDirectory(dirPath) {
+  try {
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+    return true;
+  } catch (err) {
+    console.error(`❌ [StorageAdapter] Erro ao criar diretório ${dirPath}:`, err.message);
+    return false;
+  }
+}
+
+/**
+ * Verifica se um arquivo existe.
+ */
+function fileExists(key, baseDir = DATA_DIR) {
+  return fs.existsSync(getSafeFilePath(key, baseDir));
+}
+
+/**
+ * Lê um arquivo de texto de forma segura.
+ */
+function readText(key, fallback = "", baseDir = DATA_DIR) {
+  const filePath = getSafeFilePath(key, baseDir);
+  if (!fs.existsSync(filePath)) return fallback;
+
+  try {
+    return fs.readFileSync(filePath, "utf8");
+  } catch (err) {
+    console.error(`⚠️ [StorageAdapter] Erro ao ler texto em ${key}:`, err.message);
+    return fallback;
+  }
+}
+
+/**
+ * Escreve um arquivo de texto (ou Buffer) de forma segura.
+ */
+function writeRaw(key, content, baseDir = DATA_DIR) {
+  const filePath = getSafeFilePath(key, baseDir);
+  const dir = path.dirname(filePath);
+
+  try {
+    ensureDirectory(dir);
+    fs.writeFileSync(filePath, content);
+    return true;
+  } catch (err) {
+    console.error(`❌ [StorageAdapter] Erro ao escrever arquivo em ${key}:`, err.message);
+    return false;
+  }
 }
 
 /**
  * Lê um arquivo JSON de forma segura.
- * Retorna fallback em caso de erro de parse ou arquivo inexistente.
- * 
- * Mapeamento futuro:
- * SQL: SELECT * FROM table WHERE key = ?
- * NoSQL: db.collection.find({ key })
  */
 function readJson(key, fallback = []) {
   const filePath = getSafeFilePath(key);
 
-  if (!fs.existsSync(filePath)) {
-    return fallback;
-  }
+  if (!fs.existsSync(filePath)) return fallback;
 
   try {
     const raw = fs.readFileSync(filePath, "utf8");
@@ -60,35 +104,13 @@ function readJson(key, fallback = []) {
 
 /**
  * Escreve um arquivo JSON de forma segura.
- * 
- * Mapeamento futuro:
- * SQL: UPDATE table SET data = ?
- * NoSQL: db.collection.updateOne(...)
  */
 function writeJson(key, data) {
-  const filePath = getSafeFilePath(key);
-  const dir = path.dirname(filePath);
-
-  try {
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-
-    const content = JSON.stringify(data, null, 2);
-    fs.writeFileSync(filePath, content, "utf8");
-    return true;
-  } catch (err) {
-    console.error(`❌ [StorageAdapter] Erro ao escrever JSON em ${key}:`, err.message);
-    return false;
-  }
+  return writeRaw(key, JSON.stringify(data, null, 2));
 }
 
 /**
  * Realiza uma atualização atômica em um objeto ou array JSON.
- * Lê, aplica a transformação e salva em um único fluxo.
- * @param {string} key - Chave dos dados.
- * @param {function} updater - Função que recebe os dados atuais e retorna os novos.
- * @param {any} fallback - Valor inicial se o arquivo não existir.
  */
 function updateJson(key, updater, fallback = []) {
   try {
@@ -104,6 +126,13 @@ function updateJson(key, updater, fallback = []) {
 module.exports = {
   readJson,
   writeJson,
-  exists,
-  updateJson
+  exists: fileExists, // Alias mantido por compatibilidade
+  fileExists,
+  updateJson,
+  readText,
+  writeRaw,
+  ensureDirectory,
+  getSafeFilePath,
+  ROOT: path.join(__dirname, ".."),
+  DATA_DIR
 };
